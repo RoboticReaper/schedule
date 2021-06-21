@@ -1,23 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
-
+import React from 'react';
+import Classes from './Classes.js'
+import Schedule from './Schedule.js';
+import Settings from './Settings.js'
+import { Route, Link, BrowserRouter as Router } from 'react-router-dom'
 function App() {
+  return(
+    <Router>
+      <Route path = "/" exact component = {Schedule}></Route>
+      <Route path = "/classes" component = {Classes}></Route>
+      <Route path = "/settings" component = {Settings}></Route>
+    </Router>
+  );
+}
+function Home() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Schedule/>
     </div>
   );
 }
