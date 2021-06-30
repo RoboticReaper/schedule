@@ -85,7 +85,7 @@ function SignUp() {
                 console.log(errorCode);
                 console.log(errorMessage);
                 if (errorCode === "auth/email-already-in-use") {
-                    errorMessage = "Please check your email for verification before signing in";
+                    errorMessage = "Account already exists";
                 }
                 setAlertMsg(errorMessage);
                 handleClick();

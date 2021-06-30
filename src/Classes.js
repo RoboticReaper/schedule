@@ -19,6 +19,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import firebase from "firebase/app";
 import "firebase/auth";
+import { getUid } from "./Schedule.js";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -67,7 +68,7 @@ function Classes() {
 
     function goBack() {
         // upload the classes to firestore
-        firestore.db.collection('users').doc(firebase.auth().currentUser.uid).set({ "classes": JSON.stringify(createdClasses) }).then(result => {
+        firestore.db.collection('users').doc(getUid()).set({ "classes": JSON.stringify(createdClasses) }).then(result => {
             window.location.href = "/";
         });
 

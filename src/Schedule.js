@@ -27,8 +27,6 @@ var uid;
 
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-        console.log('user logged in');
-        console.log(user.emailVerified);
         if (!user.emailVerified) {
             if (window.location.pathname !== "/signin" && window.location.pathname !== "/signup") {
                 firebase.auth().currentUser.sendEmailVerification().then(() => {
@@ -52,6 +50,10 @@ firebase.auth().onAuthStateChanged((user) => {
         }
     }
 })
+
+export function getUid(){
+    return uid;
+}
 
 var now = new Date();
 var allClasses = request();
@@ -273,17 +275,23 @@ function Schedule() {
             allClasses.items.map((today) => {
                 if (thisClass[2].includes(today.summary)) {
                     today.summary = thisClass[0];
+
+                    // setting room number
                     if(thisClass[1] !== ''){
                         today.room = thisClass[1];
                     } else {
                         today.room = "no room";
                     }
                 }
-                if (["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4", "C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4", "E1", "E2", "E3", "E4", "F1", "F2", "F3", "F4", "G1", "G2", "G3", "G4", "H1", "H2", "H3", "H4"].includes(today.summary)) {
-                    today.summary = "Free (" + today.summary + ")";
-                }
             })
         })
+
+        allClasses.items.map((today) => {
+            if (["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4", "C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4", "E1", "E2", "E3", "E4", "F1", "F2", "F3", "F4", "G1", "G2", "G3", "G4", "H1", "H2", "H3", "H4"].includes(today.summary)) {
+                today.summary = "Free (" + today.summary + ")";
+            }
+        })
+
 
         localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
         document.getElementById('yesterday').click();
