@@ -180,8 +180,8 @@ function DisplayClasses() {
                         </Grid>
                         {item.summary.substring(0, 4) === "Free" || item.summary.substring(0, 5) === "Lunch" || item.summary === "I-block"? null :
                             <Grid item xs={4} className={classes.round}>
-                                <Typography variant="body2" noWrap style={{marginLeft:5, marginRight:5}}>
-                                    Room: {item.room}
+                                <Typography variant="body2" display="inline" style={{marginLeft:5, marginRight:5}}>
+                                    Room:&nbsp;{item.room}
                                 </Typography>
                             </Grid>
                         }
