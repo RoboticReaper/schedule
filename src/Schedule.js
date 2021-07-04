@@ -6,9 +6,12 @@ import { Container } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { Paper } from '@material-ui/core';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import { Menu } from '@material-ui/core';
 import { MenuItem } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import PropTypes from 'prop-types';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import BusinessIcon from '@material-ui/icons/Business';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -51,7 +54,7 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 })
 
-export function getUid(){
+export function getUid() {
     return uid;
 }
 
@@ -77,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         '& > *': {
-            margin: theme.spacing(1),
+            margin: theme.spacing(-1.5),
         },
     },
     round: {
@@ -178,9 +181,9 @@ function DisplayClasses() {
                                 <b>{item.summary}</b>
                             </Typography>
                         </Grid>
-                        {item.summary.substring(0, 4) === "Free" || item.summary.substring(0, 5) === "Lunch" || item.summary === "I-block"? null :
+                        {item.summary.substring(0, 4) === "Free" || item.summary.substring(0, 5) === "Lunch" || item.summary === "I-block" ? null :
                             <Grid item xs={4} className={classes.round}>
-                                <Typography variant="body2" display="inline" style={{marginLeft:5, marginRight:5}}>
+                                <Typography variant="body2" display="inline" style={{ marginLeft: 5, marginRight: 5 }}>
                                     Room:&nbsp;{item.room}
                                 </Typography>
                             </Grid>
@@ -277,7 +280,7 @@ function Schedule() {
                     today.summary = thisClass[0];
 
                     // setting room number
-                    if(thisClass[1] !== ''){
+                    if (thisClass[1] !== '') {
                         today.room = thisClass[1];
                     } else {
                         today.room = "no room";
@@ -322,6 +325,45 @@ function Schedule() {
 
     const settings = () => {
         window.location.href = "/settings";
+    }
+
+    const [tabValue, setTabValue] = React.useState(0);
+
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
+    }
+
+    function TabPanel(props) {
+        const { children, value, index, ...other } = props;
+
+        return (
+            <div
+                role="tabpanel"
+                hidden={value !== index}
+                id={`simple-tabpanel-${index}`}
+                aria-labelledby={`simple-tab-${index}`}
+                {...other}
+            >
+                {value === index && (
+                    <Box p={2}>
+                        <Typography>{children}</Typography>
+                    </Box>
+                )}
+            </div>
+        );
+    }
+
+    TabPanel.propTypes = {
+        children: PropTypes.node,
+        index: PropTypes.any.isRequired,
+        value: PropTypes.any.isRequired,
+    };
+
+    function a11yProps(index) {
+        return {
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
+        };
     }
 
     function DatePicker() {
@@ -411,17 +453,36 @@ function Schedule() {
                                 </Menu>
                             </Grid>
                         </Grid>
-                        <div className={classes.btnRoot}>
-                            <Box color="primary">
-                                <Button variant="contained" disableElevation id="yesterday" color="primary" style={{ textTransform: "none", margin: 10 }} onClick={() => { yesterday(); forceUpdate(); }}>Previous</Button>
-                                {(new Date(now).setHours(0, 0, 0, 0) !== new Date().setHours(0, 0, 0, 0)) ? (<Button variant="outlined" disableElevation color="secondary" style={{ textTransform: "none" }} onClick={() => { today(); forceUpdate() }}>Today</Button>) : <Button variant="outlined" disableElevation color="secondary" style={{ textTransform: "none" }} disabled>Today</Button>}
-                                <Button variant="contained" disableElevation color="primary" id="tomorrow" style={{ textTransform: "none", margin: 10 }} onClick={() => { tomorrow(); forceUpdate(); }}>Next</Button>
+                        <Paper square elevation={0}>
+                            <Tabs
+                                value={tabValue}
+                                indicatorColor="primary"
+                                textColor="primary"
+                                onChange={handleTabChange}
+                                centered
+                            >
+                                <Tab style={{textTransform:"none"}} label="View Day" {...a11yProps(0)} />
+                                <Tab style={{textTransform:"none"}} label="View Week" {...a11yProps(1)} />
+                            </Tabs>
+                        </Paper>
 
-                            </Box>
-                        </div>
-                        <DatePicker />
+                        <TabPanel value={tabValue} index={0}>
+                            <div className={classes.btnRoot}>
+                                <Box color="primary">
+                                    <Button variant="contained" disableElevation id="yesterday" color="primary" style={{ textTransform: "none", margin: 10 }} onClick={() => { yesterday(); forceUpdate(); }}>Previous</Button>
+                                    {(new Date(now).setHours(0, 0, 0, 0) !== new Date().setHours(0, 0, 0, 0)) ? (<Button variant="outlined" disableElevation color="secondary" style={{ textTransform: "none" }} onClick={() => { today(); forceUpdate() }}>Today</Button>) : <Button variant="outlined" disableElevation color="secondary" style={{ textTransform: "none" }} disabled>Today</Button>}
+                                    <Button variant="contained" disableElevation color="primary" id="tomorrow" style={{ textTransform: "none", margin: 10 }} onClick={() => { tomorrow(); forceUpdate(); }}>Next</Button>
 
-                        {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
+                                </Box>
+                            </div>
+                            <DatePicker />
+
+                            {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
+                        </TabPanel>
+
+                        <TabPanel value={tabValue} index={1}>
+                            <h1>Hello</h1>
+                        </TabPanel>
 
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
                     </div>
