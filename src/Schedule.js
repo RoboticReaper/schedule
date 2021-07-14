@@ -481,7 +481,7 @@ function Schedule() {
                         </TabPanel>
 
                         <TabPanel value={tabValue} index={1}>
-                            <h1>Hello</h1>
+                            <h1>Coming soon!</h1>
                         </TabPanel>
 
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>

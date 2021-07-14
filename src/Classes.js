@@ -17,7 +17,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
-import firebase from "firebase/app";
 import "firebase/auth";
 import { getUid } from "./Schedule.js";
 
@@ -58,6 +57,13 @@ function Classes() {
 
     const addClass = (newClass) => {
         setClasses([...createdClasses, newClass]);
+    }
+
+    const saveClass = (currClass, currIndex) => {
+        let newClass = [...createdClasses];
+        newClass[currIndex] = currClass;
+
+        setClasses(newClass);
     }
 
     const deleteClass = (index) => {
@@ -105,6 +111,7 @@ function Classes() {
                                         </DialogActions>
                                     </Dialog>
                                 </div>
+                                <ClassDialog currClass={item} currIndex={index} saveClass={saveClass}/>
                             </Box>
                         </Grid>
                         <Grid item align="left">
