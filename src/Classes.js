@@ -74,7 +74,7 @@ function Classes() {
 
     function goBack() {
         // upload the classes to firestore
-        firestore.db.collection('users').doc(getUid()).set({ "classes": JSON.stringify(createdClasses) }).then(result => {
+        firestore.db.collection('users').doc(getUid()).update("classes", JSON.stringify(createdClasses)).then(result => {
             window.location.href = "/";
         });
 

@@ -6,8 +6,6 @@ import { Container } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { Paper } from '@material-ui/core';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import { Menu } from '@material-ui/core';
 import { MenuItem } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -24,6 +22,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
 
 var uid;
 
@@ -48,6 +47,7 @@ firebase.auth().onAuthStateChanged((user) => {
     } else {
         localStorage.setItem('uid', "");
         localStorage.setItem('createdClasses', "");
+        localStorage.setItem('lunches', "");
         if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
             window.location.href = "/signin";
         }
@@ -58,10 +58,12 @@ export function getUid() {
     return uid;
 }
 
-var now = new Date();
+var now = new Date("2021-09-09");
 var allClasses = request();
 var createdClasses = [];
 var todayClass = filter(allClasses, now);
+var todayDay;
+var lunchData;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -104,25 +106,47 @@ function request() {
         async: false
     });
 
-    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=500&sanitizeHtml=true&timeMin=2021-05-30T00%3A00%3A00-04%3A00&timeMax=2022-07-04T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
+    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2021-08-23T00%3A00%3A00-04%3A00&timeMax=2022-07-04T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
         classes = data;
     });
 
     return classes;
 }
 
+function datesAreOnSameDay(first, second) {
+    return first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
+}
+
+
+
 function filter(data, currDate) {
 
     // use date as the key, the variable is array of events in that day.
     let dates = new Map();
 
-    // filter out summary with "Week 1" or "Week 2"...
-    for (var x = 0; x < data.items.length; x++) { // if the summary isn't length two ('D3'), and it's not equal to lunch, remove it
-        if (data.items[x].summary.substring(0, 5) !== "Lunch" && data.items[x].start.dateTime === undefined) {
-            data.items.splice(x, 1);
-            x--;
+    for (var x = 0; x < data.items.length; x++) { // if the date isn't today, remove it
+        if (data.items[x].start.dateTime === undefined) {
+            var day = new Date(data.items[x].start.date);
+            var tomorrow = new Date(day);
+            tomorrow.setDate(day.getDate() + 1);
+            day = new Date(tomorrow);
+            if (datesAreOnSameDay(day, currDate)) {
+
+                var todayDayString = data.items[x].summary;
+                todayDay = parseInt(todayDayString.substr(4, 1));
+
+
+            }
         }
+
         else {
+            if (lunchData !== undefined) {
+                var todayLunch = lunchData[todayDay - 1];
+                if (data.items[x].summary.substr(0, 6) === "Lunch " && todayLunch !== undefined && data.items[x].summary.substr(6, 1) !== todayLunch.toString() && todayLunch.toString() !== "") {
+
+                    continue;
+                }
+            }
             var date = data.items[x].start.dateTime.substring(0, 10);
 
             if (dates[date] === undefined) {
@@ -142,9 +166,9 @@ function filter(data, currDate) {
         cls = undefined;
     }
 
-
     return cls;
 }
+
 
 function formatDate(date) {
     // converts date into yyyy-mm-dd format
@@ -214,6 +238,7 @@ const signOut = () => {
     firebase.auth().signOut().then(() => {
         localStorage.setItem('uid', "");
         localStorage.setItem('createdClasses', "");
+        localStorage.setItem('lunches', "['', '','','','','']");
         window.location.href = "/signin";
     }).catch((error) => {
         console.log(error);
@@ -222,11 +247,13 @@ const signOut = () => {
 
 
 function yesterday() {
+    todayDay = undefined;
     now.setDate(now.getDate() - 1);
     todayClass = filter(allClasses, now);
 }
 
 function tomorrow() {
+    todayDay = undefined;
     var tomorrow = new Date(now);
     tomorrow.setDate(now.getDate() + 1);
     now = new Date(tomorrow);
@@ -260,12 +287,20 @@ function Schedule() {
         gotten = true;
         firestore.db.collection('users').doc(localStorage.getItem('uid')).get().then((value) => {
             var data = value.data();
-            if (data === undefined || Object.keys(data).length === 0) {
-                createdClasses = [];
+
+            createdClasses = [];
+            lunchData = ["", "", "","","",""];
+            if (data !== undefined) {
+                if(data.lunches !== undefined){
+                    lunchData = JSON.parse(data.lunches);
+                }
+                if(data.classes !== undefined){
+                    createdClasses = JSON.parse(data.classes);
+                }
             }
-            else {
-                createdClasses = JSON.parse(data.classes);
-            }
+
+            localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
+            localStorage.setItem('lunches', JSON.stringify(lunchData));
             updateClass();
         })
 
@@ -296,6 +331,8 @@ function Schedule() {
         })
 
 
+
+
         localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
         document.getElementById('yesterday').click();
         document.getElementById('tomorrow').click();
@@ -317,6 +354,10 @@ function Schedule() {
         window.location.href = "/classes";
     };
 
+    const gotoLunches = () => {
+        window.location.href = "/lunches";
+    }
+
     const openInNewTab = (url) => {
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
         if (newWindow) newWindow.opener = null;
@@ -325,45 +366,6 @@ function Schedule() {
 
     const settings = () => {
         window.location.href = "/settings";
-    }
-
-    const [tabValue, setTabValue] = React.useState(0);
-
-    const handleTabChange = (event, newValue) => {
-        setTabValue(newValue);
-    }
-
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box p={2}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
-    }
-
-    TabPanel.propTypes = {
-        children: PropTypes.node,
-        index: PropTypes.any.isRequired,
-        value: PropTypes.any.isRequired,
-    };
-
-    function a11yProps(index) {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        };
     }
 
     function DatePicker() {
@@ -438,6 +440,12 @@ function Schedule() {
                                         </ListItemIcon>
                                         <Typography variant="inherit">Edit Classes</Typography>
                                     </MenuItem>
+                                    <MenuItem onClick={gotoLunches}>
+                                        <ListItemIcon>
+                                            <FastfoodIcon />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit">Edit Lunches</Typography>
+                                    </MenuItem>
                                     <MenuItem onClick={() => { openInNewTab('mailto:liubaoren2006@gmail.com') }}>
                                         <ListItemIcon>
                                             <MailOutlineOutlinedIcon />
@@ -453,20 +461,8 @@ function Schedule() {
                                 </Menu>
                             </Grid>
                         </Grid>
-                        <Paper square elevation={0}>
-                            <Tabs
-                                value={tabValue}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                onChange={handleTabChange}
-                                centered
-                            >
-                                <Tab style={{textTransform:"none"}} label="View Day" {...a11yProps(0)} />
-                                <Tab style={{textTransform:"none"}} label="View Week" {...a11yProps(1)} />
-                            </Tabs>
-                        </Paper>
 
-                        <TabPanel value={tabValue} index={0}>
+                        
                             <div className={classes.btnRoot}>
                                 <Box color="primary">
                                     <Button variant="contained" disableElevation id="yesterday" color="primary" style={{ textTransform: "none", margin: 10 }} onClick={() => { yesterday(); forceUpdate(); }}>Previous</Button>
@@ -476,13 +472,9 @@ function Schedule() {
                                 </Box>
                             </div>
                             <DatePicker />
-
                             {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
-                        </TabPanel>
 
-                        <TabPanel value={tabValue} index={1}>
-                            <h1>Coming soon!</h1>
-                        </TabPanel>
+
 
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
                     </div>
@@ -492,5 +484,6 @@ function Schedule() {
         </div>
     );
 }
+
 
 export default Schedule;

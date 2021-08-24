@@ -5,6 +5,7 @@ import Schedule from './Schedule.js';
 import Settings from './Settings.js'
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
+import Lunches from './Lunches.js';
 import { Route, BrowserRouter as Router } from 'react-router-dom'
 
 
@@ -16,6 +17,7 @@ function App() {
       <Route path="/settings" component={Settings}></Route>
       <Route path="/signup" component={SignUp}></Route>
       <Route path="/signin" component={SignIn}></Route>
+      <Route path="/lunches" component={Lunches}></Route>
     </Router>
   );
 }
