@@ -41,19 +41,23 @@ const useStyles = makeStyles((theme) => ({
 
 function Classes() {
 
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     const classes = useStyles();
 
     const [createdClasses, setClasses] = useState(JSON.parse(localStorage.getItem('createdClasses')));
+    
+    const [open, setOpen] = React.useState([false]);
+
+    const handleClickOpen = (index) => {
+        var newArr = open;
+        open[index] = true;
+        setOpen(newArr.slice());
+    };
+
+    const handleClose = (index) => {
+        var newArr = open;
+        open[index] = false;
+        setOpen(newArr.slice());
+    };
 
     const addClass = (newClass) => {
         setClasses([...createdClasses, newClass]);
@@ -67,8 +71,8 @@ function Classes() {
     }
 
     const deleteClass = (index) => {
-        createdClasses.splice(index - 1, 1);
-        handleClose();
+        createdClasses.splice(index, 1);
+        handleClose(index);
     }
 
 
@@ -91,18 +95,18 @@ function Classes() {
                                     <b>{item[0]}</b>
                                 </Typography>
                                 <div>
-                                    <IconButton onClick={handleClickOpen}>
+                                    <IconButton onClick={() => {handleClickOpen(index)}}>
                                         <DeleteIcon />
                                     </IconButton>
-                                    <Dialog disableBackdropClick open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                                    <Dialog disableBackdropClick open={open[index]} onClose={() => {handleClose(index)}} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="form-dialog-title">Delete Class</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText>
-                                                Are you sure you want to delete this class?
+                                                Are you sure you want to delete {item[0]}?
                                             </DialogContentText>
                                         </DialogContent>
                                         <DialogActions>
-                                            <Button onClick={handleClose} color="primary">
+                                            <Button onClick={() => {handleClose(index)}} color="primary">
                                                 Cancel
                                             </Button>
                                             <Button onClick={() => { deleteClass(index) }} color="primary">
