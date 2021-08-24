@@ -428,7 +428,7 @@ function Schedule() {
                         <Grid container justify="center" alignItems="center">
                             <Grid item>
                                 <Typography variant="h5" gutterBottom align="center">
-                                    {day}, {month} {now.getDate()}{todayDay !== undefined ? ". Day "+todayDay : ""}
+                                    {day}, {month} {now.getDate()}
                                 </Typography>
                             </Grid>
                             <Grid item>
@@ -488,6 +488,7 @@ function Schedule() {
 
                             <ClassReminder />
                             <LunchReminder />
+                            {todayDay !== undefined ? <Paper className={classes.paper} elevation={3} variant="outlined">Today is day {todayDay} of 6.</Paper> : null}
                             {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
                             
 
