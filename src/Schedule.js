@@ -367,6 +367,20 @@ function Schedule() {
         window.location.href = "/settings";
     }
 
+    function ClassReminder() {
+        if(createdClasses.length === 0){
+            return <div style={{backgroundColor: "lightgrey"}}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
+        }
+        return null;
+    }
+
+    function LunchReminder() {
+        if(lunchData !== undefined && lunchData[todayDay - 1] === ""){
+            return <div style={{backgroundColor: "lightgrey"}}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
+        }
+        return null;
+    }
+
     function DatePicker() {
         const [selectedDate, setSelectedDate] = React.useState(now);
 
@@ -414,7 +428,7 @@ function Schedule() {
                         <Grid container justify="center" alignItems="center">
                             <Grid item>
                                 <Typography variant="h5" gutterBottom align="center">
-                                    {day}, {month} {now.getDate()}
+                                    {day}, {month} {now.getDate()}{todayDay !== undefined ? ". Day "+todayDay : ""}
                                 </Typography>
                             </Grid>
                             <Grid item>
@@ -471,9 +485,11 @@ function Schedule() {
                                 </Box>
                             </div>
                             <DatePicker />
+
+                            <ClassReminder />
+                            <LunchReminder />
                             {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
-
-
+                            
 
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
                     </div>
