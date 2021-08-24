@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Box } from '@material-ui/core';
 import { Container } from '@material-ui/core';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { Paper } from '@material-ui/core';
@@ -87,6 +89,10 @@ const useStyles = makeStyles((theme) => ({
     round: {
         borderRadius: "5em",
         backgroundColor: "#b3b3b3",
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     },
 }));
 
@@ -262,6 +268,7 @@ function tomorrow() {
 
 
 function today() {
+    todayDay = undefined;
     now = new Date();
     todayClass = filter(allClasses, now);
 }
@@ -283,17 +290,16 @@ function Schedule() {
         if (gotten === true) {
             return;
         }
-        gotten = true;
         firestore.db.collection('users').doc(localStorage.getItem('uid')).get().then((value) => {
             var data = value.data();
 
             createdClasses = [];
-            lunchData = ["", "", "","","",""];
+            lunchData = ["", "", "", "", "", ""];
             if (data !== undefined) {
-                if(data.lunches !== undefined){
+                if (data.lunches !== undefined) {
                     lunchData = JSON.parse(data.lunches);
                 }
-                if(data.classes !== undefined){
+                if (data.classes !== undefined) {
                     createdClasses = JSON.parse(data.classes);
                 }
             }
@@ -335,6 +341,8 @@ function Schedule() {
         localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
         document.getElementById('yesterday').click();
         document.getElementById('tomorrow').click();
+        
+        gotten = true;
         forceUpdate();
     }
 
@@ -349,7 +357,6 @@ function Schedule() {
     };
 
     const gotoClasses = () => {
-
         window.location.href = "/classes";
     };
 
@@ -368,15 +375,15 @@ function Schedule() {
     }
 
     function ClassReminder() {
-        if(createdClasses.length === 0){
-            return <div style={{backgroundColor: "lightgrey"}}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
+        if (createdClasses.length === 0) {
+            return <div style={{ backgroundColor: "lightgrey" }}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
         }
         return null;
     }
 
     function LunchReminder() {
-        if(lunchData !== undefined && lunchData[todayDay - 1] === ""){
-            return <div style={{backgroundColor: "lightgrey"}}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
+        if (lunchData !== undefined && lunchData[todayDay - 1] === "") {
+            return <div style={{ backgroundColor: "lightgrey" }}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
         }
         return null;
     }
@@ -415,10 +422,12 @@ function Schedule() {
         )
     }
 
-
     return (
 
         <div>
+            <Backdrop className={classes.backdrop} open={!gotten}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <div className="App">
                 <header className='App-header'>
                 </header>
@@ -475,22 +484,22 @@ function Schedule() {
                             </Grid>
                         </Grid>
 
-                        
-                            <div className={classes.btnRoot}>
-                                <Box color="primary">
-                                    <Button variant="contained" disableElevation id="yesterday" color="primary" style={{ textTransform: "none", margin: 10 }} onClick={() => { yesterday(); forceUpdate(); }}>Previous</Button>
-                                    {(new Date(now).setHours(0, 0, 0, 0) !== new Date().setHours(0, 0, 0, 0)) ? (<Button variant="outlined" disableElevation color="secondary" style={{ textTransform: "none" }} onClick={() => { today(); forceUpdate() }}>Today</Button>) : <Button variant="outlined" disableElevation color="secondary" style={{ textTransform: "none" }} disabled>Today</Button>}
-                                    <Button variant="contained" disableElevation color="primary" id="tomorrow" style={{ textTransform: "none", margin: 10 }} onClick={() => { tomorrow(); forceUpdate(); }}>Next</Button>
 
-                                </Box>
-                            </div>
-                            <DatePicker />
+                        <div className={classes.btnRoot}>
+                            <Box color="primary">
+                                <Button variant="contained" disableElevation id="yesterday" color="primary" style={{ textTransform: "none", margin: 10 }} onClick={() => { yesterday(); forceUpdate(); }}>Previous</Button>
+                                {(new Date(now).setHours(0, 0, 0, 0) !== new Date().setHours(0, 0, 0, 0)) ? (<Button variant="outlined" disableElevation color="secondary" style={{ textTransform: "none" }} onClick={() => { today(); forceUpdate() }}>Today</Button>) : <Button variant="outlined" disableElevation color="secondary" style={{ textTransform: "none" }} disabled>Today</Button>}
+                                <Button variant="contained" disableElevation color="primary" id="tomorrow" style={{ textTransform: "none", margin: 10 }} onClick={() => { tomorrow(); forceUpdate(); }}>Next</Button>
 
-                            <ClassReminder />
-                            <LunchReminder />
-                            {todayDay !== undefined ? <Paper className={classes.paper} elevation={3} variant="outlined">Today is day {todayDay} of 6.</Paper> : null}
-                            {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
-                            
+                            </Box>
+                        </div>
+                        <DatePicker />
+
+                        <ClassReminder />
+                        <LunchReminder />
+                        {todayDay !== undefined ? <Paper className={classes.paper} elevation={3} variant="outlined">Today is day {todayDay} of 6.</Paper> : null}
+                        {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
+
 
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
                     </div>
