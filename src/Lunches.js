@@ -12,6 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 import React from 'react';
 import "firebase/auth";
 import { getUid } from "./Schedule.js";
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -89,6 +90,8 @@ function Lunches() {
                                     Lunches
                                 </Typography>
                             </Grid>
+
+                            <Button variant="contained" disableElevation color="primary" onClick={() => {setDay1(""); setDay2(""); setDay3(""); setDay4(""); setDay5(""); setDay6("")}}>Clear All</Button>
 
                         </Grid>
                     </div>
