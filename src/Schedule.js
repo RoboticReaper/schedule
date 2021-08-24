@@ -9,7 +9,6 @@ import { Paper } from '@material-ui/core';
 import { Menu } from '@material-ui/core';
 import { MenuItem } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import PropTypes from 'prop-types';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import BusinessIcon from '@material-ui/icons/Business';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -58,7 +57,7 @@ export function getUid() {
     return uid;
 }
 
-var now = new Date("2021-09-09");
+var now = new Date();
 var allClasses = request();
 var createdClasses = [];
 var todayClass = filter(allClasses, now);
