@@ -37,9 +37,9 @@ function SignUp() {
         const email = document.getElementById('email').value;
         const pswd = document.getElementById('pswd').value;
 
-        if (email.substring(email.length - 16, email.length) !== "@lexingtonma.org") {
+        if (email === "") {
             setEmailError(true);
-            setAlertMsg("Please use your school email");
+            setAlertMsg("Please enter your email address");
             handleClick();
             return;
         } else {
@@ -104,7 +104,7 @@ function SignUp() {
                 <div className="classes.root">
                     <LockRoundedIcon fontSize="large" color="secondary" style={{ marginTop: 30 }} />
                     <Typography gutterBottom variant="h4">Sign Up</Typography>
-                    <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" defaultValue="@lexingtonma.org" error={emailError} helperText="Please use your school email" />
+                    <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError}/>
                     <TextField id="pswd" variant="outlined" type="password" label="Password" fullWidth margin="normal" error={pswdError} />
                     <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signUp} style={{ marginTop: 20, marginBottom: 20 }}>Sign up</Button>
                     <Button color="secondary" style={{ textTransform: "none" }} onClick={toSignIn}>Already have an account? Sign in</Button>

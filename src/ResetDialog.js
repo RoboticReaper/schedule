@@ -68,13 +68,12 @@ export default function ResetDialog() {
                                 Please fill out fields below to reset your password.
                             </DialogContentText>
                             <TextField
-                                defaultValue="@lexingtonma.org"
                                 variant="outlined"
                                 required
                                 helperText="Required"
                                 autoFocus
                                 id="resetEmail"
-                                label="Your school email"
+                                label="Your email"
                                 type="text"
                                 margin="normal"
                                 fullWidth
