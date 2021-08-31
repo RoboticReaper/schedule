@@ -13,6 +13,7 @@ import React from 'react';
 import "firebase/auth";
 import { getUid } from "./Schedule.js";
 import Button from '@material-ui/core/Button';
+import { Paper } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -94,6 +95,11 @@ function Lunches() {
                             <Button variant="contained" disableElevation color="primary" onClick={() => {setDay1(""); setDay2(""); setDay3(""); setDay4(""); setDay5(""); setDay6("")}}>Clear All</Button>
 
                         </Grid>
+                        <Paper className={classes.paper} elevation={3} variant="outlined">
+                            <span>Here's how to figure out what lunch you have:</span>
+                            <p>If you have <b>English (Gr. 11-12), ESL, Performing Arts, Physical Education, Science, Social Studies (Gr. 10-12 + all electives), Special Education or Visual Arts</b>, you will have either 1st or 4th lunch.</p>
+                            <p>If you have <b>Academic sSpport, Counselor Seminar, English (Gr. 9-10), Math, Computer Science, Social Studies (Gr.9), World Language or Study Hall</b>, you will have either 2nd or 3rd lunch.</p>
+                            <p>If you have an <b>odd</b> room number, you will either have 1st or 3rd lunch depending on the class (see above). If you have an <b>even</b> room number, you will either have 4th or 2nd lunch, depending on the class (see above).</p></Paper>
                     </div>
                     <Typography variant="h5" gutterBottom>Day 1</Typography>
                     <FormControl component="fieldset">
