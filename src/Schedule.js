@@ -65,6 +65,7 @@ var createdClasses = [];
 var todayClass = filter(allClasses, now);
 var todayDay;
 var lunchData;
+var hr;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -111,7 +112,7 @@ function request() {
         async: false
     });
 
-    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2021-08-23T00%3A00%3A00-04%3A00&timeMax=2022-07-04T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
+    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2021-08-29T00%3A00%3A00-04%3A00&timeMax=2022-01-03T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
         classes = data;
     });
 
@@ -295,6 +296,8 @@ function Schedule() {
 
             createdClasses = [];
             lunchData = ["", "", "", "", "", ""];
+            hr = "";
+
             if (data !== undefined) {
                 if (data.lunches !== undefined) {
                     lunchData = JSON.parse(data.lunches);
@@ -302,10 +305,14 @@ function Schedule() {
                 if (data.classes !== undefined) {
                     createdClasses = JSON.parse(data.classes);
                 }
+                if (data.hr !== undefined){
+                    hr = data.hr;
+                }
             }
 
             localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
             localStorage.setItem('lunches', JSON.stringify(lunchData));
+            localStorage.setItem('hr', hr);
             updateClass();
         })
 
@@ -317,14 +324,18 @@ function Schedule() {
         createdClasses.map((thisClass) => {
             allClasses.items.map((today) => {
                 if (thisClass[2].includes(today.summary)) {
-                    today.summary = thisClass[0];
+                    today.summary = thisClass[0] + " (" + today.summary + ")";
 
                     // setting room number
                     if (thisClass[1] !== '') {
                         today.room = thisClass[1];
                     } else {
-                        today.room = "no room";
+                        today.room = "N/A";
                     }
+                }
+                // make a special case for advisory
+                else if(today.summary.substring(0, 7) === "I-block"){
+                    today.room = hr;
                 }
             })
         })

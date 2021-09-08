@@ -9,6 +9,7 @@ import ClassDialog from './ClassDialog.js';
 import { Paper } from "@material-ui/core";
 import firestore from "./firestore.js"
 import { Box } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -44,8 +45,10 @@ function Classes() {
     const classes = useStyles();
 
     const [createdClasses, setClasses] = useState(JSON.parse(localStorage.getItem('createdClasses')));
-    
+
     const [open, setOpen] = React.useState([false]);
+
+    const [hr, setHr] = useState(localStorage.getItem('hr'));
 
     const handleClickOpen = (index) => {
         var newArr = open;
@@ -78,7 +81,7 @@ function Classes() {
 
     function goBack() {
         // upload the classes to firestore
-        firestore.db.collection('users').doc(getUid()).update("classes", JSON.stringify(createdClasses)).then(result => {
+        firestore.db.collection('users').doc(getUid()).update({"classes": JSON.stringify(createdClasses), "hr": hr}).then(result => {
             window.location.href = "/";
         });
 
@@ -95,10 +98,10 @@ function Classes() {
                                     <b>{item[0]}</b>
                                 </Typography>
                                 <div>
-                                    <IconButton onClick={() => {handleClickOpen(index)}}>
+                                    <IconButton onClick={() => { handleClickOpen(index) }}>
                                         <DeleteIcon />
                                     </IconButton>
-                                    <Dialog disableBackdropClick open={open[index]} onClose={() => {handleClose(index)}} aria-labelledby="form-dialog-title">
+                                    <Dialog disableBackdropClick open={open[index]} onClose={() => { handleClose(index) }} aria-labelledby="form-dialog-title">
                                         <DialogTitle id="form-dialog-title">Delete Class</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText>
@@ -106,7 +109,7 @@ function Classes() {
                                             </DialogContentText>
                                         </DialogContent>
                                         <DialogActions>
-                                            <Button onClick={() => {handleClose(index)}} color="primary">
+                                            <Button onClick={() => { handleClose(index) }} color="primary">
                                                 Cancel
                                             </Button>
                                             <Button onClick={() => { deleteClass(index) }} color="primary">
@@ -115,7 +118,7 @@ function Classes() {
                                         </DialogActions>
                                     </Dialog>
                                 </div>
-                                <ClassDialog currClass={item} currIndex={index} saveClass={saveClass}/>
+                                <ClassDialog currClass={item} currIndex={index} saveClass={saveClass} />
                             </Box>
                         </Grid>
                         <Grid item align="left">
@@ -157,6 +160,15 @@ function Classes() {
                             <Grid item align="center"><ClassDialog addClass={addClass} /></Grid>
                         </Grid>
                     </div>
+                    <TextField
+                        variant="outlined"
+                        value={hr}
+                        onChange={e => setHr(e.target.value)}
+                        label="Homeroom number"
+                        type="text"
+                        margin="normal"
+                        fullWidth
+                    />
                     <DisplayClasses />
                 </div>
             </Container>
