@@ -140,7 +140,9 @@ function filter(data, currDate) {
 
                 var todayDayString = data.items[x].summary;
                 todayDay = parseInt(todayDayString.substr(4, 1));
-
+                if(datesAreOnSameDay(now, new Date())){
+                    localStorage.setItem('todayDay', todayDay);
+                }
 
             }
         }
@@ -403,9 +405,9 @@ function Schedule() {
         const [selectedDate, setSelectedDate] = React.useState(now);
 
         const handleDateChange = (date) => {
-            setSelectedDate(date);
             now = date;
             todayClass = filter(allClasses, now);
+            setSelectedDate(date);
             forceUpdate();
         };
 

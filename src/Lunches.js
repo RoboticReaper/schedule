@@ -101,7 +101,7 @@ function Lunches() {
                             <p>If you have <b>Academic Support, Counselor Seminar, English (Gr. 9-10), Math, Computer Science, Social Studies (Gr.9), World Language or Study Hall</b>, you will have either 2nd or 3rd lunch.</p>
                             <p>If you have an <b>odd</b> room number, you will either have 1st or 3rd lunch depending on the class (see above). If you have an <b>even</b> room number, you will either have 4th or 2nd lunch, depending on the class (see above).</p></Paper>
                     </div>
-                    <Typography variant="h5" gutterBottom>Day 1</Typography>
+                    <Typography variant="h5" gutterBottom>Day 1{localStorage.getItem("todayDay") === "1" ? " (today)" : null}</Typography>
                     <FormControl component="fieldset">
                         <RadioGroup row value={day1} onChange={handled1Change}>
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
@@ -110,7 +110,7 @@ function Lunches() {
                             <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
-                    <Typography variant="h5" gutterBottom>Day 2</Typography>
+                    <Typography variant="h5" gutterBottom>Day 2{localStorage.getItem("todayDay") === "2" ? " (today)" : null}</Typography>
                     <FormControl component="fieldset">
                         <RadioGroup row value={day2} onChange={handled2Change}>
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
@@ -119,7 +119,7 @@ function Lunches() {
                             <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
-                    <Typography variant="h5" gutterBottom>Day 3</Typography>
+                    <Typography variant="h5" gutterBottom>Day 3{localStorage.getItem("todayDay") === "3" ? " (today)" : null}</Typography>
                     <FormControl component="fieldset">
                         <RadioGroup row value={day3} onChange={handled3Change}>
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
@@ -128,7 +128,7 @@ function Lunches() {
                             <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
-                    <Typography variant="h5" gutterBottom>Day 4</Typography>
+                    <Typography variant="h5" gutterBottom>Day 4{localStorage.getItem("todayDay") === "4" ? " (today)" : null}</Typography>
                     <FormControl component="fieldset">
                         <RadioGroup row value={day4} onChange={handled4Change}>
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
@@ -137,7 +137,7 @@ function Lunches() {
                             <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
-                    <Typography variant="h5" gutterBottom>Day 5</Typography>
+                    <Typography variant="h5" gutterBottom>Day 5{localStorage.getItem("todayDay") === "5" ? " (today)" : null}</Typography>
                     <FormControl component="fieldset">
                         <RadioGroup row value={day5} onChange={handled5Change}>
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
@@ -146,7 +146,7 @@ function Lunches() {
                             <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
-                    <Typography variant="h5" gutterBottom>Day 6</Typography>
+                    <Typography variant="h5" gutterBottom>Day 6{localStorage.getItem("todayDay") === "6" ? " (today)" : null}</Typography>
                     <FormControl component="fieldset">
                         <RadioGroup row value={day6} onChange={handled6Change}>
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
