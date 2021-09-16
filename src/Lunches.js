@@ -11,9 +11,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import React from 'react';
 import "firebase/auth";
+import firebase from "firebase/app";
 import { getUid } from "./Schedule.js";
 import Button from '@material-ui/core/Button';
 import { Paper } from "@material-ui/core";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -36,6 +38,13 @@ const useStyles = makeStyles((theme) => ({
 function Lunches() {
 
     const classes = useStyles();
+    let history = useHistory();
+    firebase.auth().onAuthStateChanged((user) => {
+        if(!user){
+            history.push('/signin');
+            window.location.reload();
+        }
+    })
     var lunches = JSON.parse(localStorage.getItem('lunches'));
 
     function goBack() {
@@ -44,7 +53,7 @@ function Lunches() {
 
         // upload the classes to firestore
         firestore.db.collection('users').doc(getUid()).update("lunches", JSON.stringify(lunches)).then(() => {
-            window.location.href = "/";
+            history.push('/');
         });
 
     }

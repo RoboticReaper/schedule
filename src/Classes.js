@@ -13,11 +13,13 @@ import { TextField } from "@material-ui/core";
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import {useHistory} from 'react-router';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
+import firebase from "firebase/app";
 import "firebase/auth";
 import { getUid } from "./Schedule.js";
 
@@ -43,6 +45,14 @@ const useStyles = makeStyles((theme) => ({
 function Classes() {
 
     const classes = useStyles();
+    let history = useHistory();
+
+    firebase.auth().onAuthStateChanged((user) => {
+        if(!user){
+            history.push('/signin');
+            window.location.reload();
+        }
+    })
 
     const [createdClasses, setClasses] = useState(JSON.parse(localStorage.getItem('createdClasses')));
 
@@ -82,7 +92,7 @@ function Classes() {
     function goBack() {
         // upload the classes to firestore
         firestore.db.collection('users').doc(getUid()).update({"classes": JSON.stringify(createdClasses), "hr": hr}).then(result => {
-            window.location.href = "/";
+            history.push('/');
         });
 
     }

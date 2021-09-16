@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Box } from '@material-ui/core';
@@ -20,40 +20,13 @@ import './loader.js'
 import { IconButton } from '@material-ui/core';
 import firestore from './firestore.js';
 import firebase from "firebase/app";
+import {useHistory} from 'react-router';
 import "firebase/auth";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 
 var uid;
-
-
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        if (!user.emailVerified) {
-            if (window.location.pathname !== "/signin" && window.location.pathname !== "/signup") {
-                firebase.auth().currentUser.sendEmailVerification().then(() => {
-                    console.log("Email Sent");
-                    alert('An email was sent to you to verify your account. Please verify before logging in.');
-                    signOut();
-                })
-            }
-
-        }
-        uid = user.uid;
-        localStorage.setItem('uid', uid);
-        if ((window.location.pathname === "/signin" || window.location.pathname === "/signup") && user.emailVerified) {
-            window.location.href = "/";
-        }
-    } else {
-        localStorage.setItem('uid', "");
-        localStorage.setItem('createdClasses', "");
-        localStorage.setItem('lunches', "");
-        if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
-            window.location.href = "/signin";
-        }
-    }
-})
 
 export function getUid() {
     return uid;
@@ -140,7 +113,7 @@ function filter(data, currDate) {
 
                 var todayDayString = data.items[x].summary;
                 todayDay = parseInt(todayDayString.substr(4, 1));
-                if(datesAreOnSameDay(now, new Date())){
+                if (datesAreOnSameDay(now, new Date())) {
                     localStorage.setItem('todayDay', todayDay);
                 }
 
@@ -242,16 +215,6 @@ function NoClasses() {
         </Paper>
     )
 }
-const signOut = () => {
-    firebase.auth().signOut().then(() => {
-        localStorage.setItem('uid', "");
-        localStorage.setItem('createdClasses', "");
-        localStorage.setItem('lunches', "['', '','','','','']");
-        window.location.href = "/signin";
-    }).catch((error) => {
-        console.log(error);
-    })
-}
 
 
 function yesterday() {
@@ -281,15 +244,46 @@ var gotten = false;
 function Schedule() {
 
     const classes = useStyles();
+    let history = useHistory();
+
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
     var day = days[now.getDay()];
     var month = months[now.getMonth()];
 
-    getClassesFromFirestore();
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            if (!user.emailVerified) {
+                if (window.location.pathname !== "/signin" && window.location.pathname !== "/signup") {
+                    firebase.auth().currentUser.sendEmailVerification().then(() => {
+                        console.log("Email Sent");
+                        alert('An email was sent to you to verify your account. Please verify before logging in.');
+                        signOut();
+                    })
+                }
+    
+            }
+            uid = user.uid;
+            localStorage.setItem('uid', uid);
+            if ((window.location.pathname === "/signin" || window.location.pathname === "/signup") && user.emailVerified) {
+                history.push('/');
+            }
+            getClassesFromFirestore();
+        } else {
+            localStorage.setItem('uid', "");
+            localStorage.setItem('createdClasses', "");
+            localStorage.setItem('lunches', "");
+            if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
+                history.push('/signin');
+            }
+        }
+    })
+
+    
 
     function getClassesFromFirestore() {
+
         if (gotten === true) {
             return;
         }
@@ -307,7 +301,7 @@ function Schedule() {
                 if (data.classes !== undefined) {
                     createdClasses = JSON.parse(data.classes);
                 }
-                if (data.hr !== undefined){
+                if (data.hr !== undefined) {
                     hr = data.hr;
                 }
             }
@@ -317,14 +311,11 @@ function Schedule() {
             localStorage.setItem('hr', hr);
             updateClass();
         })
-        if(!navigator.onLine){
-            createdClasses = JSON.parse(localStorage.getItem('createdClasses'));
-            lunchData = JSON.parse(localStorage.getItem('lunches'));
-            hr = JSON.parse(localStorage.getItem('hr'));
-            updateClass();
-        }
+
 
     }
+
+    
 
     const forceUpdate = useForceUpdate();
 
@@ -343,7 +334,7 @@ function Schedule() {
                     }
                 }
                 // make a special case for advisory
-                else if(today.summary.includes("Advisory")){
+                else if (today.summary.includes("Advisory")) {
                     today.room = hr;
                 }
             })
@@ -361,7 +352,7 @@ function Schedule() {
         localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
         document.getElementById('yesterday').click();
         document.getElementById('tomorrow').click();
-        
+
         gotten = true;
         forceUpdate();
     }
@@ -377,11 +368,23 @@ function Schedule() {
     };
 
     const gotoClasses = () => {
-        window.location.href = "/classes";
+        history.push("/classes")
     };
 
+
+    const signOut = () => {
+        firebase.auth().signOut().then(() => {
+            localStorage.setItem('uid', "");
+            localStorage.setItem('createdClasses', "");
+            localStorage.setItem('lunches', "['', '','','','','']");
+            history.push("/signin");
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
+
     const gotoLunches = () => {
-        window.location.href = "/lunches";
+        history.push("/lunches")
     }
 
     const openInNewTab = (url) => {
@@ -390,9 +393,6 @@ function Schedule() {
         handleClose();
     }
 
-    const settings = () => {
-        window.location.href = "/settings";
-    }
 
     function ClassReminder() {
         if (createdClasses.length === 0) {

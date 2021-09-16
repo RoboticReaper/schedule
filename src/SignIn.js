@@ -1,13 +1,13 @@
 import { Container, Typography, Button } from "@material-ui/core";
 import LockRoundedIcon from '@material-ui/icons/LockRounded';
 import { TextField } from "@material-ui/core";
-import firestore from "./firestore.js";
 import firebase from "firebase/app";
 import "firebase/auth";
 import { React, useState } from "react";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import ResetDialog from './ResetDialog';
+import { useHistory } from "react-router";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -16,6 +16,7 @@ function Alert(props) {
 var uid;
 
 function SignIn() {
+    let history = useHistory();
     const [alertMsg, setAlertMsg] = useState('');
     const [open, setOpen] = useState(false);
 
@@ -63,7 +64,7 @@ function SignIn() {
                     })
                 }
                 localStorage.setItem('uid', uid);
-                setTimeout(function () { window.location.href = "/"; }, 400);
+                setTimeout(function () { history.push('/') });
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -82,7 +83,7 @@ function SignIn() {
     }
 
     function toSignUp() {
-        window.location.href = "/signup";
+        history.push('/signup')
     }
 
     return (

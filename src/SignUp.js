@@ -7,6 +7,7 @@ import "firebase/auth";
 import { React, useState } from "react";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { useHistory } from "react-router";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -16,6 +17,7 @@ function Alert(props) {
 function SignUp() {
     const [alertMsg, setAlertMsg] = useState('');
     const [open, setOpen] = useState(false);
+    let history = useHistory();
 
     const handleClick = () => {
         setOpen(true);
@@ -71,7 +73,7 @@ function SignUp() {
                     firebase.auth().signOut().then(() => {
                         localStorage.setItem('uid', "");
                         localStorage.setItem('createdClasses', "");
-                        window.location.href = "/signin";
+                        history.push("/signin")
                     }).catch((error) => {
                         console.log(error);
                     })
@@ -93,7 +95,7 @@ function SignUp() {
     }
 
     function toSignIn() {
-        window.location.href = "/signin";
+        history.push("/signin")
     }
 
     return (
