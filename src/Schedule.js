@@ -317,12 +317,19 @@ function Schedule() {
             localStorage.setItem('hr', hr);
             updateClass();
         })
+        if(!navigator.onLine){
+            createdClasses = JSON.parse(localStorage.getItem('createdClasses'));
+            lunchData = JSON.parse(localStorage.getItem('lunches'));
+            hr = JSON.parse(localStorage.getItem('hr'));
+            updateClass();
+        }
 
     }
 
     const forceUpdate = useForceUpdate();
 
     function updateClass() {
+
         createdClasses.map((thisClass) => {
             allClasses.items.map((today) => {
                 if (thisClass[2].includes(today.summary)) {
@@ -336,7 +343,7 @@ function Schedule() {
                     }
                 }
                 // make a special case for advisory
-                else if(today.summary.substring(0, 7) === "I-block"){
+                else if(today.summary.includes("Advisory")){
                     today.room = hr;
                 }
             })
