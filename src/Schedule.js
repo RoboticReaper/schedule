@@ -207,6 +207,7 @@ function DisplayClasses() {
 
 function NoClasses() {
     const classes = useStyles();
+    todayDay = undefined;
     return (
         <Paper className={classes.paper} elevation={3} variant="outlined">
             <Typography gutterBottom variant="subtitle1">

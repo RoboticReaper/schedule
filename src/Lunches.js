@@ -12,7 +12,6 @@ import FormControl from '@material-ui/core/FormControl';
 import React from 'react';
 import "firebase/auth";
 import firebase from "firebase/app";
-import { getUid } from "./Schedule.js";
 import Button from '@material-ui/core/Button';
 import { Paper } from "@material-ui/core";
 import { useHistory } from "react-router";
@@ -41,8 +40,7 @@ function Lunches() {
     let history = useHistory();
     firebase.auth().onAuthStateChanged((user) => {
         if(!user){
-            history.push('/signin');
-            window.location.reload();
+            window.location.href = "/";
         }
     })
     var lunches = JSON.parse(localStorage.getItem('lunches'));
@@ -52,7 +50,8 @@ function Lunches() {
         console.log(lunches)
 
         // upload the classes to firestore
-        firestore.db.collection('users').doc(getUid()).update("lunches", JSON.stringify(lunches)).then(() => {
+        firestore.db.collection('users').doc(localStorage.getItem('uid')).update("lunches", JSON.stringify(lunches)).then(() => {
+            console.log("here")
             history.push('/');
         });
 
