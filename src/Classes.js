@@ -90,7 +90,9 @@ function Classes() {
     function goBack() {
         // upload the classes to firestore
         firestore.db.collection('users').doc(localStorage.getItem('uid')).update({"classes": JSON.stringify(createdClasses), "hr": hr}).then(result => {
-            history.push('/');
+            localStorage.setItem("hr", hr);
+            localStorage.setItem("createdClasses", JSON.stringify(createdClasses));
+            window.location.href = "/";
         });
 
     }

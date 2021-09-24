@@ -51,8 +51,8 @@ function Lunches() {
 
         // upload the classes to firestore
         firestore.db.collection('users').doc(localStorage.getItem('uid')).update("lunches", JSON.stringify(lunches)).then(() => {
-            console.log("here")
-            history.push('/');
+            localStorage.setItem('lunches', JSON.stringify(lunches));
+            window.location.href = "/";
         });
 
     }
