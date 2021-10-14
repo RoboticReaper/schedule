@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Box } from '@material-ui/core';
@@ -20,7 +20,7 @@ import './loader.js'
 import { IconButton } from '@material-ui/core';
 import firestore from './firestore.js';
 import firebase from "firebase/app";
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router';
 import "firebase/auth";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
@@ -122,18 +122,18 @@ function filter(data, currDate) {
         else {
             if (lunchData !== undefined) {
                 var todayLunch = lunchData[todayDay - 1];
-                if(datesAreOnSameDay(now, new Date(2021, 8, 27))){
+                if (datesAreOnSameDay(now, new Date(2021, 8, 27))) {
                     // special rule for lunch for this day.
-                    if(hr.substr(0, 1) === "2"){
+                    if (hr.substr(0, 1) === "2") {
                         todayLunch = 1;
                     }
-                    if(hr.substr(0, 1) === "1" || hr.substr(0, 1) === "3"){
+                    if (hr.substr(0, 1) === "1" || hr.substr(0, 1) === "3") {
                         todayLunch = 2;
                     }
-                    if(hr.substr(0, 1) === "4" || hr.substr(0, 1) === "6"){
+                    if (hr.substr(0, 1) === "4" || hr.substr(0, 1) === "6") {
                         todayLunch = 3;
                     }
-                    if(hr.substr(0, 1) === "5" || hr.substr(0, 1) === "7" || hr.substr(0,1) === "8"){
+                    if (hr.substr(0, 1) === "5" || hr.substr(0, 1) === "7" || hr.substr(0, 1) === "8") {
                         todayLunch = 4;
                     }
                 }
@@ -277,7 +277,7 @@ function Schedule() {
                         signOut();
                     })
                 }
-    
+
             }
             uid = user.uid;
             localStorage.setItem('uid', uid);
@@ -295,7 +295,7 @@ function Schedule() {
         }
     })
 
-    
+
 
     function getClassesFromFirestore() {
 
@@ -330,7 +330,7 @@ function Schedule() {
 
     }
 
-    
+
 
     const forceUpdate = useForceUpdate();
 
@@ -427,10 +427,12 @@ function Schedule() {
         const [selectedDate, setSelectedDate] = React.useState(now);
 
         const handleDateChange = (date) => {
-            now = date;
-            todayClass = filter(allClasses, now);
-            setSelectedDate(date);
-            forceUpdate();
+            if (date instanceof Date && !isNaN(date.valueOf())) {
+                now = date;
+                todayClass = filter(allClasses, now);
+                setSelectedDate(date);
+                forceUpdate();
+            }
         };
 
         const handleDataChangeRaw = (e) => {
@@ -440,7 +442,6 @@ function Schedule() {
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
-                    disableToolbar
                     onChangeRaw={handleDataChangeRaw}
                     variant="inline"
                     format="MM/dd/yyyy"
