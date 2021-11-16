@@ -12,6 +12,8 @@ import { Box } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import {useHistory} from 'react-router';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -37,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(2),
         maxWidth: 500,
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
 }));
 
 
@@ -44,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 function Classes() {
 
     const classes = useStyles();
-    let history = useHistory();
+    const [returning, setReturning] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
         if(!user){
@@ -88,6 +94,7 @@ function Classes() {
 
 
     function goBack() {
+        setReturning(true);
         // upload the classes to firestore
         firestore.db.collection('users').doc(localStorage.getItem('uid')).update({"classes": JSON.stringify(createdClasses), "hr": hr}).then(result => {
             localStorage.setItem("hr", hr);
@@ -151,6 +158,9 @@ function Classes() {
     }
 
     return <div>
+        <Backdrop className={classes.backdrop} open={returning}>
+            <CircularProgress color="inherit" />
+        </Backdrop>
         <div className="App">
             <header className='App-header'>
             </header>
