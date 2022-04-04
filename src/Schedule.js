@@ -85,7 +85,7 @@ function request() {
         async: false
     });
 
-    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2021-12-01T00%3A00%3A00-04%3A00&timeMax=2022-05-03T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
+    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-04-01T00%3A00%3A00-04%3A00&timeMax=2022-07-31T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
         classes = data;
     });
 
@@ -122,21 +122,6 @@ function filter(data, currDate) {
         else {
             if (lunchData !== undefined) {
                 var todayLunch = lunchData[todayDay - 1];
-                if (datesAreOnSameDay(now, new Date(2021, 8, 27))) {
-                    // special rule for lunch for this day.
-                    if (hr.substr(0, 1) === "2") {
-                        todayLunch = 1;
-                    }
-                    if (hr.substr(0, 1) === "1" || hr.substr(0, 1) === "3") {
-                        todayLunch = 2;
-                    }
-                    if (hr.substr(0, 1) === "4" || hr.substr(0, 1) === "6") {
-                        todayLunch = 3;
-                    }
-                    if (hr.substr(0, 1) === "5" || hr.substr(0, 1) === "7" || hr.substr(0, 1) === "8") {
-                        todayLunch = 4;
-                    }
-                }
                 if (data.items[x].summary.substr(0, 6) === "Lunch " && todayLunch !== undefined && data.items[x].summary.substr(6, 1) !== todayLunch.toString() && todayLunch.toString() !== "") {
 
                     continue;
@@ -458,6 +443,10 @@ function Schedule() {
         )
     }
 
+    function toLunch(){
+        history.push("/lunches")
+    }
+
     return (
 
         <div>
@@ -533,6 +522,7 @@ function Schedule() {
 
                         <ClassReminder />
                         <LunchReminder />
+                        <div style={{ backgroundColor: "lightgrey" }}>The 3-Lunch schedule has gone into effect. Please <a href="#" onClick={toLunch}>tap here</a> to update your lunch info.</div>
                         {todayDay !== undefined ? <Paper className={classes.paper} elevation={3} variant="outlined">Today is day {todayDay} of 6.</Paper> : null}
                         {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
 

@@ -105,9 +105,10 @@ function Lunches() {
                         </Grid>
                         <Paper className={classes.paper} elevation={3} variant="outlined">
                             <span>Here's how to figure out what lunch you have:</span>
-                            <p>If you have <b>English (Gr. 11-12), ESL, Performing Arts, Physical Education, Science, Social Studies (Gr. 10-12 + all electives), Special Education or Visual Arts</b>, you will have either 1st or 4th lunch.</p>
-                            <p>If you have <b>Academic Support, Counselor Seminar, English (Gr. 9-10), Math, Computer Science, Social Studies (Gr.9), World Language or Study Hall</b>, you will have either 2nd or 3rd lunch.</p>
-                            <p>If you have an <b>odd</b> room number, you will either have 1st or 3rd lunch depending on the class (see above). If you have an <b>even</b> room number, you will either have 4th or 2nd lunch, depending on the class (see above).</p></Paper>
+                            <p><b>First lunch</b>: Classes in the Performing Arts, Physical Education/Health, Science, Special Education, and Visual Arts Departments + all Spanish classes.</p>
+                            <p><b>Second lunch</b>: All remaining classes in <b>EVEN</b> classrooms</p>
+                            <p><b>Third lunch</b>: All remaining classes in <b>ODD</b> classrooms </p>
+                            </Paper>
                     </div>
                     <Typography variant="h5" gutterBottom>Day 1{localStorage.getItem("todayDay") === "1" ? " (today)" : null}</Typography>
                     <FormControl component="fieldset">
@@ -115,7 +116,6 @@ function Lunches() {
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
                             <FormControlLabel value="2" control={<Radio />} label="Lunch 2" />
                             <FormControlLabel value="3" control={<Radio />} label="Lunch 3" />
-                            <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
                     <Typography variant="h5" gutterBottom>Day 2{localStorage.getItem("todayDay") === "2" ? " (today)" : null}</Typography>
@@ -124,7 +124,6 @@ function Lunches() {
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
                             <FormControlLabel value="2" control={<Radio />} label="Lunch 2" />
                             <FormControlLabel value="3" control={<Radio />} label="Lunch 3" />
-                            <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
                     <Typography variant="h5" gutterBottom>Day 3{localStorage.getItem("todayDay") === "3" ? " (today)" : null}</Typography>
@@ -133,7 +132,6 @@ function Lunches() {
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
                             <FormControlLabel value="2" control={<Radio />} label="Lunch 2" />
                             <FormControlLabel value="3" control={<Radio />} label="Lunch 3" />
-                            <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
                     <Typography variant="h5" gutterBottom>Day 4{localStorage.getItem("todayDay") === "4" ? " (today)" : null}</Typography>
@@ -142,7 +140,6 @@ function Lunches() {
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
                             <FormControlLabel value="2" control={<Radio />} label="Lunch 2" />
                             <FormControlLabel value="3" control={<Radio />} label="Lunch 3" />
-                            <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
                     <Typography variant="h5" gutterBottom>Day 5{localStorage.getItem("todayDay") === "5" ? " (today)" : null}</Typography>
@@ -151,7 +148,6 @@ function Lunches() {
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
                             <FormControlLabel value="2" control={<Radio />} label="Lunch 2" />
                             <FormControlLabel value="3" control={<Radio />} label="Lunch 3" />
-                            <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
                     <Typography variant="h5" gutterBottom>Day 6{localStorage.getItem("todayDay") === "6" ? " (today)" : null}</Typography>
@@ -160,7 +156,6 @@ function Lunches() {
                             <FormControlLabel value="1" control={<Radio />} label="Lunch 1" />
                             <FormControlLabel value="2" control={<Radio />} label="Lunch 2" />
                             <FormControlLabel value="3" control={<Radio />} label="Lunch 3" />
-                            <FormControlLabel value="4" control={<Radio />} label="Lunch 4" />
                         </RadioGroup>
                     </FormControl>
                 </div>
