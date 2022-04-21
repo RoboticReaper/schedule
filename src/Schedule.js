@@ -522,7 +522,6 @@ function Schedule() {
 
                         <ClassReminder />
                         <LunchReminder />
-                        <div style={{ backgroundColor: "lightgrey" }}>The 3-Lunch schedule has gone into effect. Please <a href="#" onClick={toLunch}>tap here</a> to update your lunch info.</div>
                         {todayDay !== undefined ? <Paper className={classes.paper} elevation={3} variant="outlined">Today is day {todayDay} of 6.</Paper> : null}
                         {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
 
