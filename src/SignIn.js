@@ -94,7 +94,7 @@ function SignIn() {
                 <div className="classes.root">
                     <LockRoundedIcon fontSize="large" color="secondary" style={{ marginTop: 30 }} />
                     <Typography gutterBottom variant="h4">Sign In</Typography>
-                    <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError}/>
+                    <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError} autoFocus/>
                     <TextField id="pswd" variant="outlined" type="password" label="Password" fullWidth margin="normal" error={pswdError} />
                     <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signIn} style={{ marginTop: 20, marginBottom: 20 }}>Sign in</Button>
                     <Button color="secondary" style={{ textTransform: "none" }} onClick={toSignUp}>Don't have an account? Sign up</Button><br></br>
