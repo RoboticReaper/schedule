@@ -92,6 +92,8 @@ function SignIn() {
             </header>
             <Container maxWidth="sm">
                 <div className="classes.root">
+                    <Typography gutterBottom variant="h5" style={{marginTop: 30}}>Welcome to the LHS schedule app!</Typography>
+                    <Typography gutterBottom variant="h6">This is a schedule management app for Lexington High School students. The schedule will <i>always</i> be up to date!</Typography>
                     <LockRoundedIcon fontSize="large" color="secondary" style={{ marginTop: 30 }} />
                     <Typography gutterBottom variant="h4">Sign In</Typography>
                     <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError} autoFocus/>
