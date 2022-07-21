@@ -34,6 +34,21 @@ function SignUp() {
     const [emailError, setEmailError] = useState(false);
     const [pswdError, setPswdError] = useState(false);
 
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            if ((window.location.pathname === "/signin" || window.location.pathname === "/signup")) {
+                history.push('/');
+            }
+        } else {
+            localStorage.setItem('uid', "");
+            localStorage.setItem('createdClasses', "");
+            localStorage.setItem('lunches', "");
+            if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
+                history.push('/signin');
+            }
+        }
+    })
+
 
     function signUp() {
         const email = document.getElementById('email').value;
@@ -61,24 +76,18 @@ function SignUp() {
         })
         firebase.auth().createUserWithEmailAndPassword(email, pswd)
             .then((userCredential) => {
-                firebase.auth().currentUser.sendEmailVerification().then(() => {
-                    console.log("Email Sent");
-                    alert('An email was sent to you to verify your account. Please verify before logging in.');
-                })
+                
                 var user = userCredential.user;
                 var uid = user.uid;
-                localStorage.setItem('uid', uid);
+                localStorage.setItem('uid', "");
+                localStorage.setItem('createdClasses', "[]");
+                localStorage.setItem('lunches', "['', '','','','','']");
+                localStorage.setItem('hr', "");
                 firestore.db.collection('users').doc(uid).set({ "classes": JSON.stringify([]) }, (error) => {
 
-                    firebase.auth().signOut().then(() => {
-                        localStorage.setItem('uid', "");
-                        localStorage.setItem('createdClasses', "");
-                        history.push("/signin")
-                    }).catch((error) => {
-                        console.log(error);
-                    })
-
                 });
+
+                window.location.href = '/';
             })
             .catch((error) => {
                 var errorCode = error.code;

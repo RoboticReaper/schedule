@@ -100,6 +100,13 @@ function Classes() {
             localStorage.setItem("hr", hr);
             localStorage.setItem("createdClasses", JSON.stringify(createdClasses));
             window.location.href = "/";
+        }).catch(error => {
+        
+            firestore.db.collection('users').doc(localStorage.getItem('uid')).set({"classes": JSON.stringify(createdClasses), "hr": hr}).then(result => {
+                localStorage.setItem("hr", hr);
+                localStorage.setItem("createdClasses", JSON.stringify(createdClasses));
+                window.location.href = "/";
+            })
         });
 
     }

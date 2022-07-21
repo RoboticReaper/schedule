@@ -254,19 +254,9 @@ function Schedule() {
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-            if (!user.emailVerified) {
-                if (window.location.pathname !== "/signin" && window.location.pathname !== "/signup") {
-                    firebase.auth().currentUser.sendEmailVerification().then(() => {
-                        console.log("Email Sent");
-                        alert('An email was sent to you to verify your account. Please verify before logging in.');
-                        signOut();
-                    })
-                }
-
-            }
             uid = user.uid;
             localStorage.setItem('uid', uid);
-            if ((window.location.pathname === "/signin" || window.location.pathname === "/signup") && user.emailVerified) {
+            if ((window.location.pathname === "/signin" || window.location.pathname === "/signup")) {
                 history.push('/');
             }
             getClassesFromFirestore();
@@ -305,6 +295,7 @@ function Schedule() {
                     hr = data.hr;
                 }
             }
+
 
             localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
             localStorage.setItem('lunches', JSON.stringify(lunchData));
@@ -377,6 +368,7 @@ function Schedule() {
             localStorage.setItem('uid', "");
             localStorage.setItem('createdClasses', "");
             localStorage.setItem('lunches', "['', '','','','','']");
+            localStorage.setItem('hr', "");
             history.push("/signin");
         }).catch((error) => {
             console.log(error);

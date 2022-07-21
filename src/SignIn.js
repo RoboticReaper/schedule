@@ -35,6 +35,21 @@ function SignIn() {
     const [emailError, setEmailError] = useState(false);
     const [pswdError, setPswdError] = useState(false);
 
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            if ((window.location.pathname === "/signin" || window.location.pathname === "/signup")) {
+                history.push('/');
+            }
+        } else {
+            localStorage.setItem('uid', "");
+            localStorage.setItem('createdClasses', "");
+            localStorage.setItem('lunches', "");
+            if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
+                history.push('/signin');
+            }
+        }
+    })
+
 
     function signIn() {
         const email = document.getElementById('email').value;
@@ -56,15 +71,12 @@ function SignIn() {
             .then((userCredential) => {
                 var user = userCredential.user;
                 uid = user.uid;
-                if (!user.emailVerified) {
-                    firebase.auth().currentUser.sendEmailVerification().then(() => {
-                        console.log("Email Sent");
-                        alert('An email was sent to you to verify your account. Please verify before logging in.');
-                        window.location.reload();
-                    })
-                }
+                
                 localStorage.setItem('uid', uid);
-                setTimeout(function () { history.push('/') });
+                localStorage.setItem('createdClasses', "[]");
+                localStorage.setItem('lunches', "['', '','','','','']");
+                localStorage.setItem('hr', "");
+                window.location.href = "/";
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -80,6 +92,11 @@ function SignIn() {
                 setAlertMsg(errorMessage);
                 handleClick();
             })
+    }
+
+    const openInNewTab = (url) => {
+        const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+        if (newWindow) newWindow.opener = null;
     }
 
     function toSignUp() {
@@ -101,6 +118,7 @@ function SignIn() {
                     <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signIn} style={{ marginTop: 20, marginBottom: 20 }}>Sign in</Button>
                     <Button color="secondary" style={{ textTransform: "none" }} onClick={toSignUp}>Don't have an account? Sign up</Button><br></br>
                     <ResetDialog />
+                    <Button color="secondary" style={{ textTransform: "none" }} onClick={() => {openInNewTab("mailto:liubaoren2006@gmail.com")}}>Contact me by Email</Button><br></br>
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                         <Alert onClose={handleClose} severity="warning">
                             {alertMsg}
