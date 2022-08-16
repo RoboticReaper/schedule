@@ -20,7 +20,7 @@ import './loader.js'
 import { IconButton } from '@material-ui/core';
 import firestore from './firestore.js';
 import firebase from "firebase/app";
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import "firebase/auth";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
@@ -89,7 +89,6 @@ function request() {
         classes = data;
     });
 
-    console.log(classes)
 
     return classes;
 }
@@ -271,7 +270,6 @@ function Schedule() {
             }
         }
     })
-
 
 
     function getClassesFromFirestore() {
