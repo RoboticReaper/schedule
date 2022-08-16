@@ -38,14 +38,14 @@ function SignIn() {
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             if ((window.location.pathname === "/signin" || window.location.pathname === "/signup")) {
-                history.push('/');
+                history.replace('/');
             }
         } else {
             localStorage.setItem('uid', "");
             localStorage.setItem('createdClasses', "");
             localStorage.setItem('lunches', "");
             if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
-                history.push('/signin');
+                history.replace('/signin');
             }
         }
     })

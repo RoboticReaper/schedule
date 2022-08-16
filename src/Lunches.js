@@ -12,9 +12,12 @@ import FormControl from '@material-ui/core/FormControl';
 import React from 'react';
 import "firebase/auth";
 import firebase from "firebase/app";
+import { useState } from "react";
 import Button from '@material-ui/core/Button';
 import { Paper } from "@material-ui/core";
 import { useHistory } from "react-router";
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,20 +35,27 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(2),
         maxWidth: 500,
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    }
 }));
 
 function Lunches() {
 
     const classes = useStyles();
     let history = useHistory();
+    const [returning, setReturning] = useState(false);
+
     firebase.auth().onAuthStateChanged((user) => {
-        if(!user){
+        if (!user) {
             window.location.href = "/";
         }
     })
     var lunches = JSON.parse(localStorage.getItem('lunches'));
 
     function goBack() {
+        setReturning(true);
         var lunches = [day1, day2, day3, day4, day5, day6];
         console.log(lunches)
 
@@ -85,13 +95,16 @@ function Lunches() {
 
     return (
         <div className="App">
+            <Backdrop className={classes.backdrop} open={returning}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <header className='App-header'>
             </header>
             <Container maxWidth='sm'>
                 <div className={classes.root}>
                     <div className={classes.paper}>
                         <Grid container direction="row" spacing={2} alignItems="center" justify="center">
-                            <Grid item align="center"><IconButton onClick={goBack}><ArrowBackIcon /></IconButton></Grid>
+                            <Grid item align="center"><IconButton onClick={goBack} title="Save and go back"><ArrowBackIcon /></IconButton></Grid>
 
                             <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
 
@@ -100,7 +113,7 @@ function Lunches() {
                                 </Typography>
                             </Grid>
 
-                            <Button variant="contained" disableElevation color="primary" onClick={() => {setDay1(""); setDay2(""); setDay3(""); setDay4(""); setDay5(""); setDay6("")}}>Clear All</Button>
+                            <Button variant="contained" disableElevation color="primary" onClick={() => { setDay1(""); setDay2(""); setDay3(""); setDay4(""); setDay5(""); setDay6("") }}>Clear All</Button>
 
                         </Grid>
                         <Paper className={classes.paper} elevation={3} variant="outlined">
@@ -108,7 +121,7 @@ function Lunches() {
                             <p><b>First lunch</b>: Classes in the Performing Arts, Physical Education/Health, Science, Special Education, and Visual Arts Departments + all Spanish classes.</p>
                             <p><b>Second lunch</b>: All remaining classes in <b>EVEN</b> classrooms</p>
                             <p><b>Third lunch</b>: All remaining classes in <b>ODD</b> classrooms </p>
-                            </Paper>
+                        </Paper>
                     </div>
                     <Typography variant="h5" gutterBottom>Day 1{localStorage.getItem("todayDay") === "1" ? " (today)" : null}</Typography>
                     <FormControl component="fieldset">

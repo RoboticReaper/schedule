@@ -33,7 +33,7 @@ function useForceUpdate() {
     return () => setValue(value => value + 1);
 }
 
-export default function ClassDialog({ addClass, currClass, currIndex, saveClass }) {
+export default function ClassDialog({ addClass, currClass, currIndex, saveClass, msg }) {
     var initName = "";
     var initRoom = "";
     var aa1 = false;
@@ -353,7 +353,7 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass 
     return (
         <form className={classes.root} noValidate autoComplete="off">
             <div>
-                <IconButton onClick={handleClickOpen}>
+                <IconButton onClick={handleClickOpen} title={msg}>
                     {currClass === undefined ? <AddIcon /> : <EditIcon />}
                 </IconButton>
                 <Dialog disableBackdropClick open={open} onClose={handleClose} aria-labelledby="form-dialog-title">

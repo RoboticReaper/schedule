@@ -85,9 +85,11 @@ function request() {
         async: false
     });
 
-    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-04-01T00%3A00%3A00-04%3A00&timeMax=2022-07-31T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
+    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-08-16T00%3A00%3A00-04%3A00&timeMax=2022-12-30T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
         classes = data;
     });
+
+    console.log(classes)
 
     return classes;
 }
@@ -257,7 +259,7 @@ function Schedule() {
             uid = user.uid;
             localStorage.setItem('uid', uid);
             if ((window.location.pathname === "/signin" || window.location.pathname === "/signup")) {
-                history.push('/');
+                history.replace('/');
             }
             getClassesFromFirestore();
         } else {
@@ -265,7 +267,7 @@ function Schedule() {
             localStorage.setItem('createdClasses', "");
             localStorage.setItem('lunches', "");
             if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
-                history.push('/signin');
+                history.replace('/signin');
             }
         }
     })
@@ -388,14 +390,14 @@ function Schedule() {
 
     function ClassReminder() {
         if (createdClasses.length === 0) {
-            return <div style={{ backgroundColor: "lightgrey" }}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
+            return <div style={{ backgroundColor: "lightgrey", padding:3 }}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
         }
         return null;
     }
 
     function LunchReminder() {
         if (lunchData !== undefined && lunchData[todayDay - 1] === "") {
-            return <div style={{ backgroundColor: "lightgrey" }}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
+            return <div style={{ backgroundColor: "lightgrey", padding:3 }}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
         }
         return null;
     }
@@ -435,10 +437,6 @@ function Schedule() {
         )
     }
 
-    function toLunch(){
-        history.push("/lunches")
-    }
-
     return (
 
         <div>
@@ -462,6 +460,7 @@ function Schedule() {
                                     aria-label="more"
                                     aria-controls="long-menu"
                                     aria-haspopup="true"
+                                    title='More options'
                                     onClick={handleClick}
                                 >
                                     <MoreVertIcon />

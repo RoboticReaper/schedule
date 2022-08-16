@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 function Classes() {
 
     const classes = useStyles();
+    const history = useHistory();
     const [returning, setReturning] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
@@ -122,7 +123,7 @@ function Classes() {
                                     <b>{item[0]}</b>
                                 </Typography>
                                 <div>
-                                    <IconButton onClick={() => { handleClickOpen(index) }}>
+                                    <IconButton onClick={() => { handleClickOpen(index) }} title="Delete class">
                                         <DeleteIcon />
                                     </IconButton>
                                     <Dialog disableBackdropClick open={open[index]} onClose={() => { handleClose(index) }} aria-labelledby="form-dialog-title">
@@ -142,7 +143,7 @@ function Classes() {
                                         </DialogActions>
                                     </Dialog>
                                 </div>
-                                <ClassDialog currClass={item} currIndex={index} saveClass={saveClass} />
+                                <ClassDialog currClass={item} currIndex={index} saveClass={saveClass} msg={"Edit class"}/>
                             </Box>
                         </Grid>
                         <Grid item align="left">
@@ -175,7 +176,7 @@ function Classes() {
                 <div className={classes.root}>
                     <div className={classes.paper}>
                         <Grid container direction="row" spacing={2} alignItems="center" justify="center">
-                            <Grid item align="center"><IconButton onClick={goBack}><ArrowBackIcon /></IconButton></Grid>
+                            <Grid item align="center"><IconButton onClick={goBack} title="Save and go back"><ArrowBackIcon /></IconButton></Grid>
 
                             <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
 
@@ -184,7 +185,7 @@ function Classes() {
                                 </Typography>
                             </Grid>
 
-                            <Grid item align="center"><ClassDialog addClass={addClass} /></Grid>
+                            <Grid item align="center"><ClassDialog addClass={addClass} msg={"Add class"}/></Grid>
                         </Grid>
                     </div>
                     <TextField
