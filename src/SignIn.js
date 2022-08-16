@@ -7,7 +7,7 @@ import { React, useState } from "react";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import ResetDialog from './ResetDialog';
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -107,7 +107,7 @@ function SignIn() {
         <div className="App">
             <header className='App-header'>
             </header>
-            <Container maxWidth="sm">
+            <Container maxWidth="sm" style={{marginBottom: 100}}>
                 <div className="classes.root">
                     <Typography gutterBottom variant="h5" style={{marginTop: 30}}>Welcome to the LHS schedule app!</Typography>
                     <Typography gutterBottom variant="h6">This is a schedule management app for Lexington High School students. The schedule will <i>always</i> be up to date!</Typography>

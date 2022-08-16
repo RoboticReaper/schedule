@@ -7,7 +7,7 @@ import "firebase/auth";
 import { React, useState } from "react";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -111,7 +111,7 @@ function SignUp() {
         <div className="App">
             <header className='App-header'>
             </header>
-            <Container maxWidth="sm">
+            <Container maxWidth="sm" style={{marginBottom: 100}}>
                 <div className="classes.root">
                     <LockRoundedIcon fontSize="large" color="secondary" style={{ marginTop: 30 }} />
                     <Typography gutterBottom variant="h4">Sign Up</Typography>
