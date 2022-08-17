@@ -188,6 +188,7 @@ function Classes() {
                             <Grid item align="center"><ClassDialog addClass={addClass} msg={"Add class"}/></Grid>
                         </Grid>
                     </div>
+                    <div style={{color: "gray"}}>Note: Advisory and I-blocks are already in the schedule, there is no need to add them here.</div>
                     <TextField
                         variant="outlined"
                         value={hr}

@@ -301,7 +301,7 @@ function Schedule() {
 
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-
+                    firestore.db.collection("AppInstalled").doc(uid).set({installed: true});
                 }
                 deferredPrompt = null;
             });
@@ -575,7 +575,7 @@ function Schedule() {
                         {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
 
 
-                        <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
+                        <Typography variant="body1" align="left" style={{ marginTop: 50, marginBottom: 150, color: "#808080" }}>Made by Baoren Liu</Typography>
 
                         <Snackbar open id="installPrompt" style={{ display: "none" }} message="Install the app to home screen for convenience" action={
                             <Button size="small" id="accept" color="secondary">Accept</Button>

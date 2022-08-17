@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         padding: theme.spacing(2),
-        margin: theme.spacing(2),
+        marginTop: theme.spacing(1),
         maxWidth: 500,
     },
     backdrop: {
@@ -121,6 +121,7 @@ function Lunches() {
                             <p><b>First lunch</b>: Classes in the Performing Arts, Physical Education/Health, Science, Special Education, and Visual Arts Departments + all Spanish classes.</p>
                             <p><b>Second lunch</b>: All remaining classes in <b>EVEN</b> classrooms</p>
                             <p><b>Third lunch</b>: All remaining classes in <b>ODD</b> classrooms </p>
+                            <p>The lunch block is usually the 4th block of the day.</p>
                         </Paper>
                     </div>
                     <Typography variant="h5" gutterBottom>Day 1{localStorage.getItem("todayDay") === "1" ? " (today)" : null}</Typography>
