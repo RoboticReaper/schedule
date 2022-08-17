@@ -25,6 +25,11 @@ import "firebase/auth";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
+import Snackbar from '@material-ui/core/Snackbar';
+import { Dialog, DialogTitle } from '@mui/material';
+import IosShareIcon from '@mui/icons-material/IosShare';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import Divider from '@mui/material/Divider';
 
 var uid;
 
@@ -75,6 +80,7 @@ function useForceUpdate() {
     const [value, setValue] = useState(0);
     return () => setValue(value => value + 1);
 }
+
 
 function request() {
 
@@ -241,6 +247,7 @@ function today() {
 }
 
 var gotten = false;
+var userDismissed = false;
 
 function Schedule() {
 
@@ -252,6 +259,9 @@ function Schedule() {
 
     var day = days[now.getDay()];
     var month = months[now.getMonth()];
+    var deferredPrompt;
+
+    const [iosInstallPrompt, setIosInstallPrompt] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -270,6 +280,52 @@ function Schedule() {
             }
         }
     })
+
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+
+        var installPrompt = document.getElementById('installPrompt');
+        var installButton = document.getElementById('accept');
+
+        if (!userDismissed) {
+            installPrompt.style.display = 'block';
+        }
+
+        deferredPrompt = e;
+
+        installButton.addEventListener('click', (e) => {
+            installPrompt.style.display = 'none';
+            userDismissed = true;
+            deferredPrompt.prompt().catch((error) => { });
+
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+
+                }
+                deferredPrompt = null;
+            });
+        })
+
+
+    })
+
+    // make ios users install the app
+    useEffect(() => {
+        if (navigator.userAgent.match(/(iPhone|iPad)/) && !navigator.standalone && !userDismissed) {
+
+            var installPrompt = document.getElementById('installPrompt');
+            var installButton = document.getElementById('accept');
+            installPrompt.style.display = 'block';
+            installButton.addEventListener('click', (e) => {
+                installPrompt.style.display = 'none';
+                userDismissed = true;
+
+                setIosInstallPrompt(true);
+            })
+        }
+    }, [])
+
 
 
     function getClassesFromFirestore() {
@@ -380,22 +436,26 @@ function Schedule() {
     }
 
     const openInNewTab = (url) => {
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
-        if (newWindow) newWindow.opener = null;
+        if (navigator.userAgent.match(/(iPhone|iPad)/)) {
+            window.location.href = url;
+        }
+        else {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
         handleClose();
     }
 
 
     function ClassReminder() {
         if (createdClasses.length === 0) {
-            return <div style={{ backgroundColor: "lightgrey", padding:3 }}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
+            return <div style={{ backgroundColor: "lightgrey", padding: 3 }}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
         }
         return null;
     }
 
     function LunchReminder() {
         if (lunchData !== undefined && lunchData[todayDay - 1] === "") {
-            return <div style={{ backgroundColor: "lightgrey", padding:3 }}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
+            return <div style={{ backgroundColor: "lightgrey", padding: 3 }}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
         }
         return null;
     }
@@ -516,6 +576,18 @@ function Schedule() {
 
 
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
+
+                        <Snackbar open id="installPrompt" style={{ display: "none" }} message="Install the app to home screen for convenience" action={
+                            <Button size="small" id="accept" color="secondary">Accept</Button>
+                        } />
+
+                        <Dialog onClose={() => { setIosInstallPrompt(false) }} open={iosInstallPrompt}>
+                            <div style={{ margin: 20, textAlign: "center" }}>
+                                <h3>Install the app to home screen</h3><Divider light />
+                                <p style={{ alignItems: "center" }}>Using Safari, click the share button at the bottom.</p><IosShareIcon /><br /><br /><Divider light />
+                                <p style={{ alignItems: "center" }}>Then click "Add to Home Screen".</p><AddBoxIcon />
+                            </div>
+                        </Dialog>
                     </div>
                 </Container>
 

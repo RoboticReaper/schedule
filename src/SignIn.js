@@ -95,8 +95,11 @@ function SignIn() {
     }
 
     const openInNewTab = (url) => {
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
-        if (newWindow) newWindow.opener = null;
+        if(navigator.userAgent.match(/(iPhone|iPad)/)){
+            window.location.href = url;
+        } else {
+            window.open(url, '_blank', 'noopener,noreferrer')
+        };
     }
 
     function toSignUp() {
