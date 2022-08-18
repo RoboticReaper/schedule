@@ -584,8 +584,8 @@ function Schedule() {
                         <Dialog onClose={() => { setIosInstallPrompt(false) }} open={iosInstallPrompt}>
                             <div style={{ margin: 20, textAlign: "center" }}>
                                 <h3>Install the app to home screen</h3><Divider light />
-                                <p style={{display: 'flex',alignItems: 'center', flexWrap: 'wrap', justifyContent:'center'}}>Using Safari, click the share button(<IosShareIcon />) at the bottom.</p><br /><br /><Divider light />
-                                <p style={{display: 'flex',alignItems: 'center', flexWrap: 'wrap', justifyContent:'center'}}>Then click "Add to Home Screen" (<AddBoxIcon />).</p>
+                                <p style={{display: 'flex',alignItems: 'center', flexWrap: 'wrap', justifyContent:'center'}}>Using Safari, click the share button <IosShareIcon /> at the bottom.</p><br /><br /><Divider light />
+                                <p style={{display: 'flex',alignItems: 'center', flexWrap: 'wrap', justifyContent:'center'}}>Then click "Add to Home Screen" <AddBoxIcon />.</p>
                             </div>
                         </Dialog>
                     </div>
