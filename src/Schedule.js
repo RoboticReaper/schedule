@@ -26,9 +26,10 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import Snackbar from '@material-ui/core/Snackbar';
-import { Dialog, DialogTitle } from '@mui/material';
+import { Dialog, Tooltip, Badge } from '@mui/material';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 import Divider from '@mui/material/Divider';
 
 var uid;
@@ -44,6 +45,8 @@ var todayClass = filter(allClasses, now);
 var todayDay;
 var lunchData;
 var hr;
+var lastReadAnnouncementDate = "";
+var hasUnreadAnnouncements = false;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -73,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    badge: {
+        fontSize: 5
+    }
 }));
 
 
@@ -264,6 +270,7 @@ function Schedule() {
     const [iosInstallPrompt, setIosInstallPrompt] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
+        console.log("STOPPP")
         if (user) {
             uid = user.uid;
             localStorage.setItem('uid', uid);
@@ -301,7 +308,7 @@ function Schedule() {
 
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    firestore.db.collection("AppInstalled").doc(uid).set({installed: true});
+                    firestore.db.collection("AppInstalled").doc(uid).set({ installed: true });
                 }
                 deferredPrompt = null;
             });
@@ -350,13 +357,37 @@ function Schedule() {
                 if (data.hr !== undefined) {
                     hr = data.hr;
                 }
+                if (data.lastReadAnnouncementDate !== undefined) {
+                    lastReadAnnouncementDate = data.lastReadAnnouncementDate.toDate();
+                    
+                }
             }
 
 
             localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
             localStorage.setItem('lunches', JSON.stringify(lunchData));
             localStorage.setItem('hr', hr);
-            updateClass();
+
+            // determine if unread dot should show
+            if (lastReadAnnouncementDate === "") {
+                hasUnreadAnnouncements = true;
+                updateClass();
+            } else {
+                firestore.db.collection("announcement").doc("info").get().then((value) => {
+
+                    var latestAnnouncementDate = value.data().time.toDate();
+
+                    if (latestAnnouncementDate > lastReadAnnouncementDate)  {
+                        hasUnreadAnnouncements = true;
+                    }
+
+
+
+                    updateClass()
+                })
+            }
+            console.log(hasUnreadAnnouncements)
+
         })
 
 
@@ -367,7 +398,6 @@ function Schedule() {
     const forceUpdate = useForceUpdate();
 
     function updateClass() {
-
         createdClasses.map((thisClass) => {
             allClasses.items.map((today) => {
                 if (thisClass[2].includes(today.summary)) {
@@ -393,15 +423,10 @@ function Schedule() {
             }
         })
 
-
-
-
-        localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
-        document.getElementById('yesterday').click();
-        document.getElementById('tomorrow').click();
-
         gotten = true;
         forceUpdate();
+        
+
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -513,48 +538,68 @@ function Schedule() {
                                     {day}, {month} {now.getDate()}
                                 </Typography>
                             </Grid>
+
                             <Grid item>
-                                <IconButton
-                                    aria-label="more"
-                                    aria-controls="long-menu"
-                                    aria-haspopup="true"
-                                    title='More options'
-                                    onClick={handleClick}
-                                >
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu
-                                    id="simple-menu"
-                                    anchorEl={anchorEl}
-                                    keepMounted
-                                    open={Boolean(anchorEl)}
-                                    onClose={handleClose}
-                                >
-                                    <MenuItem onClick={gotoClasses}>
-                                        <ListItemIcon>
-                                            <BusinessIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Edit Classes</Typography>
-                                    </MenuItem>
-                                    <MenuItem onClick={gotoLunches}>
-                                        <ListItemIcon>
-                                            <FastfoodIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Edit Lunches</Typography>
-                                    </MenuItem>
-                                    <MenuItem onClick={() => { openInNewTab('mailto:liubaoren2006@gmail.com') }}>
-                                        <ListItemIcon>
-                                            <MailOutlineOutlinedIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Feedback</Typography>
-                                    </MenuItem>
-                                    <MenuItem onClick={signOut}>
-                                        <ListItemIcon>
-                                            <ExitToAppIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Sign Out</Typography>
-                                    </MenuItem>
-                                </Menu>
+                                <Tooltip
+                                    open={!Boolean(anchorEl) && hasUnreadAnnouncements}
+                                    placement="right"
+                                    wordWrap="break-word"
+                                    title="< New"><div>
+                                        <IconButton
+                                            aria-label="more"
+                                            aria-controls="long-menu"
+                                            aria-haspopup="true"
+                                            title='More options'
+                                            onClick={handleClick}
+                                        >
+                                            <Badge color="secondary" invisible={!hasUnreadAnnouncements} badgeContent={"!"}><MoreVertIcon /></Badge>
+                                        </IconButton>
+                                        <Menu
+                                            id="simple-menu"
+                                            anchorEl={anchorEl}
+                                            keepMounted
+                                            open={Boolean(anchorEl)}
+                                            onClose={handleClose}
+                                        >
+                                            <MenuItem onClick={gotoClasses}>
+                                                <ListItemIcon>
+                                                    <BusinessIcon />
+                                                </ListItemIcon>
+                                                <Typography variant="inherit">Edit Classes</Typography>
+                                            </MenuItem>
+                                            <MenuItem onClick={gotoLunches}>
+                                                <ListItemIcon>
+                                                    <FastfoodIcon />
+                                                </ListItemIcon>
+                                                <Typography variant="inherit">Edit Lunches</Typography>
+                                            </MenuItem>
+                                            <MenuItem onClick={() => { 
+                                                firestore.db.collection("users").doc(localStorage.getItem('uid')).update({lastReadAnnouncementDate: new Date()})
+                                                hasUnreadAnnouncements = false;
+                                                history.push("/announcements"); 
+                                                
+
+                                                }}>
+                                                <ListItemIcon>
+                                                    <Badge color="secondary" variant="dot" invisible={!hasUnreadAnnouncements}><AnnouncementIcon /></Badge>
+                                                </ListItemIcon>
+                                                <Typography variant="inherit">Announcements</Typography>
+                                            </MenuItem>
+                                            <MenuItem onClick={() => { openInNewTab('mailto:liubaoren2006@gmail.com') }}>
+                                                <ListItemIcon>
+                                                    <MailOutlineOutlinedIcon />
+                                                </ListItemIcon>
+                                                <Typography variant="inherit">Feedback</Typography>
+                                            </MenuItem>
+                                            <MenuItem onClick={signOut}>
+                                                <ListItemIcon>
+                                                    <ExitToAppIcon />
+                                                </ListItemIcon>
+                                                <Typography variant="inherit">Sign Out</Typography>
+                                            </MenuItem>
+                                        </Menu>
+                                    </div>
+                                </Tooltip>
                             </Grid>
                         </Grid>
 
@@ -584,8 +629,8 @@ function Schedule() {
                         <Dialog onClose={() => { setIosInstallPrompt(false) }} open={iosInstallPrompt}>
                             <div style={{ margin: 20, textAlign: "center" }}>
                                 <h3>Install the app to home screen</h3><Divider light />
-                                <p style={{display: 'flex',alignItems: 'center', flexWrap: 'wrap', justifyContent:'center'}}>Using Safari, click the share button <IosShareIcon /> at the bottom.</p><br /><br /><Divider light />
-                                <p style={{display: 'flex',alignItems: 'center', flexWrap: 'wrap', justifyContent:'center'}}>Then click "Add to Home Screen" <AddBoxIcon />.</p>
+                                <p style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>Using Safari, click the share button <IosShareIcon /> at the bottom.</p><br /><br /><Divider light />
+                                <p style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>Then click "Add to Home Screen" <AddBoxIcon />.</p>
                             </div>
                         </Dialog>
                     </div>

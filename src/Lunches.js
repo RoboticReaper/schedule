@@ -118,7 +118,7 @@ function Lunches() {
                         </Grid>
                         <Paper className={classes.paper} elevation={3} variant="outlined">
                             <span>Here's how to figure out what lunch you have:</span>
-                            <p><b>First lunch</b>: Classes in the Performing Arts, Physical Education/Health, Science, Special Education, and Visual Arts Departments + all Spanish classes.</p>
+                            <p><b>First lunch</b>: Classes in the ESL, Performing Arts, Visual Arts, Science, PE (excluding Health) and Special Education departments.</p>
                             <p><b>Second lunch</b>: All remaining classes in <b>EVEN</b> classrooms</p>
                             <p><b>Third lunch</b>: All remaining classes in <b>ODD</b> classrooms </p>
                             <p>The lunch block is usually the 4th block of the day.</p>
