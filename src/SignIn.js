@@ -37,10 +37,12 @@ function SignIn() {
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
+            
             if ((window.location.pathname === "/signin" || window.location.pathname === "/signup")) {
                 history.replace('/');
             }
         } else {
+            
             localStorage.setItem('uid', "");
             localStorage.setItem('createdClasses', "");
             localStorage.setItem('lunches', "");

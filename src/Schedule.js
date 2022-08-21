@@ -270,7 +270,6 @@ function Schedule() {
     const [iosInstallPrompt, setIosInstallPrompt] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
-        console.log("STOPPP")
         if (user) {
             uid = user.uid;
             localStorage.setItem('uid', uid);
@@ -359,7 +358,7 @@ function Schedule() {
                 }
                 if (data.lastReadAnnouncementDate !== undefined) {
                     lastReadAnnouncementDate = data.lastReadAnnouncementDate.toDate();
-                    
+
                 }
             }
 
@@ -367,26 +366,25 @@ function Schedule() {
             localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
             localStorage.setItem('lunches', JSON.stringify(lunchData));
             localStorage.setItem('hr', hr);
+            localStorage.setItem('lastReadAnnouncementDate', lastReadAnnouncementDate);
 
             // determine if unread dot should show
-            if (lastReadAnnouncementDate === "") {
-                hasUnreadAnnouncements = true;
-                updateClass();
-            } else {
-                firestore.db.collection("announcement").doc("info").get().then((value) => {
 
-                    var latestAnnouncementDate = value.data().time.toDate();
+            firestore.db.collection("announcement").doc("info").get().then((value) => {
 
-                    if (latestAnnouncementDate > lastReadAnnouncementDate)  {
-                        hasUnreadAnnouncements = true;
-                    }
+                var latestAnnouncementDate = value.data().time.toDate();
 
+                if (lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) {
+                    hasUnreadAnnouncements = true;
+                }
+
+                localStorage.setItem('latestAnnouncementDate', latestAnnouncementDate);
 
 
-                    updateClass()
-                })
-            }
-            console.log(hasUnreadAnnouncements)
+
+                updateClass()
+            })
+
 
         })
 
@@ -425,7 +423,10 @@ function Schedule() {
 
         gotten = true;
         forceUpdate();
-        
+        if (hasUnreadAnnouncements) {
+            history.push("/announcements");
+        }
+
 
     }
 
@@ -540,66 +541,53 @@ function Schedule() {
                             </Grid>
 
                             <Grid item>
-                                <Tooltip
-                                    open={!Boolean(anchorEl) && hasUnreadAnnouncements}
-                                    placement="right"
-                                    wordWrap="break-word"
-                                    title="< New"><div>
-                                        <IconButton
-                                            aria-label="more"
-                                            aria-controls="long-menu"
-                                            aria-haspopup="true"
-                                            title='More options'
-                                            onClick={handleClick}
-                                        >
-                                            <Badge color="secondary" invisible={!hasUnreadAnnouncements} badgeContent={"!"}><MoreVertIcon /></Badge>
-                                        </IconButton>
-                                        <Menu
-                                            id="simple-menu"
-                                            anchorEl={anchorEl}
-                                            keepMounted
-                                            open={Boolean(anchorEl)}
-                                            onClose={handleClose}
-                                        >
-                                            <MenuItem onClick={gotoClasses}>
-                                                <ListItemIcon>
-                                                    <BusinessIcon />
-                                                </ListItemIcon>
-                                                <Typography variant="inherit">Edit Classes</Typography>
-                                            </MenuItem>
-                                            <MenuItem onClick={gotoLunches}>
-                                                <ListItemIcon>
-                                                    <FastfoodIcon />
-                                                </ListItemIcon>
-                                                <Typography variant="inherit">Edit Lunches</Typography>
-                                            </MenuItem>
-                                            <MenuItem onClick={() => { 
-                                                firestore.db.collection("users").doc(localStorage.getItem('uid')).update({lastReadAnnouncementDate: new Date()})
-                                                hasUnreadAnnouncements = false;
-                                                history.push("/announcements"); 
-                                                
-
-                                                }}>
-                                                <ListItemIcon>
-                                                    <Badge color="secondary" variant="dot" invisible={!hasUnreadAnnouncements}><AnnouncementIcon /></Badge>
-                                                </ListItemIcon>
-                                                <Typography variant="inherit">Announcements</Typography>
-                                            </MenuItem>
-                                            <MenuItem onClick={() => { openInNewTab('mailto:liubaoren2006@gmail.com') }}>
-                                                <ListItemIcon>
-                                                    <MailOutlineOutlinedIcon />
-                                                </ListItemIcon>
-                                                <Typography variant="inherit">Feedback</Typography>
-                                            </MenuItem>
-                                            <MenuItem onClick={signOut}>
-                                                <ListItemIcon>
-                                                    <ExitToAppIcon />
-                                                </ListItemIcon>
-                                                <Typography variant="inherit">Sign Out</Typography>
-                                            </MenuItem>
-                                        </Menu>
-                                    </div>
-                                </Tooltip>
+                                <IconButton
+                                    aria-label="more"
+                                    aria-controls="long-menu"
+                                    aria-haspopup="true"
+                                    title='More options'
+                                    onClick={handleClick}
+                                >
+                                    <MoreVertIcon />
+                                </IconButton>
+                                <Menu
+                                    id="simple-menu"
+                                    anchorEl={anchorEl}
+                                    keepMounted
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleClose}
+                                >
+                                    <MenuItem onClick={gotoClasses}>
+                                        <ListItemIcon>
+                                            <BusinessIcon />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit">Edit Classes</Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick={gotoLunches}>
+                                        <ListItemIcon>
+                                            <FastfoodIcon />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit">Edit Lunches</Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => { history.push("/announcements"); }}>
+                                        <ListItemIcon>
+                                            <AnnouncementIcon />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit">Announcements</Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => { openInNewTab('mailto:liubaoren2006@gmail.com') }}>
+                                        <ListItemIcon>
+                                            <MailOutlineOutlinedIcon />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit">Feedback</Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick={signOut}>
+                                        <ListItemIcon>
+                                            <ExitToAppIcon />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit">Sign Out</Typography>
+                                    </MenuItem>
+                                </Menu>
                             </Grid>
                         </Grid>
 
