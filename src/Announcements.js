@@ -59,13 +59,15 @@ function Announcements() {
                     <h2>Lunch Rules Update</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/20/2022 10:37PM</div>
                     <div style={{ marginTop: 10, fontWeight: 500 }}>
-                        Hi everyone,<br />
+                        To people who have put in their lunch <b>before 8/20</b>:<br />
                         <p>The school has changed the instructions to find out what lunch you have over the summer, and I wasn't aware of that.
                             As a result, the instructions on the lunch page is outdated.</p>
                         <p>I have updated the instructions according to <a href="https://docs.google.com/document/d/1G9FqJ9gKURwwiy-qzcHfqRnbzowMF4W0/edit?usp=sharing&ouid=100109913602878663196&rtpof=true&sd=true" target="_blank">our school's doc</a>,
                             and you may <span onClick={() => { history.push("/lunches") }} style={{ color: "blue", cursor: "pointer" }}>update your lunch info</span> using the new rules.</p>
-
-                        Sorry for the inconvenience.<br /><br />Best,<br />Baoren
+                        
+                        If you just registered or didn't put in your lunch before 8/20, you can ignore this message.<br />
+                        Sorry for the inconvenience.
+                        <br /><br />Best,<br />Baoren
                     </div>
                 </Paper>
             </Container>
