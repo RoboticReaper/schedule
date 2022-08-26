@@ -58,7 +58,7 @@ function Announcements() {
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={(latestAnnouncementDate > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") ? {backgroundColor: "#fdf7e2"} : {}}>
                     <h2>Lunch Rules Update</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/20/2022 10:37PM</div>
-                    <div style={{ marginTop: 10, fontWeight: 500 }}>
+                    <div style={{ marginTop: 10 }}>
                         To people who have put in their lunch <b>before 8/20</b>:<br />
                         <p>The school has changed the instructions to find out what lunch you have over the summer, and I wasn't aware of that.
                             As a result, the instructions on the lunch page is outdated.</p>
