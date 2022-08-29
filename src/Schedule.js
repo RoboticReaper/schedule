@@ -46,6 +46,7 @@ var todayDay;
 var lunchData;
 var hr;
 var lastReadAnnouncementDate = "";
+var userCreationDate="";
 var hasUnreadAnnouncements = false;
 
 const useStyles = makeStyles((theme) => ({
@@ -133,6 +134,7 @@ function filter(data, currDate) {
             }
         }
         else {
+            // add rules to remove certain events from the day
             if (lunchData !== undefined) {
                 var todayLunch = lunchData[todayDay - 1];
                 if (data.items[x].summary.substr(0, 6) === "Lunch " && todayLunch !== undefined && data.items[x].summary.substr(6, 1) !== todayLunch.toString() && todayLunch.toString() !== "") {
@@ -140,6 +142,12 @@ function filter(data, currDate) {
                     continue;
                 }
             }
+            if (data.items[x].summary.includes("Training on FM systems and best practices for Hearing Impairments")){
+                continue;
+            }
+            
+
+            
             var date = data.items[x].start.dateTime.substring(0, 10);
 
             if (dates[date] === undefined) {
@@ -271,6 +279,7 @@ function Schedule() {
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
+            userCreationDate = new Date(user.metadata.creationTime);
             uid = user.uid;
             localStorage.setItem('uid', uid);
             if ((window.location.pathname === "/signin" || window.location.pathname === "/signup")) {
@@ -370,11 +379,11 @@ function Schedule() {
 
             // determine if unread dot should show
 
-            firestore.db.collection("announcement").doc("info").get().then((value) => {
+            firestore.db.collection("announcement").doc("test").get().then((value) => {
 
                 var latestAnnouncementDate = value.data().time.toDate();
 
-                if (lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) {
+                if ((lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) && userCreationDate < latestAnnouncementDate) {
                     hasUnreadAnnouncements = true;
                 }
 
@@ -382,7 +391,7 @@ function Schedule() {
 
 
 
-                updateClass()
+                updateClass();
             })
 
 

@@ -63,6 +63,12 @@ function Lunches() {
         firestore.db.collection('users').doc(localStorage.getItem('uid')).update("lunches", JSON.stringify(lunches)).then(() => {
             localStorage.setItem('lunches', JSON.stringify(lunches));
             window.location.href = "/";
+        }).catch(error => {
+        
+            firestore.db.collection('users').doc(localStorage.getItem('uid')).set({"lunches": JSON.stringify(lunches)}).then(result => {
+                localStorage.setItem('lunches', JSON.stringify(lunches));
+            window.location.href = "/";
+            })
         });
 
     }

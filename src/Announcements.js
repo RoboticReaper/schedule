@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import "firebase/auth";
 import { useEffect } from "react";
+import { useState } from "react";
 import firebase from "firebase/app";
 import firestore from "./firestore.js";
 
@@ -24,7 +25,7 @@ function Announcements() {
     const history = useHistory();
     const classes = useStyles();
     let lastReadAnnouncementDate = new Date(localStorage.getItem("lastReadAnnouncementDate"));
-    let latestAnnouncementDate = new Date(localStorage.getItem("latestAnnouncementDate"));
+    const [userCreationDate, setUserCreationDate] = useState(new Date());
 
     function goBack() {
         history.push("/");
@@ -35,7 +36,8 @@ function Announcements() {
             if (!user) {
                 window.location.href = "/signin";
             } else {
-                firestore.db.collection("users").doc(localStorage.getItem('uid')).update({ lastReadAnnouncementDate: new Date() })
+                setUserCreationDate(new Date(user.metadata.creationTime));
+                firestore.db.collection("users").doc(localStorage.getItem('uid')).set({ lastReadAnnouncementDate: new Date() }, { merge: true });
             }
         })
         
@@ -55,7 +57,7 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md'>
-                <Paper className={classes.paper} elevation={3} variant="outlined" style={(latestAnnouncementDate > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") ? {backgroundColor: "#fdf7e2"} : {}}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2022, 7, 20, 22, 37) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2022, 7, 20, 22, 37))? {backgroundColor: "#fdf7e2"} : {}}>
                     <h2>Lunch Rules Update</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/20/2022 10:37PM</div>
                     <div style={{ marginTop: 10 }}>
