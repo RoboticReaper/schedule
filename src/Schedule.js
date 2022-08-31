@@ -31,6 +31,7 @@ import IosShareIcon from '@mui/icons-material/IosShare';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import Divider from '@mui/material/Divider';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 var uid;
 
@@ -46,8 +47,10 @@ var todayDay;
 var lunchData;
 var hr;
 var lastReadAnnouncementDate = "";
-var userCreationDate="";
+var userCreationDate = "";
 var hasUnreadAnnouncements = false;
+var halfDay = false;
+var use12HourClock = false;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -142,12 +145,12 @@ function filter(data, currDate) {
                     continue;
                 }
             }
-            if (data.items[x].summary.includes("Training on FM systems and best practices for Hearing Impairments")){
+            if (data.items[x].summary.includes("Training on FM systems and best practices for Hearing Impairments")) {
                 continue;
             }
-            
 
-            
+
+
             var date = data.items[x].start.dateTime.substring(0, 10);
 
             if (dates[date] === undefined) {
@@ -162,7 +165,53 @@ function filter(data, currDate) {
 
     var cls = undefined;
     try {
-        cls = dates[formatDate(currDate)].sort(custom_sort); // sort today's classes by chronological order
+        cls = dates[formatDate(currDate)].slice().sort(custom_sort); // sort today's classes by chronological order
+        
+
+        // detect if today is half day
+        if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00") {
+            halfDay = true;
+        } else {
+            halfDay = false;
+        }
+
+        // decide whether to convert 24 hour clock to 12 hour clock
+        if (use12HourClock) {
+            for (var i = 0; i < cls.length; i++) {
+                var time = cls[i].start.dateTime.substring(11, 16);
+                var hour = parseInt(time.substring(0, 2));
+                var minute = parseInt(time.substring(3, 5));
+                var ampm = "AM";
+
+                if(hour == 12){
+                    ampm = "PM";
+                }
+                if (hour > 12) {
+                    hour -= 12;
+                    ampm = "PM";
+                }
+                time = hour + ":" + (minute < 10 ? "0"+minute : minute) + " " + ampm;
+
+                cls[i].start.hour12 = time;
+                
+
+                time = cls[i].end.dateTime.substr(11, 5);
+                hour = parseInt(time.substr(0, 2));
+                minute = parseInt(time.substr(3, 2));
+                ampm = "AM";
+                if(hour == 12 && minute > 0){
+                    ampm = "PM";
+                }
+                if (hour > 12) {
+                    hour -= 12;
+                    ampm = "PM";    
+                }
+                time = hour + ":" + (minute < 10 ? "0"+minute : minute) + " " + ampm;
+                cls[i].end.hour12 = time;
+
+            }
+        }
+
     } catch (error) { // this means today's date isn't on the LHS calendar
         cls = undefined;
     }
@@ -215,7 +264,7 @@ function DisplayClasses() {
                         }
                         <Grid item>
                             <Typography variant="body2" gutterBottom>
-                                {item.start.dateTime.substring(11, 16)} - {item.end.dateTime.substring(11, 16)}
+                                {!use12HourClock ? <span>{item.start.dateTime.substring(11, 16)} - {item.end.dateTime.substring(11, 16)}</span> : <span>{item.start.hour12} - {item.end.hour12}</span>}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -369,6 +418,9 @@ function Schedule() {
                     lastReadAnnouncementDate = data.lastReadAnnouncementDate.toDate();
 
                 }
+                if (data.use12HourClock !== undefined) {
+                    use12HourClock = data.use12HourClock;
+                }
             }
 
 
@@ -376,10 +428,12 @@ function Schedule() {
             localStorage.setItem('lunches', JSON.stringify(lunchData));
             localStorage.setItem('hr', hr);
             localStorage.setItem('lastReadAnnouncementDate', lastReadAnnouncementDate);
+            localStorage.setItem('use12HourClock', use12HourClock);
+            todayClass = filter(allClasses, now);
 
-            // determine if unread dot should show
 
-            firestore.db.collection("announcement").doc("test").get().then((value) => {
+            // determine if announcement page should pop up
+            firestore.db.collection("announcement").doc("info").get().then((value) => {
 
                 var latestAnnouncementDate = value.data().time.toDate();
 
@@ -432,6 +486,7 @@ function Schedule() {
 
         gotten = true;
         forceUpdate();
+        
         if (hasUnreadAnnouncements) {
             history.push("/announcements");
         }
@@ -584,6 +639,12 @@ function Schedule() {
                                         </ListItemIcon>
                                         <Typography variant="inherit">Announcements</Typography>
                                     </MenuItem>
+                                    {/* <MenuItem onClick={() => { history.push("/settings"); }}>
+                                        <ListItemIcon>
+                                            <SettingsIcon />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit">Settings</Typography>
+                                    </MenuItem> */}
                                     <MenuItem onClick={() => { openInNewTab('mailto:liubaoren2006@gmail.com') }}>
                                         <ListItemIcon>
                                             <MailOutlineOutlinedIcon />
@@ -613,7 +674,7 @@ function Schedule() {
 
                         <ClassReminder />
                         <LunchReminder />
-                        {todayDay !== undefined ? <Paper className={classes.paper} elevation={3} variant="outlined">Today is day {todayDay} of 6.</Paper> : null}
+                        {todayDay !== undefined ? <Paper className={classes.paper} elevation={3} variant="outlined">Today is day {todayDay} of 6{halfDay ? <span>, also a <b>half</b> day</span> : null}.</Paper> : null}
                         {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
 
 
