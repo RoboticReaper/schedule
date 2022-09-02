@@ -16,11 +16,12 @@ import BusinessIcon from '@material-ui/icons/Business';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import './App.css';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import './loader.js'
 import { IconButton } from '@material-ui/core';
 import firestore from './firestore.js';
 import firebase from "firebase/app";
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import "firebase/auth";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
@@ -32,6 +33,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import Divider from '@mui/material/Divider';
 import SettingsIcon from '@mui/icons-material/Settings';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 var uid;
 
@@ -51,6 +53,8 @@ var userCreationDate = "";
 var hasUnreadAnnouncements = false;
 var halfDay = false;
 var use12HourClock = false;
+var friendList = [];
+var friendName = [];
 var backgroundColor = localStorage.getItem("backgroundColor") === null ? "#ffffff" : localStorage.getItem("backgroundColor");
 
 const useStyles = makeStyles((theme) => ({
@@ -167,7 +171,7 @@ function filter(data, currDate) {
     var cls = undefined;
     try {
         cls = dates[formatDate(currDate)].slice().sort(custom_sort); // sort today's classes by chronological order
-        
+
 
         // detect if today is half day
         if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00") {
@@ -184,30 +188,30 @@ function filter(data, currDate) {
                 var minute = parseInt(time.substring(3, 5));
                 var ampm = "AM";
 
-                if(hour == 12){
+                if (hour == 12) {
                     ampm = "PM";
                 }
                 if (hour > 12) {
                     hour -= 12;
                     ampm = "PM";
                 }
-                time = hour + ":" + (minute < 10 ? "0"+minute : minute) + " " + ampm;
+                time = hour + ":" + (minute < 10 ? "0" + minute : minute) + " " + ampm;
 
                 cls[i].start.hour12 = time;
-                
+
 
                 time = cls[i].end.dateTime.substr(11, 5);
                 hour = parseInt(time.substr(0, 2));
                 minute = parseInt(time.substr(3, 2));
                 ampm = "AM";
-                if(hour == 12){
+                if (hour == 12) {
                     ampm = "PM";
                 }
                 if (hour > 12) {
                     hour -= 12;
-                    ampm = "PM";    
+                    ampm = "PM";
                 }
-                time = hour + ":" + (minute < 10 ? "0"+minute : minute) + " " + ampm;
+                time = hour + ":" + (minute < 10 ? "0" + minute : minute) + " " + ampm;
                 cls[i].end.hour12 = time;
 
             }
@@ -249,7 +253,7 @@ function DisplayClasses() {
     return (
         todayClass.map((item) =>
             <>
-                <Paper className={classes.paper} elevation={3} variant="outlined" style={{backgroundColor: item.color}}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor: item.color }}>
                     <Grid container alignItems='center' justify='center' spacing={2} direction="column">
                         <Grid item>
                             <Typography gutterBottom variant="subtitle1">
@@ -279,7 +283,7 @@ function NoClasses() {
     const classes = useStyles();
     todayDay = undefined;
     return (
-        <Paper className={classes.paper} elevation={3} variant="outlined" style={{backgroundColor: backgroundColor}}>
+        <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor: backgroundColor }}>
             <Typography gutterBottom variant="subtitle1">
                 No class today
             </Typography>
@@ -317,6 +321,7 @@ function Schedule() {
 
     const classes = useStyles();
     let history = useHistory();
+    let location = useLocation();
 
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -326,6 +331,10 @@ function Schedule() {
     var deferredPrompt;
 
     const [iosInstallPrompt, setIosInstallPrompt] = useState(false);
+
+    var viewID = useParams().id
+
+    
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -351,7 +360,7 @@ function Schedule() {
         var installPrompt = document.getElementById('installPrompt');
         var installButton = document.getElementById('accept');
 
-        if (!userDismissed) {
+        if (!userDismissed && viewID === undefined) {
             installPrompt.style.display = 'block';
         }
 
@@ -375,7 +384,7 @@ function Schedule() {
 
     // make ios users install the app
     useEffect(() => {
-        if (navigator.userAgent.match(/(iPhone|iPad)/) && !navigator.standalone && !userDismissed) {
+        if (navigator.userAgent.match(/(iPhone|iPad)/) && !navigator.standalone && !userDismissed && viewID === undefined) {
 
             var installPrompt = document.getElementById('installPrompt');
             var installButton = document.getElementById('accept');
@@ -396,7 +405,11 @@ function Schedule() {
         if (gotten === true) {
             return;
         }
-        firestore.db.collection('users').doc(localStorage.getItem('uid')).get().then((value) => {
+
+
+        var getID = viewID === undefined ? localStorage.getItem('uid') : viewID;
+
+        firestore.db.collection('users').doc(getID).get().then((value) => {
             var data = value.data();
 
             createdClasses = [];
@@ -420,39 +433,59 @@ function Schedule() {
                 if (data.use12HourClock !== undefined) {
                     use12HourClock = data.use12HourClock;
                 }
-                if(data.backgroundColor !== undefined){
+                if (data.backgroundColor !== undefined) {
                     backgroundColor = data.backgroundColor;
+                }else{
+                    backgroundColor = "#ffffff";
+                }
+                if (data.friendList !== undefined) {
+                    friendList = data.friendList;
+                }
+                if (data.friendName !== undefined) {
+                    friendName = data.friendName;
                 }
             }
 
-
-            localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
-            localStorage.setItem('lunches', JSON.stringify(lunchData));
-            localStorage.setItem('hr', hr);
-            localStorage.setItem('lastReadAnnouncementDate', lastReadAnnouncementDate);
-            localStorage.setItem('use12HourClock', use12HourClock);
-            localStorage.setItem('backgroundColor', backgroundColor);
-            todayClass = filter(allClasses, now);
-
-
-
-            // determine if announcement page should pop up
-            firestore.db.collection("announcement").doc("info").get().then((value) => {
-
-                var latestAnnouncementDate = value.data().time.toDate();
-
-                if ((lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) && userCreationDate < latestAnnouncementDate) {
-                    hasUnreadAnnouncements = true;
-                }
-
-                localStorage.setItem('latestAnnouncementDate', latestAnnouncementDate);
+            if (viewID === undefined) {
+                localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
+                localStorage.setItem('lunches', JSON.stringify(lunchData));
+                localStorage.setItem('hr', hr);
+                localStorage.setItem('lastReadAnnouncementDate', lastReadAnnouncementDate);
+                localStorage.setItem('use12HourClock', use12HourClock);
+                localStorage.setItem('backgroundColor', backgroundColor);
+                localStorage.setItem('friendList', JSON.stringify(friendList));
+                localStorage.setItem('friendName', JSON.stringify(friendName));
+                todayClass = filter(allClasses, now);
+            }
 
 
+            if (viewID === undefined) {
+                // determine if announcement page should pop up
+                firestore.db.collection("announcement").doc("info").get().then((value) => {
 
+                    var latestAnnouncementDate = value.data().time.toDate();
+
+                    if ((lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) && userCreationDate < latestAnnouncementDate) {
+                        hasUnreadAnnouncements = true;
+                    }
+
+                    localStorage.setItem('latestAnnouncementDate', latestAnnouncementDate);
+
+
+
+                    updateClass();
+                })
+            } else {
                 updateClass();
-            })
+            }
 
 
+        }).catch((error) => {
+            if(viewID !== undefined){
+                alert("Permission denied. Maybe this user haven't added you as a friend yet.");
+                history.replace('/friends');
+            }
+            console.log(error)
         })
 
 
@@ -474,7 +507,7 @@ function Schedule() {
                     } else {
                         today.room = "N/A";
                     }
-                    if(thisClass[3] !== undefined){
+                    if (thisClass[3] !== undefined) {
                         today.color = thisClass[3];
                     }
                 }
@@ -497,7 +530,7 @@ function Schedule() {
 
         gotten = true;
         forceUpdate();
-        
+
         if (hasUnreadAnnouncements) {
             history.push("/announcements");
         }
@@ -546,14 +579,14 @@ function Schedule() {
 
 
     function ClassReminder() {
-        if (createdClasses.length === 0) {
+        if (createdClasses.length === 0 && viewID === undefined) {
             return <div style={{ backgroundColor: "lightgrey", padding: 3 }}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
         }
         return null;
     }
 
     function LunchReminder() {
-        if (lunchData !== undefined && lunchData[todayDay - 1] === "") {
+        if (lunchData !== undefined && lunchData[todayDay - 1] === "" && viewID === undefined) {
             return <div style={{ backgroundColor: "lightgrey", padding: 3 }}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
         }
         return null;
@@ -596,12 +629,21 @@ function Schedule() {
 
     return (
 
-        <div style={{backgroundColor: backgroundColor}}>
+        <div style={{ backgroundColor: backgroundColor }}>
             <Backdrop className={classes.backdrop} open={!gotten}>
                 <CircularProgress color="inherit" />
             </Backdrop>
             <div className="App">
-                <header className='App-header'>LHS Schedule
+                <header className='App-header'>
+                    {viewID === undefined ? "LHS Schedule" :
+                        <Grid container direction="row" alignItems="center" justify="center">
+                            <Grid item align="center"><IconButton onClick={() => { history.push('/friends') }} title="Go back"><ArrowBackIcon style={{ color: "white" }} /></IconButton></Grid>
+
+                            <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
+
+                                <h3 style={{}}>Friend's Schedule</h3>
+                            </Grid>
+                        </Grid>}
                 </header>
 
                 <Container maxWidth='sm'>
@@ -613,7 +655,7 @@ function Schedule() {
                                 </Typography>
                             </Grid>
 
-                            <Grid item>
+                            <Grid item hidden={viewID === undefined ? false : true}>
                                 <IconButton
                                     aria-label="more"
                                     aria-controls="long-menu"
@@ -641,6 +683,12 @@ function Schedule() {
                                             <FastfoodIcon />
                                         </ListItemIcon>
                                         <Typography variant="inherit">Edit Lunches</Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => { history.push("/friends") }}>
+                                        <ListItemIcon>
+                                            <PeopleAltIcon />
+                                        </ListItemIcon>
+                                        <Typography variant="inherit">Friends</Typography>
                                     </MenuItem>
                                     <MenuItem onClick={() => { history.push("/announcements"); }}>
                                         <ListItemIcon>
@@ -683,12 +731,12 @@ function Schedule() {
 
                         <ClassReminder />
                         <LunchReminder />
-                        {todayDay !== undefined ? <Paper className={classes.paper} style={{backgroundColor: backgroundColor}} elevation={3} variant="outlined">Today is day {todayDay} of 6{halfDay ? <span>, also a <b>half</b> day</span> : null}.</Paper> : null}
+                        {todayDay !== undefined ? <Paper className={classes.paper} style={{ backgroundColor: backgroundColor }} elevation={3} variant="outlined">Today is day {todayDay} of 6{halfDay ? <span>, also a <b>half</b> day</span> : null}.</Paper> : null}
                         {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
 
 
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
-                        <p style={{height: 200}}></p>
+                        <p style={{ height: 200 }}></p>
 
                         <Snackbar open id="installPrompt" style={{ display: "none" }} message="Install the app to home screen for convenience" action={
                             <Button size="small" id="accept" color="secondary">Accept</Button>

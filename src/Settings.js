@@ -50,6 +50,7 @@ function Settings() {
     useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
             if (!user) {
+                localStorage.clear()
                 window.location.href = "/signin";
             }
         })

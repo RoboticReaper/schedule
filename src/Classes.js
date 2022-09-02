@@ -99,18 +99,11 @@ function Classes() {
     function goBack() {
         setReturning(true);
         // upload the classes to firestore
-        firestore.db.collection('users').doc(localStorage.getItem('uid')).update({"classes": JSON.stringify(createdClasses), "hr": hr}).then(result => {
+        firestore.db.collection('users').doc(localStorage.getItem('uid')).set({"classes": JSON.stringify(createdClasses), "hr": hr}, {merge: true}).then(result => {
             localStorage.setItem("hr", hr);
             localStorage.setItem("createdClasses", JSON.stringify(createdClasses));
-            window.location.href = "/";
-        }).catch(error => {
-        
-            firestore.db.collection('users').doc(localStorage.getItem('uid')).set({"classes": JSON.stringify(createdClasses), "hr": hr}).then(result => {
-                localStorage.setItem("hr", hr);
-                localStorage.setItem("createdClasses", JSON.stringify(createdClasses));
-                window.location.href = "/";
-            })
-        });
+            window.location.href = '/'
+        })
 
     }
 
