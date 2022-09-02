@@ -42,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
+        display: "flex",
+        flexDirection: "column",
     },
 }));
 
@@ -115,7 +117,7 @@ function Classes() {
     function DisplayClasses() {
         return (createdClasses.map((item, index) =>
             <>
-                <Paper className={classes.paper} elevation={3} variant="outlined">
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={{backgroundColor: item[3] === undefined ? localStorage.getItem("backgroundColor") : item[3]}}>
                     <Grid container spacing={2} direction="column">
                         <Grid item align="left" >
                             <Box display="flex">
@@ -168,8 +170,9 @@ function Classes() {
     return <div>
         <Backdrop className={classes.backdrop} open={returning}>
             <CircularProgress color="inherit" />
+            <h1>Saving</h1>
         </Backdrop>
-        <div className="App">
+        <div className="App" style={{backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor")}}>
             <header className='App-header'>
             </header>
             <Container maxWidth='sm'>
@@ -199,6 +202,7 @@ function Classes() {
                         fullWidth
                     />
                     <DisplayClasses />
+                    <p style={{height: 200}}></p>
                 </div>
             </Container>
 

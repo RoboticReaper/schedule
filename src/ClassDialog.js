@@ -36,6 +36,8 @@ function useForceUpdate() {
 export default function ClassDialog({ addClass, currClass, currIndex, saveClass, msg }) {
     var initName = "";
     var initRoom = "";
+    var initColor ="#ffffff";
+    var initTransparent = true;
     var aa1 = false;
     var aa2 = false;
     var aa3 = false;
@@ -75,6 +77,8 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
         // fill out the field based on currClass's data
         initName = currClass[0];
         initRoom = currClass[1];
+        initColor = currClass[3] === undefined ? "#ffffff" : currClass[3];
+        initTransparent = currClass[3] === undefined;
         currClass[2].map((i) => {
             switch (i) {
                 case blocks[0]:
@@ -214,9 +218,10 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
         setOpen(true);
     };
 
-
+    const [color, setColor] = useState(initColor);
     const [name, setName] = useState(initName);
     const [room, setRoom] = useState(initRoom);
+    const [transparent, setTransparent] = useState(initTransparent);
     const [a1, setA1] = useState(aa1);
     const [a2, setA2] = useState(aa2);
     const [a3, setA3] = useState(aa3);
@@ -256,6 +261,8 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
         setOpen(false);
         setName(initName);
         setRoom(initRoom);
+        setColor(initColor);
+        setTransparent(initTransparent);
         setA1(aa1);
         setA2(aa2);
         setA3(aa3);
@@ -314,6 +321,10 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
         }
 
         var thisClass = [name, room, chosenBlocks];
+        
+        if(!transparent){
+            thisClass.push(color);
+        }
         addClass(thisClass, currIndex);
         nameError = false;
         forceUpdate();
@@ -344,6 +355,10 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
         }
 
         var thisClass = [name, room, chosenBlocks];
+        console.log(thisClass)
+        if(!transparent){
+            thisClass.push(color);
+        }
         saveClass(thisClass, currIndex);
         nameError = false;
         forceUpdate();
@@ -366,7 +381,6 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
                             variant="outlined"
                             required
                             helperText="Required"
-                            autoFocus
                             id="name"
                             value={name}
                             onChange={e => setName(e.target.value)}
@@ -474,6 +488,12 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
                         <FormControl row error={checkError}>
                             <FormHelperText>*Check at least one box</FormHelperText>
                         </FormControl>
+                        <DialogContentText style={{ marginTop: 20 }}>
+                            Pick a background color&nbsp;<input type="color" value={color} onChange={(e) => { setColor(e.target.value); setTransparent(false) }} /> or make it &nbsp;
+                            <FormControlLabel
+                                control={<Checkbox checked={transparent} onClick={() => { setColor("#ffffff"); setTransparent(!transparent) }} />} label="transparent." />
+                        </DialogContentText>
+                        
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">

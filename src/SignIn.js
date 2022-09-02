@@ -43,9 +43,6 @@ function SignIn() {
             }
         } else {
             
-            localStorage.setItem('uid', "");
-            localStorage.setItem('createdClasses', "");
-            localStorage.setItem('lunches', "");
             if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
                 history.replace('/signin');
             }

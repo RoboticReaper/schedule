@@ -38,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
+        display: "flex",
+        flexDirection: "column",
     }
 }));
 
@@ -100,9 +102,10 @@ function Lunches() {
     };
 
     return (
-        <div className="App">
+        <div className="App" style={{backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor")}}>
             <Backdrop className={classes.backdrop} open={returning}>
                 <CircularProgress color="inherit" />
+                <h1>Saving</h1>
             </Backdrop>
             <header className='App-header'>
             </header>
@@ -122,7 +125,7 @@ function Lunches() {
                             <Button variant="contained" disableElevation color="primary" onClick={() => { setDay1(""); setDay2(""); setDay3(""); setDay4(""); setDay5(""); setDay6("") }}>Clear All</Button>
 
                         </Grid>
-                        <Paper className={classes.paper} elevation={3} variant="outlined">
+                        <Paper className={classes.paper} elevation={3} variant="outlined" style={{backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor")}}>
                             <span>Here's how to figure out what lunch you have:</span>
                             <p><b>First lunch</b>: Classes in the ESL, Performing Arts, Visual Arts, Science, PE (excluding Health) and Special Education departments.</p>
                             <p><b>Second lunch</b>: All remaining classes in <b>EVEN</b> classrooms</p>
