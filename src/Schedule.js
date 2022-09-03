@@ -21,7 +21,7 @@ import './loader.js'
 import { IconButton } from '@material-ui/core';
 import firestore from './firestore.js';
 import firebase from "firebase/app";
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import "firebase/auth";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
@@ -321,7 +321,6 @@ function Schedule() {
 
     const classes = useStyles();
     let history = useHistory();
-    let location = useLocation();
 
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -447,6 +446,7 @@ function Schedule() {
             }
 
             if (viewID === undefined) {
+                // only load these if the user is viewing their own schedule
                 localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
                 localStorage.setItem('lunches', JSON.stringify(lunchData));
                 localStorage.setItem('hr', hr);

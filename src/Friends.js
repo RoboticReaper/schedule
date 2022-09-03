@@ -57,6 +57,8 @@ function Friends() {
     const [nameError, setNameError] = useState(false)
     const [returning, setReturning] = useState(false);
     const [snackbarMsg, setSnackbarMsg] = useState(false);
+    const [failedMsg, setFailedMsg] = useState(false);
+    const [pasteMsg, setPasteMsg] = useState(false);
     const [friendList, setFriendList] = useState(localStorage.getItem("friendList") ? JSON.parse(localStorage.getItem("friendList")) : []);
     const [friendNames, setFriendNames] = useState(localStorage.getItem("friendName") ? JSON.parse(localStorage.getItem("friendName")) : []);
     const [deleteWarning, setDeleteWarning] = useState([false]);
@@ -82,7 +84,7 @@ function Friends() {
             setNameError(false)
         }
 
-        if(friendID.trim() === localStorage.getItem("uid")){
+        if (friendID.trim() === localStorage.getItem("uid")) {
             alert("You can't add yourself as a friend!")
             setIDError(true)
             return;
@@ -182,6 +184,11 @@ function Friends() {
                         <Dialog disableBackdropClick open={open} onClose={() => { setOpen(false) }} aria-labelledby="form-dialog-title">
                             <DialogTitle>Add friend</DialogTitle>
                             <DialogContent>
+                                <Snackbar open={pasteMsg} autoHideDuration={4000} onClose={() => { setPasteMsg(false) }} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                                    <Alert onClose={() => { setPasteMsg(false) }} severity="error" sx={{ width: "100%" }}>
+                                        Failed to paste UID
+                                    </Alert>
+                                </Snackbar>
                                 <DialogContentText>
                                     Received an ID from your friend? Enter it here.
                                 </DialogContentText>
@@ -199,7 +206,7 @@ function Friends() {
                                     fullWidth
                                     InputProps={{
                                         endAdornment: <InputAdornment position="end">
-                                            <IconButton onClick={() => { navigator.clipboard.readText().then(text => { setFriendID(text) }) }} title="Paste from clipboard">
+                                            <IconButton onClick={() => { if (navigator.clipboard) { navigator.clipboard.readText().then(text => { setFriendID(text) }).catch(()=>{setPasteMsg(true)}) } else {setPasteMsg(true) } }} title="Paste from clipboard">
                                                 <ContentPasteIcon />
                                             </IconButton>
                                         </InputAdornment>
@@ -232,16 +239,21 @@ function Friends() {
             </header>
 
             <Container maxWidth='sm'>
-                <Snackbar open={snackbarMsg} autoHideDuration={3000} onClose={() => { setSnackbarMsg(false) }} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                <Snackbar open={snackbarMsg} autoHideDuration={4000} onClose={() => { setSnackbarMsg(false) }} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
                     <Alert onClose={() => { setSnackbarMsg(false) }} severity="success" sx={{ width: "100%" }}>
-                        Copied to clipboard
+                        UID copied to clipboard
+                    </Alert>
+                </Snackbar>
+                <Snackbar open={failedMsg} autoHideDuration={4000} onClose={() => { setFailedMsg(false) }} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                    <Alert onClose={() => { setFailedMsg(false) }} severity="error" sx={{ width: "100%" }}>
+                        Failed to copy UID
                     </Alert>
                 </Snackbar>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor }}>
                     <span>Below is your UID to share with your friends. You will <b>only</b> be able to see each other's schedule if you <b>both</b> added each other.</span>
                     <TextField variant="outlined" label="Your UID:" type="text" margin="normal" fullWidth value={localStorage.getItem("uid")} InputProps={{
                         endAdornment: <InputAdornment position="end">
-                            <IconButton onClick={() => { navigator.clipboard.writeText(localStorage.getItem("uid")); setSnackbarMsg(true) }} title="Copy to clipboard">
+                            <IconButton onClick={() => { if (navigator.clipboard) { navigator.clipboard.writeText(localStorage.getItem("uid")); setSnackbarMsg(true) } else { setFailedMsg(true) } }} title="Copy to clipboard">
                                 <ContentCopyIcon />
                             </IconButton>
                         </InputAdornment>
@@ -254,6 +266,7 @@ function Friends() {
                                 <Grid container direction="row" alignItems="center" xs style={{ justifyContent: "right" }}>
                                     <Grid item>
                                         <IconButton onClick={() => { viewFriend(friend) }} title={"View " + friendNames[index] + "'s schedule"}><VisibilityIcon /></IconButton>
+                                        <IconButton onClick={() => { if (navigator.clipboard) { navigator.clipboard.writeText(friendList[index]); setSnackbarMsg(true) } else { setFailedMsg(true) } }} title={"Copy " + friendNames[index] + "'s UID"}><ContentCopyIcon /></IconButton>
                                         <IconButton title="Delete friend" onClick={() => { handleClickOpen(index) }}>
                                             <DeleteIcon style={{ color: "#d9534f" }} />
                                         </IconButton>
