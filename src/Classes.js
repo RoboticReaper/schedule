@@ -15,7 +15,7 @@ import Button from '@material-ui/core/Button';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -56,7 +56,7 @@ function Classes() {
     const [returning, setReturning] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
-        if(!user){
+        if (!user) {
             window.location.href = "/";
         }
     })
@@ -99,7 +99,7 @@ function Classes() {
     function goBack() {
         setReturning(true);
         // upload the classes to firestore
-        firestore.db.collection('users').doc(localStorage.getItem('uid')).set({"classes": JSON.stringify(createdClasses), "hr": hr}, {merge: true}).then(result => {
+        firestore.db.collection('users').doc(localStorage.getItem('uid')).set({ "classes": JSON.stringify(createdClasses), "hr": hr }, { merge: true }).then(result => {
             localStorage.setItem("hr", hr);
             localStorage.setItem("createdClasses", JSON.stringify(createdClasses));
             window.location.href = '/'
@@ -110,7 +110,7 @@ function Classes() {
     function DisplayClasses() {
         return (createdClasses.map((item, index) =>
             <>
-                <Paper className={classes.paper} elevation={3} variant="outlined" style={{backgroundColor: item[3] === undefined ? localStorage.getItem("backgroundColor") : item[3]}}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor: item[3] === undefined ? localStorage.getItem("backgroundColor") : item[3] }}>
                     <Grid container spacing={2} direction="column">
                         <Grid item align="left" >
                             <Box display="flex">
@@ -138,7 +138,7 @@ function Classes() {
                                         </DialogActions>
                                     </Dialog>
                                 </div>
-                                <ClassDialog currClass={item} currIndex={index} saveClass={saveClass} msg={"Edit class"}/>
+                                <ClassDialog currClass={item} currIndex={index} saveClass={saveClass} msg={"Edit class"} />
                             </Box>
                         </Grid>
                         <Grid item align="left">
@@ -160,47 +160,44 @@ function Classes() {
         ));
     }
 
-    return <div>
+    return <div className="App" style={{ backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor") }}>
         <Backdrop className={classes.backdrop} open={returning}>
             <CircularProgress color="inherit" />
             <h1>Saving</h1>
         </Backdrop>
-        <div className="App" style={{backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor")}}>
-            <header className='App-header'>
-            </header>
-            <Container maxWidth='sm'>
-                <div className={classes.root}>
-                    <div className={classes.paper}>
-                        <Grid container direction="row" spacing={2} alignItems="center" justify="center">
-                            <Grid item align="center"><IconButton onClick={goBack} title="Save and go back"><ArrowBackIcon /></IconButton></Grid>
 
-                            <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
+        <header className="App-header">
+            <Grid container direction="row" alignItems="center" justify="center">
+                <Grid item align="center"><IconButton style={{ color: "white" }} onClick={goBack} title="Save and go back"><ArrowBackIcon /></IconButton></Grid>
 
-                                <Typography variant="h5" gutterBottom>
-                                    Classes
-                                </Typography>
-                            </Grid>
+                <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
 
-                            <Grid item align="center"><ClassDialog addClass={addClass} msg={"Add class"}/></Grid>
-                        </Grid>
-                    </div>
-                    <div style={{color: "gray"}}>Note: Advisory and I-blocks are already in the schedule, there is no need to add them here.</div>
-                    <TextField
-                        variant="outlined"
-                        value={hr}
-                        onChange={e => setHr(e.target.value)}
-                        label="Homeroom number"
-                        type="text"
-                        margin="normal"
-                        fullWidth
-                    />
-                    <DisplayClasses />
-                    <p style={{height: 200}}></p>
-                </div>
-            </Container>
+                    <h3>Classes</h3>
+                </Grid>
 
-        </div>
+                <Grid item align="center"><ClassDialog addClass={addClass} msg={"Add class"} /></Grid>
+            </Grid>
+        </header>
+
+        <Container maxWidth='sm'>
+            <div className={classes.root}>
+                <div style={{ color: "gray" }}>Note: Advisory and I-blocks are already in the schedule, there is no need to add them here.</div>
+                <TextField
+                    variant="outlined"
+                    value={hr}
+                    onChange={e => setHr(e.target.value)}
+                    label="Homeroom number"
+                    type="text"
+                    margin="normal"
+                    fullWidth
+                />
+                <DisplayClasses />
+                <p style={{ height: 200 }}></p>
+            </div>
+        </Container>
+
     </div>
+
 }
 
 export default Classes;

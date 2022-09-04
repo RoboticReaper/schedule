@@ -44,22 +44,37 @@ function Announcements() {
         })
 
     }, [])
-    
+
 
     return (
         <div className="App" style={{ backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor") }}>
             <header className="App-header">
                 <Grid container direction="row" alignItems="center" justify="center">
-                    <Grid item align="center"><IconButton onClick={goBack} title="Go back"><ArrowBackIcon style={{ color: "white" }} /></IconButton></Grid>
+                    <Grid item align="center"><IconButton onClick={goBack} style={{ color: "white" }} title="Go back"><ArrowBackIcon /></IconButton></Grid>
 
                     <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
-
-                        <h3 style={{}}>Announcements</h3>
+                        <h3>Announcements</h3>
                     </Grid>
                 </Grid>
             </header>
 
-            <Container maxWidth='md'>
+            <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2022, 8, 3, 21, 40) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2022, 8, 3, 21, 40)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>New Feature: Adding Friends</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/3/2022 9:40PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        Hi everyone,<br />
+                        <p>Friend system is now available, and you can add friends to view their schedule on any day. Here are the steps:</p>
+                        <ul>
+                            <li>In <span onClick={() => { history.push("/friends") }} style={{ color: "blue", cursor: "pointer" }}>friends page</span>, your UID will be shown in order to copy and share it with your friends.</li>
+                            <li>Click the + button at the top to fill your friends' UID and their names. </li>
+                            <li>After <b>both</b> people have added each other as friends, you can look at each other's schedule.</li>
+                        </ul>
+
+                        Hope you find this useful! <br />
+                        <br />Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2022, 8, 1, 22, 32) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2022, 8, 1, 22, 32)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>Customization Update</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/1/2022 10:32PM</div>
@@ -70,9 +85,9 @@ function Announcements() {
                             <li>You can now customize the <b>app's color</b>! Just go to <span onClick={() => { history.push("/settings") }} style={{ color: "blue", cursor: "pointer" }}>settings page</span> and you can choose your own background color for the app. It will apply to all your devices.</li>
                             <li>In settings page, you can switch to <b>12-hour clock</b> if you prefer.</li>
                             <li>There is also an option to choose a <b>color for your classes</b> to help you identify the class faster. In <span onClick={() => { history.push("/classes") }} style={{ color: "blue", cursor: "pointer" }}>class edit page</span>, edit one of the classes and scroll to the bottom. You can choose a color for that class or keep it transparent to match with the background color.</li>
-                            <li>On days ending at 12PM, there will be a <b>half-day reminder</b> (for example 9/23).</li>
+                            <li>On days ending at 12PM, there will be a <b>half-day reminder</b> (for example 9/23/2022).</li>
                         </ul>
-                        
+
                         That's all for now, but I will keep working on it to improve it further! <br />
                         <br />Best,<br />Baoren
                     </div>

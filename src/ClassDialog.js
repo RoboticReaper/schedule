@@ -368,7 +368,7 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
     return (
         <form className={classes.root} noValidate autoComplete="off">
             <div>
-                <IconButton onClick={handleClickOpen} title={msg}>
+                <IconButton onClick={handleClickOpen} style={currClass === undefined ? {color: "white"} : null} title={msg}>
                     {currClass === undefined ? <AddIcon /> : <EditIcon />}
                 </IconButton>
                 <Dialog disableBackdropClick open={open} onClose={handleClose} aria-labelledby="form-dialog-title">

@@ -170,7 +170,7 @@ function Friends() {
             </Backdrop>
             <header className="App-header">
                 <Grid container direction="row" alignItems="center" justify="center">
-                    <Grid item align="center"><IconButton onClick={goBack} title="Go back"><ArrowBackIcon style={{ color: "white" }} /></IconButton></Grid>
+                    <Grid item align="center"><IconButton onClick={goBack} style={{ color: "white" }} title="Go back"><ArrowBackIcon /></IconButton></Grid>
 
                     <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
 
@@ -178,8 +178,8 @@ function Friends() {
                     </Grid>
 
                     <Grid item align="center">
-                        <IconButton onClick={() => { setOpen(true) }} title="Add friend">
-                            <AddIcon style={{ color: "white" }} />
+                        <IconButton onClick={() => { setOpen(true) }} style={{ color: "white" }} title="Add friend">
+                            <AddIcon />
                         </IconButton>
                         <Dialog disableBackdropClick open={open} onClose={() => { setOpen(false) }} aria-labelledby="form-dialog-title">
                             <DialogTitle>Add friend</DialogTitle>
@@ -250,7 +250,7 @@ function Friends() {
                     </Alert>
                 </Snackbar>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor }}>
-                    <span>Below is your UID to share with your friends. You will <b>only</b> be able to see each other's schedule if you <b>both</b> added each other.</span>
+                    <span>Below is your UID to share with your friends. You can see each other's schedule if you <b>both</b> added each other.</span>
                     <TextField variant="outlined" label="Your UID:" type="text" margin="normal" fullWidth value={localStorage.getItem("uid")} InputProps={{
                         endAdornment: <InputAdornment position="end">
                             <IconButton onClick={() => { if (navigator.clipboard) { navigator.clipboard.writeText(localStorage.getItem("uid")); setSnackbarMsg(true) } else { setFailedMsg(true) } }} title="Copy to clipboard">
@@ -267,8 +267,8 @@ function Friends() {
                                     <Grid item>
                                         <IconButton onClick={() => { viewFriend(friend) }} title={"View " + friendNames[index] + "'s schedule"}><VisibilityIcon /></IconButton>
                                         <IconButton onClick={() => { if (navigator.clipboard) { navigator.clipboard.writeText(friendList[index]); setSnackbarMsg(true) } else { setFailedMsg(true) } }} title={"Copy " + friendNames[index] + "'s UID"}><ContentCopyIcon /></IconButton>
-                                        <IconButton title="Delete friend" onClick={() => { handleClickOpen(index) }}>
-                                            <DeleteIcon style={{ color: "#d9534f" }} />
+                                        <IconButton title="Delete friend" onClick={() => { handleClickOpen(index) }} style={{ color: "#d9534f" }} >
+                                            <DeleteIcon />
                                         </IconButton>
                                     </Grid>
                                     <Dialog open={deleteWarning[index]} onClose={() => { handleClose(index) }}>

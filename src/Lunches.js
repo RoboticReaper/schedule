@@ -66,10 +66,10 @@ function Lunches() {
             localStorage.setItem('lunches', JSON.stringify(lunches));
             window.location.href = "/";
         }).catch(error => {
-        
-            firestore.db.collection('users').doc(localStorage.getItem('uid')).set({"lunches": JSON.stringify(lunches)}).then(result => {
+
+            firestore.db.collection('users').doc(localStorage.getItem('uid')).set({ "lunches": JSON.stringify(lunches) }).then(result => {
                 localStorage.setItem('lunches', JSON.stringify(lunches));
-            window.location.href = "/";
+                window.location.href = "/";
             })
         });
 
@@ -102,30 +102,28 @@ function Lunches() {
     };
 
     return (
-        <div className="App" style={{backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor")}}>
+        <div className="App" style={{ backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor") }}>
             <Backdrop className={classes.backdrop} open={returning}>
                 <CircularProgress color="inherit" />
                 <h1>Saving</h1>
             </Backdrop>
-            <header className='App-header'>
+            <header className="App-header">
+                <Grid container direction="row" alignItems="center" justify="center">
+                    <Grid item align="center"><IconButton onClick={goBack} style={{ color: "white" }} title="Go back"><ArrowBackIcon /></IconButton></Grid>
+
+                    <Grid item xs={0} style={{ marginLeft: 10, marginRight: 10 }} align="center">
+
+                        <h3>Lunches</h3>
+                    </Grid>
+
+                    <Grid item align="center"><Button style={{marginLeft:10}} variant="contained" disableElevation color="primary" onClick={() => { setDay1(""); setDay2(""); setDay3(""); setDay4(""); setDay5(""); setDay6("") }}>Clear All</Button>
+                    </Grid>
+                </Grid>
             </header>
             <Container maxWidth='sm'>
                 <div className={classes.root}>
                     <div className={classes.paper}>
-                        <Grid container direction="row" spacing={2} alignItems="center" justify="center">
-                            <Grid item align="center"><IconButton onClick={goBack} title="Save and go back"><ArrowBackIcon /></IconButton></Grid>
-
-                            <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
-
-                                <Typography variant="h5" gutterBottom>
-                                    Lunches
-                                </Typography>
-                            </Grid>
-
-                            <Button variant="contained" disableElevation color="primary" onClick={() => { setDay1(""); setDay2(""); setDay3(""); setDay4(""); setDay5(""); setDay6("") }}>Clear All</Button>
-
-                        </Grid>
-                        <Paper className={classes.paper} elevation={3} variant="outlined" style={{backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor")}}>
+                        <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor") }}>
                             <span>Here's how to figure out what lunch you have:</span>
                             <p><b>First lunch</b>: Classes in the ESL, Performing Arts, Visual Arts, Science, PE (excluding Health) and Special Education departments.</p>
                             <p><b>Second lunch</b>: All remaining classes in <b>EVEN</b> classrooms</p>

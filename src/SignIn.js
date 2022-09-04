@@ -109,7 +109,7 @@ function SignIn() {
         <div className="App">
             <header className='App-header'>
             </header>
-            <Container maxWidth="sm" style={{marginBottom: 100}}>
+            <Container maxWidth="sm" style={{paddingBottom: 100}}>
                 <div className="classes.root">
                     <Typography gutterBottom variant="h5" style={{marginTop: 30}}>Welcome to the LHS schedule app!</Typography>
                     <Typography gutterBottom variant="h6">This is a schedule management app for Lexington High School students. The schedule will <i>always</i> be up to date!</Typography>
@@ -120,7 +120,7 @@ function SignIn() {
                     <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signIn} style={{ marginTop: 20, marginBottom: 20 }}>Sign in</Button>
                     <Button color="secondary" style={{ textTransform: "none" }} onClick={toSignUp}>Don't have an account? Sign up</Button><br></br>
                     <ResetDialog />
-                    <Button color="secondary" style={{ textTransform: "none" }} onClick={() => {openInNewTab("mailto:liubaoren2006@gmail.com")}}>Contact me by Email</Button><br></br>
+                    <Button color="secondary" style={{ textTransform: "none", marginBottom: 150 }} onClick={() => {openInNewTab("mailto:liubaoren2006@gmail.com")}}>Contact me by Email</Button><br></br>
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                         <Alert onClose={handleClose} severity="warning">
                             {alertMsg}

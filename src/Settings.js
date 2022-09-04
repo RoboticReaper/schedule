@@ -65,11 +65,11 @@ function Settings() {
             </Backdrop>
             <header className="App-header">
                 <Grid container direction="row" alignItems="center" justify="center">
-                    <Grid item align="center"><IconButton onClick={goBack} title="Save and go back"><ArrowBackIcon style={{ color: "white" }} /></IconButton></Grid>
+                    <Grid item align="center"><IconButton onClick={goBack} style={{ color: "white" }} title="Save and go back"><ArrowBackIcon /></IconButton></Grid>
 
                     <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
 
-                        <h3 style={{}}>Settings</h3>
+                        <h3>Settings</h3>
                     </Grid>
                 </Grid>
             </header>
