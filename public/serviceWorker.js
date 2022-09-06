@@ -1,13 +1,28 @@
-self.addEventListener('fetch', function(event) {
-    event.respondWith(async function() {
-       try{
-         var res = await fetch(event.request);
-         var cache = await caches.open('cache');
-         cache.put(event.request.url, res.clone());
-         return res;
-       }
-       catch(error){
-         return caches.match(event.request);
-        }
-      }());
-  });
+self.addEventListener('fetch', function (event) {
+  event.respondWith(
+    caches.match(event.request).then((cacheRes) => {
+      return cacheRes || fetch(event.request).then((fetchRes) => {
+        let type = event.request.method !== "POST";
+        let fetchClone = fetchRes.clone();
+
+        if(type){
+          // don't cache POST requests
+          caches.open("v1").then((cache) => {
+            cache.put(event.request, fetchClone);
+          })
+        } 
+
+        return fetchRes;
+      });
+    })
+  );
+});
+
+
+self.addEventListener("install", (e) => {
+  self.skipWaiting();
+})
+
+self.addEventListener("activate", () => {
+  self.clients.claim();
+})

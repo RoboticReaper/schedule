@@ -42,9 +42,9 @@ export function getUid() {
 }
 
 var now = new Date();
-var allClasses = request();
+var allClasses;
 var createdClasses = [];
-var todayClass = filter(allClasses, now);
+var todayClass = [];
 var todayDay;
 var lunchData;
 var hr;
@@ -97,22 +97,7 @@ function useForceUpdate() {
 }
 
 
-function request() {
 
-    const $ = window.$;
-    var classes;
-
-    $.ajaxSetup({ // force getJSON to finish before continuing
-        async: false
-    });
-
-    $.getJSON("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-08-16T00%3A00%3A00-04%3A00&timeMax=2022-12-30T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs", function (data) {
-        classes = data;
-    });
-
-
-    return classes;
-}
 
 function datesAreOnSameDay(first, second) {
     return first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
@@ -121,7 +106,6 @@ function datesAreOnSameDay(first, second) {
 
 
 function filter(data, currDate) {
-
     // use date as the key, the variable is array of events in that day.
     let dates = new Map();
 
@@ -250,6 +234,7 @@ function DisplayClasses() {
 
 
     const classes = useStyles();
+    if (todayClass === undefined) { return }
     return (
         todayClass.map((item) =>
             <>
@@ -330,10 +315,11 @@ function Schedule() {
     var deferredPrompt;
 
     const [iosInstallPrompt, setIosInstallPrompt] = useState(false);
+    const [online, setOnline] = useState(navigator.onLine);
 
-    var viewID = useParams().id
+    var viewID = useParams().id;
 
-    
+
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -343,7 +329,7 @@ function Schedule() {
             if ((window.location.pathname === "/signin" || window.location.pathname === "/signup")) {
                 history.replace('/');
             }
-            getClassesFromFirestore();
+
         } else {
             localStorage.clear();
             if (window.location.pathname !== '/signin' && window.location.pathname !== '/signup') {
@@ -351,6 +337,22 @@ function Schedule() {
             }
         }
     })
+
+    useEffect(() => {
+        var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-08-16T00%3A00%3A00-04%3A00&timeMax=2022-12-30T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs");
+        var firestoreFetch = getClassesFromFirestore();
+
+
+        Promise.all([calendarFetch, firestoreFetch]).then(response => response[0].json()).then(data => {
+            allClasses = data;
+            updateClass();
+        })
+
+        window.addEventListener('online', () => setOnline(true));
+        window.addEventListener('offline', () => setOnline(false));
+
+    }, [])
+
 
 
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -399,7 +401,7 @@ function Schedule() {
 
 
 
-    function getClassesFromFirestore() {
+    async function getClassesFromFirestore() {
 
         if (gotten === true) {
             return;
@@ -408,8 +410,11 @@ function Schedule() {
 
         var getID = viewID === undefined ? localStorage.getItem('uid') : viewID;
 
-        firestore.db.collection('users').doc(getID).get().then((value) => {
-            var data = value.data();
+        var docRef = firestore.db.collection("users").doc(getID).get();
+        var announcementRef = firestore.db.collection("announcement").doc("info").get();
+
+        return Promise.all([docRef, announcementRef]).then((values) => {
+            var data = values[0].data();
 
             createdClasses = [];
             lunchData = ["", "", "", "", "", ""];
@@ -434,7 +439,7 @@ function Schedule() {
                 }
                 if (data.backgroundColor !== undefined) {
                     backgroundColor = data.backgroundColor;
-                }else{
+                } else {
                     backgroundColor = "#ffffff";
                 }
                 if (data.friendList !== undefined) {
@@ -455,38 +460,24 @@ function Schedule() {
                 localStorage.setItem('backgroundColor', backgroundColor);
                 localStorage.setItem('friendList', JSON.stringify(friendList));
                 localStorage.setItem('friendName', JSON.stringify(friendName));
-                todayClass = filter(allClasses, now);
+
+
+                var latestAnnouncementDate = values[1].data().time.toDate();
+
+                if ((lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) && userCreationDate < latestAnnouncementDate) {
+                    hasUnreadAnnouncements = true;
+                }
+
+                localStorage.setItem('latestAnnouncementDate', latestAnnouncementDate);
             }
-
-
-            if (viewID === undefined) {
-                // determine if announcement page should pop up
-                firestore.db.collection("announcement").doc("info").get().then((value) => {
-
-                    var latestAnnouncementDate = value.data().time.toDate();
-
-                    if ((lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) && userCreationDate < latestAnnouncementDate) {
-                        hasUnreadAnnouncements = true;
-                    }
-
-                    localStorage.setItem('latestAnnouncementDate', latestAnnouncementDate);
-
-
-
-                    updateClass();
-                })
-            } else {
-                updateClass();
-            }
-
-
         }).catch((error) => {
-            if(viewID !== undefined){
+            if (viewID !== undefined) {
                 alert("Permission denied. Maybe this user haven't added you as a friend yet.");
                 history.replace('/friends');
             }
             console.log(error)
         })
+
 
 
     }
@@ -529,6 +520,7 @@ function Schedule() {
 
 
         gotten = true;
+        todayClass = filter(allClasses, now);
         forceUpdate();
 
         if (hasUnreadAnnouncements) {
@@ -577,6 +569,12 @@ function Schedule() {
         handleClose();
     }
 
+    function OfflineReminder() {
+        if(!online){
+            return <div style={{ backgroundColor: "lightgrey", padding: 3 }}>You are offline.</div>
+        }
+        return null;
+    }
 
     function ClassReminder() {
         if (createdClasses.length === 0 && viewID === undefined) {
@@ -729,6 +727,7 @@ function Schedule() {
                         </div>
                         <DatePicker />
 
+                        <OfflineReminder />
                         <ClassReminder />
                         <LunchReminder />
                         {todayDay !== undefined ? <Paper className={classes.paper} style={{ backgroundColor: backgroundColor }} elevation={3} variant="outlined">Today is day {todayDay} of 6{halfDay ? <span>, also a <b>half</b> day</span> : null}.</Paper> : null}

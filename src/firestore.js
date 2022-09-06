@@ -13,6 +13,8 @@ firebase.initializeApp({
     measurementId: "G-PR4HESYWTG"
 });
 
+firebase.firestore().enablePersistence()
+
 firebase.analytics();
 let db = firebase.firestore();
 
