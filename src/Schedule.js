@@ -455,7 +455,7 @@ function Schedule() {
                 localStorage.setItem('backgroundColor', backgroundColor);
                 localStorage.setItem('friendList', JSON.stringify(friendList));
                 localStorage.setItem('friendName', JSON.stringify(friendName));
-                todayClass = filter(allClasses, now);
+                
             }
 
 
@@ -529,6 +529,7 @@ function Schedule() {
 
 
         gotten = true;
+        todayClass = filter(allClasses, now);
         forceUpdate();
 
         if (hasUnreadAnnouncements) {
