@@ -339,17 +339,34 @@ function Schedule() {
     })
 
     useEffect(() => {
-        var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-08-16T00%3A00%3A00-04%3A00&timeMax=2022-12-30T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs");
-        var firestoreFetch = getClassesFromFirestore();
+        var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-08-16T00%3A00%3A00-04%3A00&timeMax=2022-12-30T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs")
+        var firestoreFetch = getClassesFromFirestore()
 
+        // Promise.all([calendarFetch, firestoreFetch]).then(response => response[0].json()).then(data => {
+        //     allClasses = data;
+        //     updateClass();
+        // }).catch(error => {
+        //     alert(error)
+        // })
 
-        Promise.all([calendarFetch, firestoreFetch]).then(response => response[0].json()).then(data => {
-            allClasses = data;
-            updateClass();
-        })
+        Promise.all([calendarFetch, firestoreFetch]).then(response => {});
+
 
         window.addEventListener('online', () => setOnline(true));
         window.addEventListener('offline', () => setOnline(false));
+
+        if (navigator.userAgent.match(/(iPhone|iPad)/) && !navigator.standalone && !userDismissed && viewID === undefined) {
+
+            var installPrompt = document.getElementById('installPrompt');
+            var installButton = document.getElementById('accept');
+            installPrompt.style.display = 'block';
+            installButton.addEventListener('click', (e) => {
+                installPrompt.style.display = 'none';
+                userDismissed = true;
+
+                setIosInstallPrompt(true);
+            })
+        }
 
     }, [])
 
@@ -383,21 +400,6 @@ function Schedule() {
 
     })
 
-    // make ios users install the app
-    useEffect(() => {
-        if (navigator.userAgent.match(/(iPhone|iPad)/) && !navigator.standalone && !userDismissed && viewID === undefined) {
-
-            var installPrompt = document.getElementById('installPrompt');
-            var installButton = document.getElementById('accept');
-            installPrompt.style.display = 'block';
-            installButton.addEventListener('click', (e) => {
-                installPrompt.style.display = 'none';
-                userDismissed = true;
-
-                setIosInstallPrompt(true);
-            })
-        }
-    }, [])
 
 
 
@@ -521,12 +523,12 @@ function Schedule() {
 
         gotten = true;
         todayClass = filter(allClasses, now);
-        forceUpdate();
+
 
         if (hasUnreadAnnouncements) {
             history.push("/announcements");
         }
-
+        forceUpdate();
 
     }
 
@@ -570,7 +572,7 @@ function Schedule() {
     }
 
     function OfflineReminder() {
-        if(!online){
+        if (!online) {
             return <div style={{ backgroundColor: "lightgrey", padding: 3 }}>You are offline.</div>
         }
         return null;
@@ -670,13 +672,13 @@ function Schedule() {
                                     open={Boolean(anchorEl)}
                                     onClose={handleClose}
                                 >
-                                    <MenuItem onClick={gotoClasses}>
+                                    <MenuItem onClick={gotoClasses} disabled={!online}>
                                         <ListItemIcon>
                                             <BusinessIcon />
                                         </ListItemIcon>
                                         <Typography variant="inherit">Edit Classes</Typography>
                                     </MenuItem>
-                                    <MenuItem onClick={gotoLunches}>
+                                    <MenuItem onClick={gotoLunches} disabled={!online}>
                                         <ListItemIcon>
                                             <FastfoodIcon />
                                         </ListItemIcon>
@@ -694,7 +696,7 @@ function Schedule() {
                                         </ListItemIcon>
                                         <Typography variant="inherit">Announcements</Typography>
                                     </MenuItem>
-                                    <MenuItem onClick={() => { history.push("/settings"); }}>
+                                    <MenuItem onClick={() => { history.push("/settings"); }} disabled={!online}>
                                         <ListItemIcon>
                                             <SettingsIcon />
                                         </ListItemIcon>
@@ -706,7 +708,7 @@ function Schedule() {
                                         </ListItemIcon>
                                         <Typography variant="inherit">Feedback</Typography>
                                     </MenuItem>
-                                    <MenuItem onClick={signOut}>
+                                    <MenuItem onClick={signOut} disabled={!online}>
                                         <ListItemIcon>
                                             <ExitToAppIcon />
                                         </ListItemIcon>
@@ -737,7 +739,7 @@ function Schedule() {
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
                         <p style={{ height: 200 }}></p>
 
-                        <Snackbar open id="installPrompt" style={{ display: "none" }} message="Install the app to home screen for convenience" action={
+                        <Snackbar open id="installPrompt" style={{ display: "none" }} message="Add shortcut to Home screen" action={
                             <Button size="small" id="accept" color="secondary">Accept</Button>
                         } />
 
