@@ -302,6 +302,7 @@ function today() {
 var gotten = false;
 var userDismissed = false;
 
+
 function Schedule() {
 
     const classes = useStyles();
@@ -342,14 +343,13 @@ function Schedule() {
         var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-08-16T00%3A00%3A00-04%3A00&timeMax=2022-12-30T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs")
         var firestoreFetch = getClassesFromFirestore()
 
-        // Promise.all([calendarFetch, firestoreFetch]).then(response => response[0].json()).then(data => {
-        //     allClasses = data;
-        //     updateClass();
-        // }).catch(error => {
-        //     alert(error)
-        // })
-
-        Promise.all([calendarFetch, firestoreFetch]).then(response => {});
+        
+        Promise.all([calendarFetch, firestoreFetch]).then(response => {
+            response[0].json().then(data => {
+                allClasses = data;
+                updateClass();
+            })
+        });
 
 
         window.addEventListener('online', () => setOnline(true));
