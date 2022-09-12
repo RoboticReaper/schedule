@@ -34,7 +34,6 @@ import AnnouncementIcon from '@mui/icons-material/Announcement';
 import Divider from '@mui/material/Divider';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import AddToHomeScreenIcon from '@mui/icons-material/AddToHomeScreen';
 
 var uid;
 
@@ -302,10 +301,10 @@ function today() {
 }
 
 var gotten = false;
-var userDismissed = false;
 
 
-function Schedule() {
+
+function FriendSchedule() {
 
     const classes = useStyles();
     let history = useHistory();
@@ -315,10 +314,12 @@ function Schedule() {
 
     var day = days[now.getDay()];
     var month = months[now.getMonth()];
-    const [deferredPrompt, setDeferredPrompt] = useState();
 
-    const [iosInstallPrompt, setIosInstallPrompt] = useState(false);
     const [online, setOnline] = useState(navigator.onLine);
+    const forceUpdate = useForceUpdate();
+
+    var viewID = useParams().id;
+
 
 
     firebase.auth().onAuthStateChanged((user) => {
@@ -339,89 +340,33 @@ function Schedule() {
     })
 
     useEffect(() => {
-
+        if(document.referrer !== window.location.href){
+            window.location.reload();
+        }
         var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1000&sanitizeHtml=true&timeMin=2022-08-16T00%3A00%3A00-04%3A00&timeMax=2022-12-30T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs")
         var firestoreFetch = getClassesFromFirestore()
+
 
         Promise.all([calendarFetch, firestoreFetch]).then(response => {
             response[0].json().then(data => {
                 allClasses = data;
                 updateClass();
-                hasUnreadAnnouncements = false;
             })
         });
 
 
         window.addEventListener('online', () => setOnline(true));
-        window.addEventListener('offline', () => { setOnline(false); window.location.href = '/'; });
-
-
-        var installPrompt = document.getElementById('installPrompt');
-
-        if (navigator.userAgent.match(/(iPhone|iPad)/) && !navigator.standalone && !userDismissed) {
-            if (!userDismissed && localStorage.getItem("installed") === null) {
-                installPrompt.style.display = 'block';
-            }
-            
-        }
-        if (navigator.userAgent.match(/(iPhone|iPad)/) && navigator.standalone) {
-            installPrompt.style.display = 'none';
-            localStorage.setItem("installed", "true");
-        }
+        window.addEventListener('offline', () => { setOnline(false); window.location.reload(); });
 
     }, [])
 
-
-
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-
-        var installPrompt = document.getElementById('installPrompt');
-
-        if (!userDismissed && localStorage.getItem("installed") === null) {
-            installPrompt.style.display = 'block';
-        }
-
-        setDeferredPrompt(e);
-    })
-
-    function install() {
-        var installPrompt = document.getElementById('installPrompt');
-
-        if (navigator.userAgent.match(/(iPhone|iPad)/) && !navigator.standalone) {
-            installPrompt.style.display = 'none';
-            userDismissed = true;
-            localStorage.setItem("installed", false);
-            setIosInstallPrompt(true);
-        } else {
-            installPrompt.style.display = 'none';
-            userDismissed = true;
-
-            deferredPrompt.prompt().catch((error) => { });
-
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    firestore.db.collection("AppInstalled").doc(uid).set({ installed: true });
-                    localStorage.setItem("installed", "true");
-                } else if (choiceResult.outcome === 'dismissed') {
-                    localStorage.setItem("installed", "false");
-                }
-                setDeferredPrompt(null);
-            });
-        }
-
-        handleClose()
-    }
-
-
-    async function getClassesFromFirestore() {
+    function getClassesFromFirestore() {
 
         if (gotten === true) {
             return;
         }
 
-        var getID = localStorage.getItem('uid');
+        var getID = viewID;
 
         var docRef = firestore.db.collection("users").doc(getID).get();
         var announcementRef = firestore.db.collection("announcement").doc("info").get();
@@ -445,7 +390,6 @@ function Schedule() {
                 }
                 if (data.lastReadAnnouncementDate !== undefined) {
                     lastReadAnnouncementDate = data.lastReadAnnouncementDate.toDate();
-
                 }
                 if (data.use12HourClock !== undefined) {
                     use12HourClock = data.use12HourClock;
@@ -461,48 +405,14 @@ function Schedule() {
                 if (data.friendName !== undefined) {
                     friendName = data.friendName;
                 }
-
             }
-
-            localStorage.setItem('createdClasses', JSON.stringify(createdClasses));
-            localStorage.setItem('lunches', JSON.stringify(lunchData));
-            localStorage.setItem('hr', hr);
-            localStorage.setItem('lastReadAnnouncementDate', lastReadAnnouncementDate);
-            localStorage.setItem('use12HourClock', use12HourClock);
-            localStorage.setItem('backgroundColor', backgroundColor);
-            localStorage.setItem('friendList', JSON.stringify(friendList));
-            localStorage.setItem('friendName', JSON.stringify(friendName));
-
-
-            var latestAnnouncementDate = values[1].data().time.toDate();
-
-            if ((lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) && userCreationDate < latestAnnouncementDate) {
-                hasUnreadAnnouncements = true;
-            }
-
-            localStorage.setItem('latestAnnouncementDate', latestAnnouncementDate);
-
-            var cacheClearDate = values[1].data().cacheClear.toDate();
-
-            if ((lastCacheClear === "" || cacheClearDate > lastCacheClear) && userCreationDate < cacheClearDate) {
-                localStorage.setItem('lastCacheClear', new Date());
-                localStorage.removeItem("cachedFriends")
-                caches.open('cache').then(cache => {
-                    cache.keys().then(keys => {
-                        var deletions = []
-                        for (var i = 0; i < keys.length; i++) {
-                            deletions.push(cache.delete(keys[i]));
-                        }
-                        Promise.all(deletions).then(() => {
-                            window.location.reload();
-                        })
-                    })
-                })
-
-            }
-
 
         }).catch((error) => {
+            if(error.code === "permission-denied"){
+                alert("Permission denied. Maybe this user haven't added you as a friend yet.");
+                history.replace('/friends');
+            }
+            
             console.log(error)
         })
 
@@ -512,10 +422,8 @@ function Schedule() {
 
 
 
-    const forceUpdate = useForceUpdate();
 
     function updateClass() {
-
         createdClasses.map((thisClass) => {
             allClasses.items.map((today) => {
                 if (thisClass[2].includes(today.summary)) {
@@ -527,12 +435,8 @@ function Schedule() {
                     } else {
                         today.room = "N/A";
                     }
-
-                    // setting class color
                     if (thisClass[3] !== undefined) {
                         today.color = thisClass[3];
-                    } else {
-                        today.color = backgroundColor;
                     }
                 }
                 // make a special case for advisory
@@ -551,66 +455,16 @@ function Schedule() {
             }
         })
 
-        if (createdClasses.length === 0 && !online) {
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000)
-        }
 
         gotten = true;
         todayClass = filter(allClasses, now);
 
-
-
-        if (hasUnreadAnnouncements) {
-            history.push("/announcements");
-        }
-
         forceUpdate();
-
-
-
 
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
-    const gotoClasses = () => {
-        history.push("/classes")
-    };
-
-
-    const signOut = () => {
-        firebase.auth().signOut().then(() => {
-
-            localStorage.clear();
-            history.push("/signin");
-        }).catch((error) => {
-            console.log(error);
-        })
-    }
-
-    const gotoLunches = () => {
-        history.push("/lunches")
-    }
-
-    const openInNewTab = (url) => {
-        if (navigator.userAgent.match(/(iPhone|iPad)/)) {
-            window.location.href = url;
-        }
-        else {
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
-        handleClose();
-    }
 
     function OfflineReminder() {
         if (!online) {
@@ -620,14 +474,14 @@ function Schedule() {
     }
 
     function ClassReminder() {
-        if (createdClasses.length === 0) {
+        if (createdClasses.length === 0 && viewID === undefined) {
             return <div style={{ backgroundColor: "lightgrey", padding: 3 }}>You haven't created any class yet. <a href="/classes">Tap here to do so</a></div>
         }
         return null;
     }
 
     function LunchReminder() {
-        if (lunchData !== undefined && lunchData[todayDay - 1] === "") {
+        if (lunchData !== undefined && lunchData[todayDay - 1] === "" && viewID === undefined) {
             return <div style={{ backgroundColor: "lightgrey", padding: 3 }}>You haven't specified your lunch for this day yet. <a href="/lunches">Tap here to do so</a></div>
         }
         return null;
@@ -675,7 +529,16 @@ function Schedule() {
                 <CircularProgress color="inherit" />
             </Backdrop>
             <div className="App">
-                <header className='App-header'>LHS Schedule
+                <header className='App-header'>
+
+                    <Grid container direction="row" alignItems="center" justify="center">
+                        <Grid item align="center"><IconButton onClick={() => { history.push('/friends') }} title="Go back"><ArrowBackIcon style={{ color: "white" }} /></IconButton></Grid>
+
+                        <Grid item style={{ marginLeft: 10, marginRight: 10 }} align="center">
+
+                            <h3 style={{}}>{JSON.parse(localStorage.getItem("friendName"))[JSON.parse(localStorage.getItem("friendList")).indexOf(viewID)]}'s Schedule</h3>
+                        </Grid>
+                    </Grid>
                 </header>
 
                 <Container maxWidth='sm'>
@@ -687,77 +550,6 @@ function Schedule() {
                                 </Typography>
                             </Grid>
 
-                            <Grid item>
-                                <IconButton
-                                    aria-label="more"
-                                    aria-controls="long-menu"
-                                    aria-haspopup="true"
-                                    title='More options'
-                                    onClick={handleClick}
-                                >
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu
-                                    id="simple-menu"
-                                    anchorEl={anchorEl}
-                                    keepMounted
-                                    open={Boolean(anchorEl)}
-                                    onClose={handleClose}
-                                >
-                                    <MenuItem onClick={gotoClasses} disabled={!online}>
-                                        <ListItemIcon>
-                                            <BusinessIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Edit Classes</Typography>
-                                    </MenuItem>
-                                    <MenuItem onClick={gotoLunches} disabled={!online}>
-                                        <ListItemIcon>
-                                            <FastfoodIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Edit Lunches</Typography>
-                                    </MenuItem>
-                                    <MenuItem onClick={() => { history.push("/friends") }}>
-                                        <ListItemIcon>
-                                            <PeopleAltIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Friends</Typography>
-                                    </MenuItem>
-                                    <MenuItem onClick={() => { history.push("/announcements"); }}>
-                                        <ListItemIcon>
-                                            <AnnouncementIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Announcements</Typography>
-                                    </MenuItem>
-                                    <MenuItem onClick={() => { history.push("/settings"); }} disabled={!online}>
-                                        <ListItemIcon>
-                                            <SettingsIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Settings</Typography>
-                                    </MenuItem>
-
-                                    {
-                                        (deferredPrompt !== null && (localStorage.getItem("installed") === null || localStorage.getItem("installed") === "false")) ? <MenuItem onClick={install} >
-                                            <ListItemIcon>
-                                                <AddToHomeScreenIcon />
-                                            </ListItemIcon>
-                                            <Typography variant="inherit">Install App</Typography>
-                                        </MenuItem> : null
-                                    }
-
-                                    <MenuItem onClick={() => { openInNewTab('mailto:liubaoren2006@gmail.com') }}>
-                                        <ListItemIcon>
-                                            <MailOutlineOutlinedIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Feedback</Typography>
-                                    </MenuItem>
-                                    <MenuItem onClick={signOut} disabled={!online}>
-                                        <ListItemIcon>
-                                            <ExitToAppIcon />
-                                        </ListItemIcon>
-                                        <Typography variant="inherit">Sign Out</Typography>
-                                    </MenuItem>
-                                </Menu>
-                            </Grid>
                         </Grid>
 
 
@@ -781,17 +573,6 @@ function Schedule() {
                         <Typography variant="body1" align="left" style={{ marginTop: 50, color: "#808080" }}>Made by Baoren Liu</Typography>
                         <p style={{ height: 200 }}></p>
 
-                        <Snackbar open id="installPrompt" style={{ display: "none" }} message="Add shortcut to Home screen" action={
-                            <Button size="small" id="accept" color="secondary" onClick={install}>Accept</Button>
-                        } />
-
-                        <Dialog onClose={() => { setIosInstallPrompt(false); }} open={iosInstallPrompt}>
-                            <div style={{ margin: 20, textAlign: "center" }}>
-                                <h3>Install the app to home screen</h3><Divider light />
-                                <p style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>Using Safari, click the share button <IosShareIcon /> at the bottom.</p><br /><br /><Divider light />
-                                <p style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>Then click "Add to Home Screen" <AddBoxIcon />.</p>
-                            </div>
-                        </Dialog>
                     </div>
                 </Container>
 
@@ -801,4 +582,4 @@ function Schedule() {
 }
 
 
-export default Schedule;
+export default FriendSchedule;

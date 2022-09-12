@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Settings() {
     const classes = useStyles()
+    const history = useHistory();
     const [use12HourClock, setUse12HourClock] = useState(localStorage.getItem("use12HourClock") === "true");
     const [returning, setReturning] = useState(false);
     const [backgroundColor, setBackgroundColor] = useState(localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor"));
@@ -43,7 +44,8 @@ function Settings() {
     function goBack() {
         setReturning(true);
         firestore.db.collection("users").doc(localStorage.getItem('uid')).set({use12HourClock: use12HourClock, backgroundColor: backgroundColor}, {merge: true}).then(() => {
-            window.location.href = '/';
+            history.push("/")
+            window.location.reload();
         })
     }
 

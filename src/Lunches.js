@@ -15,7 +15,7 @@ import firebase from "firebase/app";
 import { useState } from "react";
 import Button from '@material-ui/core/Button';
 import { Paper } from "@material-ui/core";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -62,16 +62,11 @@ function Lunches() {
         console.log(lunches)
 
         // upload the classes to firestore
-        firestore.db.collection('users').doc(localStorage.getItem('uid')).update("lunches", JSON.stringify(lunches)).then(() => {
+        firestore.db.collection('users').doc(localStorage.getItem('uid')).set({ "lunches": JSON.stringify(lunches) }, {merge: true}).then(() => {
             localStorage.setItem('lunches', JSON.stringify(lunches));
-            window.location.href = "/";
-        }).catch(error => {
-
-            firestore.db.collection('users').doc(localStorage.getItem('uid')).set({ "lunches": JSON.stringify(lunches) }).then(result => {
-                localStorage.setItem('lunches', JSON.stringify(lunches));
-                window.location.href = "/";
-            })
-        });
+            history.push("/")
+            window.location.reload();
+        })
 
     }
 

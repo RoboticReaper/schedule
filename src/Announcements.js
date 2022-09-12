@@ -59,6 +59,19 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2022, 8, 11, 21, 30) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2022, 8, 11, 21, 30)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>Offline Loading Available</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/11/2022 9:30PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        Hi everyone,<br />
+                        <p>I'm sending this message right before school on Monday to let you know that LHS Schedule can work offline now! We've all tried to load this app while having poor data signal in school which takes forever. Here is what you can do to not wait forever: </p>
+                        <p><b>Just turn off wifi and data.</b></p>
+                        <p>After a refresh, the offline version will load and you can see your schedule again (your friends' too if you've looked at their schedules before).</p>
+
+                        So next time when it's very slow to load, you can use this method and it'll make life a lot easier.<br />
+                        <br />Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2022, 8, 3, 21, 40) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2022, 8, 3, 21, 40)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>New Feature: Adding Friends</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/3/2022 9:40PM</div>

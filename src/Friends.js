@@ -62,12 +62,18 @@ function Friends() {
     const [friendList, setFriendList] = useState(localStorage.getItem("friendList") ? JSON.parse(localStorage.getItem("friendList")) : []);
     const [friendNames, setFriendNames] = useState(localStorage.getItem("friendName") ? JSON.parse(localStorage.getItem("friendName")) : []);
     const [deleteWarning, setDeleteWarning] = useState([false]);
+    const [online, setOnline] = useState(navigator.onLine);
+
+    var cachedFriends = JSON.parse(localStorage.getItem("cachedFriends") ? localStorage.getItem("cachedFriends") : "[]");
+
+    
+   
 
 
     var backgroundColor = localStorage.getItem("backgroundColor") ? localStorage.getItem("backgroundColor") : "#ffffff";
 
     function goBack() {
-        window.location.href = '/'
+        history.push("/")
 
     }
 
@@ -117,7 +123,11 @@ function Friends() {
     }
 
     function viewFriend(uid) {
-        window.location.href = '/friend/' + uid;
+        if (!cachedFriends.includes(uid)) {
+            cachedFriends.push(uid);
+            localStorage.setItem("cachedFriends", JSON.stringify(cachedFriends));
+        }
+        history.push("/friend/" + uid);
     }
 
     function deleteFriend(index) {
@@ -159,6 +169,8 @@ function Friends() {
                 window.location.href = "/signin";
             }
         })
+        window.addEventListener('online', () => setOnline(true));
+        window.addEventListener('offline', () => setOnline(false));
 
     }, [])
 
@@ -265,7 +277,7 @@ function Friends() {
                                 <Grid item align="left" xs>{friendNames[index]}</Grid>
                                 <Grid container direction="row" alignItems="center" xs style={{ justifyContent: "right" }}>
                                     <Grid item>
-                                        <IconButton onClick={() => { viewFriend(friend) }} title={"View " + friendNames[index] + "'s schedule"}><VisibilityIcon /></IconButton>
+                                        <IconButton onClick={() => { viewFriend(friend) }} title={"View " + friendNames[index] + "'s schedule"} disabled={!(online || cachedFriends.includes(friend) )}><VisibilityIcon /></IconButton>
                                         <IconButton onClick={() => { if (navigator.clipboard) { navigator.clipboard.writeText(friendList[index]); setSnackbarMsg(true) } else { setFailedMsg(true) } }} title={"Copy " + friendNames[index] + "'s UID"}><ContentCopyIcon /></IconButton>
                                         <IconButton title="Delete friend" onClick={() => { handleClickOpen(index) }} style={{ color: "#d9534f" }} >
                                             <DeleteIcon />

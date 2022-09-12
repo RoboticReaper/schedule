@@ -15,7 +15,7 @@ import Button from '@material-ui/core/Button';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -102,7 +102,8 @@ function Classes() {
         firestore.db.collection('users').doc(localStorage.getItem('uid')).set({ "classes": JSON.stringify(createdClasses), "hr": hr }, { merge: true }).then(result => {
             localStorage.setItem("hr", hr);
             localStorage.setItem("createdClasses", JSON.stringify(createdClasses));
-            window.location.href = '/'
+            history.push("/");
+            window.location.reload();
         })
 
     }
