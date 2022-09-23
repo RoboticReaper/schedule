@@ -35,6 +35,11 @@ import Divider from '@mui/material/Divider';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import AddToHomeScreenIcon from '@mui/icons-material/AddToHomeScreen';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 
 var uid;
 
@@ -320,6 +325,8 @@ function Schedule() {
     const [iosInstallPrompt, setIosInstallPrompt] = useState(false);
     const [online, setOnline] = useState(navigator.onLine);
 
+    const [showHalfDayLunchRule, setShowHalfDayLunchRule] = useState(false);
+
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -362,7 +369,7 @@ function Schedule() {
             if (!userDismissed && localStorage.getItem("installed") === null) {
                 installPrompt.style.display = 'block';
             }
-            
+
         }
         if (navigator.userAgent.match(/(iPhone|iPad)/) && navigator.standalone) {
             installPrompt.style.display = 'none';
@@ -633,6 +640,9 @@ function Schedule() {
         return null;
     }
 
+
+
+
     function DatePicker() {
         const [selectedDate, setSelectedDate] = React.useState(now);
 
@@ -736,7 +746,7 @@ function Schedule() {
                                     </MenuItem>
 
                                     {
-                                        (deferredPrompt !== null && (localStorage.getItem("installed") === null || localStorage.getItem("installed") === "false")) ? <MenuItem onClick={install} >
+                                        (deferredPrompt !== null && (localStorage.getItem("installed") === null || localStorage.getItem("installed") === "false") && !(window.matchMedia('(display-mode: standalone)').matches || navigator.standalone)) ? <MenuItem onClick={install} >
                                             <ListItemIcon>
                                                 <AddToHomeScreenIcon />
                                             </ListItemIcon>
@@ -774,7 +784,19 @@ function Schedule() {
                         <OfflineReminder />
                         <ClassReminder />
                         <LunchReminder />
-                        {todayDay !== undefined ? <Paper className={classes.paper} style={{ backgroundColor: backgroundColor }} elevation={3} variant="outlined">Today is day {todayDay} of 6{halfDay ? <span>, also a <b>half</b> day</span> : null}.</Paper> : null}
+                        {todayDay !== undefined ? <Paper className={classes.paper} style={{ backgroundColor: backgroundColor }} elevation={3} variant="outlined">Today is day {todayDay} of 6{halfDay ? (<><span>, also a <b>half</b> day.</span>
+                            <ListItemButton onClick={() => { setShowHalfDayLunchRule(!showHalfDayLunchRule) }} style={{ textAlign: "center", justifyContent: "center", padding: 5, marginTop: 5 }}>
+                                {showHalfDayLunchRule ? "Hide" : "Show"} lunch rules for half days {showHalfDayLunchRule ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                            <Collapse in={showHalfDayLunchRule} unmountOnExit>
+                                <div style={{ backgroundColor: "lightgrey", padding: 5 }}>
+                                    If your lunch block {todayClass !== undefined ? <b>{todayClass[todayClass.length - 1].summary} </b> : null}is in World Language or Math Buildings, go to first lunch <b>11:00-11:30AM</b>. 
+                                    <br /><br />
+                                    If it's in the Main Building or Science Buildings, go to second lunch <b>11:30-12:00PM</b>.
+                                </div>
+                            </Collapse>
+                        </>) : "."}</Paper> : null}
+
                         {(todayClass === undefined || todayClass.length === 0) ? (<NoClasses />) : <DisplayClasses />}
 
 
