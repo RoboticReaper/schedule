@@ -165,7 +165,18 @@ function filter(data, currDate) {
 
 
         // detect if today is half day
-        if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00") {
+        // by looking if the last class is lunch
+
+        if (cls[cls.length - 1].summary.includes("Lunch")) {
+            if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00" || cls[cls.length - 1].end.dateTime.substring(11, 16) === "11:30") {
+                halfDay = true;
+                cls.pop();
+                if(lunchData[todayDay - 1] === ""){
+                    cls.pop();
+                }
+            }
+
+        } else if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00") {
             halfDay = true;
         } else {
             halfDay = false;
@@ -648,6 +659,7 @@ function Schedule() {
 
         const handleDateChange = (date) => {
             if (date instanceof Date && !isNaN(date.valueOf())) {
+                todayDay = undefined;
                 now = date;
                 todayClass = filter(allClasses, now);
                 setSelectedDate(date);
@@ -790,9 +802,9 @@ function Schedule() {
                             </ListItemButton>
                             <Collapse in={showHalfDayLunchRule} unmountOnExit>
                                 <div style={{ backgroundColor: "lightgrey", padding: 5 }}>
-                                    If your lunch block {todayClass !== undefined ? <b>{todayClass[todayClass.length - 1].summary} </b> : null}is in World Language or Math Buildings, go to first lunch <b>11:00-11:30AM</b>. 
+                                    If your lunch block {todayClass !== undefined ? <b>{todayClass[todayClass.length - 1].summary} </b> : null}is in World Language or Math Buildings, go to first lunch <b>11:00-11:30AM</b>.
                                     <br /><br />
-                                    If it's in the Main Building or Science Buildings, go to second lunch <b>11:30-12:00PM</b>.
+                                    If it's in the Main Building or Science Building, go to second lunch <b>11:30-12:00PM</b>.
                                 </div>
                             </Collapse>
                         </>) : "."}</Paper> : null}

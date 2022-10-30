@@ -17,6 +17,8 @@ function Alert(props) {
 function SignUp() {
     const [alertMsg, setAlertMsg] = useState('');
     const [open, setOpen] = useState(false);
+    const [email, setEmail] = useState('');
+    const [pswd, setPassword] = useState('');
     let history = useHistory();
 
     const handleClick = () => {
@@ -29,6 +31,14 @@ function SignUp() {
         }
 
         setOpen(false);
+    };
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
     };
 
     const [emailError, setEmailError] = useState(false);
@@ -51,9 +61,6 @@ function SignUp() {
 
 
     function signUp() {
-        const email = document.getElementById('email').value;
-        const pswd = document.getElementById('pswd').value;
-
         if (email === "") {
             setEmailError(true);
             setAlertMsg("Please enter your email address");
@@ -115,8 +122,10 @@ function SignUp() {
                 <div className="classes.root">
                     <LockRoundedIcon fontSize="large" color="secondary" style={{ marginTop: 30 }} />
                     <Typography gutterBottom variant="h4">Sign Up</Typography>
-                    <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError} autoFocus/>
-                    <TextField id="pswd" variant="outlined" type="password" label="Password" fullWidth margin="normal" error={pswdError} />
+                    <form>
+                    <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError} autoFocus value={email} onChange={handleEmailChange}/>
+                    <TextField id="pswd" variant="outlined" type="password" label="Password" fullWidth margin="normal" error={pswdError} value={pswd} onChange={handlePasswordChange} />
+                    </form>
                     <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signUp} style={{ marginTop: 20, marginBottom: 20 }}>Sign up</Button>
                     <Button color="secondary" style={{ textTransform: "none" }} onClick={toSignIn}>Already have an account? Sign in</Button>
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

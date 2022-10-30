@@ -32,8 +32,18 @@ function SignIn() {
         setOpen(false);
     };
 
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+    };
+
     const [emailError, setEmailError] = useState(false);
     const [pswdError, setPswdError] = useState(false);
+    const [email, setEmail] = useState('');
+    const [pswd, setPassword] = useState('');
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -51,8 +61,6 @@ function SignIn() {
 
 
     function signIn() {
-        const email = document.getElementById('email').value;
-        const pswd = document.getElementById('pswd').value;
 
         if (pswd === '') {
             setAlertMsg("Password can't be empty");
@@ -115,8 +123,10 @@ function SignIn() {
                     <Typography gutterBottom variant="h6">This is a schedule management app for Lexington High School students. The schedule will <i>always</i> be up to date!</Typography>
                     <LockRoundedIcon fontSize="large" color="secondary" style={{ marginTop: 30 }} />
                     <Typography gutterBottom variant="h4">Sign In</Typography>
-                    <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError} autoFocus/>
-                    <TextField id="pswd" variant="outlined" type="password" label="Password" fullWidth margin="normal" error={pswdError} />
+                    <form>
+                    <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError} autoFocus value={email} onChange={handleEmailChange}/>
+                    <TextField id="pswd" variant="outlined" type="password" label="Password" fullWidth margin="normal" error={pswdError} value={pswd} onChange={handlePasswordChange}/>
+                    </form>
                     <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signIn} style={{ marginTop: 20, marginBottom: 20 }}>Sign in</Button>
                     <Button color="secondary" style={{ textTransform: "none" }} onClick={toSignUp}>Don't have an account? Sign up</Button><br></br>
                     <ResetDialog />
