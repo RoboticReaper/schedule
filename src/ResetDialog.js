@@ -46,7 +46,7 @@ export default function ResetDialog() {
 
         //reset password
         firebase.auth().sendPasswordResetEmail(email).then(() => {
-            alert("Check your email for password reset.");
+            alert("Check your email for password reset. Check spam folder if you don't see it in your inbox.");
             handleClose();
             window.location.href = "/signin";
         }).catch((error) => {
