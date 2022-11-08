@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import firebase from "firebase/app";
 import firestore from "./firestore.js";
+import { Button } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -59,6 +60,33 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2022, 10, 8, 16, 50) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2022, 10, 8, 16, 50)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>Quarter 2 Lunch Change</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>11/8/2022 4:50PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        Hi everyone,<br />
+                        <p>According to the message from our principal, <b>2nd and 3rd lunch will be switched every quarter</b>. I have also updated the rule on lunch page. </p>
+                        <p>If you haven't done so, you can switch your 2nd and 3rd lunch by clicking this button: <Button variant="contained" style={{ textTransform: "none" }} onClick={() => {
+                            var lunches = JSON.parse(localStorage.getItem("lunches"));
+                            for (var i = 0; i < lunches.length; i++) {
+                                if (lunches[i] === '2') {
+                                    lunches[i] = '3';
+                                } else if (lunches[i] === '3') {
+                                    lunches[i] = '2';
+                                }
+                            }
+
+                            // upload the lunches to firestore
+                            firestore.db.collection('users').doc(localStorage.getItem('uid')).set({ "lunches": JSON.stringify(lunches) }, { merge: true }).then(() => {
+                                localStorage.setItem('lunches', JSON.stringify(lunches));
+                                alert("Lunches updated!");
+                            }).catch((error) => {
+                                alert(error);
+                            })
+                        }}>Switch Lunch</Button></p>
+                        Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2022, 8, 11, 21, 30) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2022, 8, 11, 21, 30)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>Offline Loading Available</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/11/2022 9:30PM</div>

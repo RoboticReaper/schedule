@@ -61,7 +61,7 @@ function Lunches() {
         var lunches = [day1, day2, day3, day4, day5, day6];
         console.log(lunches)
 
-        // upload the classes to firestore
+        // upload the lunches to firestore
         firestore.db.collection('users').doc(localStorage.getItem('uid')).set({ "lunches": JSON.stringify(lunches) }, {merge: true}).then(() => {
             localStorage.setItem('lunches', JSON.stringify(lunches));
             history.push("/")
@@ -121,8 +121,8 @@ function Lunches() {
                         <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor") }}>
                             <span>Here's how to figure out what lunch you have:</span>
                             <p><b>First lunch</b>: Classes in the ESL, Performing Arts, Visual Arts, Science, PE (excluding Health) and Special Education departments.</p>
-                            <p><b>Second lunch</b>: All remaining classes in <b>EVEN</b> classrooms</p>
-                            <p><b>Third lunch</b>: All remaining classes in <b>ODD</b> classrooms </p>
+                            <p><b>Second lunch</b>: All remaining classes in <b>ODD</b> classrooms</p>
+                            <p><b>Third lunch</b>: All remaining classes in <b>EVEN</b> classrooms </p>
                             <p>The lunch block is usually the 4th block of the day.</p>
                         </Paper>
                     </div>
