@@ -60,6 +60,33 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 0, 23, 14, 0) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 0, 23, 14, 0)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>Quarter 3 Lunch Change</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>1/23/2023 2:00PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        Hi everyone,<br />
+                        <p>Since quarter 3 has begun, lunches are now back to how quarter 1 was.  </p>
+                        <p>If you haven't done so, you can switch your 2nd and 3rd lunch by clicking this button: <Button variant="contained" style={{ textTransform: "none" }} onClick={() => {
+                            var lunches = JSON.parse(localStorage.getItem("lunches"));
+                            for (var i = 0; i < lunches.length; i++) {
+                                if (lunches[i] === '2') {
+                                    lunches[i] = '3';
+                                } else if (lunches[i] === '3') {
+                                    lunches[i] = '2';
+                                }
+                            }
+
+                            // upload the lunches to firestore
+                            firestore.db.collection('users').doc(localStorage.getItem('uid')).set({ "lunches": JSON.stringify(lunches) }, { merge: true }).then(() => {
+                                localStorage.setItem('lunches', JSON.stringify(lunches));
+                                alert("Lunches updated! Reload to show changes.");
+                            }).catch((error) => {
+                                alert(error);
+                            })
+                        }}>Switch Lunch</Button></p>
+                        Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2022, 10, 8, 16, 50) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2022, 10, 8, 16, 50)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>Quarter 2 Lunch Change</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>11/8/2022 4:50PM</div>
