@@ -111,19 +111,19 @@ function datesAreOnSameDay(first, second) {
 }
 
 
-
+// var redoFilterCount = 0;
 function filter(data, currDate) {
+
     // use date as the key, the variable is array of events in that day.
     let dates = new Map();
+    // var redoFilter = false;
 
     for (var x = 0; x < data.items.length; x++) { // if the date isn't today, remove it
         if (data.items[x].start.dateTime === undefined) {
             var day = new Date(data.items[x].start.date);
             var tomorrow = new Date(day);
             tomorrow.setDate(day.getDate() + 1);
-            day = new Date(tomorrow);
-            if (datesAreOnSameDay(day, currDate)) {
-
+            if (datesAreOnSameDay(new Date(tomorrow), currDate)) {
                 var todayDayString = data.items[x].summary;
                 todayDay = parseInt(todayDayString.substr(4, 1));
                 if (datesAreOnSameDay(now, new Date())) {
@@ -133,21 +133,39 @@ function filter(data, currDate) {
             }
         }
         else {
+            
+            // Error: when class blocks come before Day block, it wouldn't know what day it is, so todayDay proceeds to be undefined.
+            // Fix: mark if todayDay is undefined. Redo filter when it went through the whole list (at the end of the function) only once.
+            // if(todayDay === undefined){
+            //     redoFilter = true;
+            // }
+
+            
+
             // add rules to remove certain events from the day
             if (lunchData !== undefined) {
                 var todayLunch = lunchData[todayDay - 1];
-                if (data.items[x].summary.substr(0, 6) === "Lunch " && todayLunch !== undefined && data.items[x].summary.substr(6, 1) !== todayLunch.toString() && todayLunch.toString() !== "") {
+                if(datesAreOnSameDay(currDate, new Date(data.items[x].start.dateTime))){
+                    console.log("Day " + todayDay + " Lunch " + todayLunch + " " + data.items[x].summary)
+                }
+                
+                if (data.items[x].summary.substr(0, 6) === "Lunch ") {
+                    // check to remove other lunches except the one selected
+                    if (todayLunch !== undefined) {
+                        if (data.items[x].summary.substr(6, 1) !== todayLunch.toString() && todayLunch.toString() !== "") {
 
-                    continue;
+
+                            continue;
+                        }
+                    }
                 }
             }
             if (data.items[x].summary.includes("Training on FM systems and best practices for Hearing Impairments")) {
                 continue;
             }
 
-
-
             var date = data.items[x].start.dateTime.substring(0, 10);
+
 
             if (dates[date] === undefined) {
                 dates[date] = [data.items[x]];
@@ -159,10 +177,14 @@ function filter(data, currDate) {
         }
     }
 
+    // if(redoFilter && redoFilterCount < 20){
+    //     redoFilterCount += 1;
+    //     return filter(data, currDate);
+    // }
+
     var cls = undefined;
     try {
         cls = dates[formatDate(currDate)].slice().sort(custom_sort); // sort today's classes by chronological order
-
 
         // detect if today is half day
         // by looking if the last class is lunch
@@ -171,7 +193,7 @@ function filter(data, currDate) {
             if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00" || cls[cls.length - 1].end.dateTime.substring(11, 16) === "11:30") {
                 halfDay = true;
                 cls.pop();
-                if(lunchData[todayDay - 1] === ""){
+                if (lunchData[todayDay - 1] === "") {
                     cls.pop();
                 }
             }
@@ -533,6 +555,7 @@ function Schedule() {
     const forceUpdate = useForceUpdate();
 
     function updateClass() {
+
 
         createdClasses.map((thisClass) => {
             allClasses.items.map((today) => {
