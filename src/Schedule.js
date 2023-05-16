@@ -163,6 +163,9 @@ function filter(data, currDate) {
             if (data.items[x].summary.includes("Training on FM systems and best practices for Hearing Impairments")) {
                 continue;
             }
+            if (data.items[x].summary.includes("Prevention Assembly")) {
+                continue;
+            }
 
             var date = data.items[x].start.dateTime.substring(0, 10);
 
