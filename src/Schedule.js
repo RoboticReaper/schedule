@@ -133,22 +133,22 @@ function filter(data, currDate) {
             }
         }
         else {
-            
+
             // Error: when class blocks come before Day block, it wouldn't know what day it is, so todayDay proceeds to be undefined.
             // Fix: mark if todayDay is undefined. Redo filter when it went through the whole list (at the end of the function) only once.
             // if(todayDay === undefined){
             //     redoFilter = true;
             // }
 
-            
+
 
             // add rules to remove certain events from the day
             if (lunchData !== undefined) {
                 var todayLunch = lunchData[todayDay - 1];
-                if(datesAreOnSameDay(currDate, new Date(data.items[x].start.dateTime))){
-                    console.log("Day " + todayDay + " Lunch " + todayLunch + " " + data.items[x].summary)
-                }
-                
+                // if(datesAreOnSameDay(currDate, new Date(data.items[x].start.dateTime))){
+                //     console.log("Day " + todayDay + " Lunch " + todayLunch + " " + data.items[x].summary)
+                // }
+
                 if (data.items[x].summary.substr(0, 6) === "Lunch ") {
                     // check to remove other lunches except the one selected
                     if (todayLunch !== undefined) {
@@ -382,8 +382,8 @@ function Schedule() {
     })
 
     useEffect(() => {
-
         var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1500&sanitizeHtml=true&timeMin=2023-01-01T00%3A00%3A00-04%3A00&timeMax=2023-06-30T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs")
+
         var firestoreFetch = getClassesFromFirestore()
 
         Promise.all([calendarFetch, firestoreFetch]).then(response => {
@@ -411,7 +411,6 @@ function Schedule() {
             installPrompt.style.display = 'none';
             localStorage.setItem("installed", "true");
         }
-
     }, [])
 
 
@@ -460,17 +459,34 @@ function Schedule() {
 
     async function getClassesFromFirestore() {
 
+        var getID = localStorage.getItem('uid');
+
+
         if (gotten === true) {
             return;
         }
 
-        var getID = localStorage.getItem('uid');
+        if (getID === null) {
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000)
+        }
 
-        var docRef = firestore.db.collection("users").doc(getID).get();
-        var announcementRef = firestore.db.collection("announcement").doc("info").get();
+        var userData = new Promise((resolve, reject) => {
+            firestore.db.collection("users").doc(getID).onSnapshot(doc => {
+                resolve(doc.data())
+            })
+        })
 
-        return Promise.all([docRef, announcementRef]).then((values) => {
-            var data = values[0].data();
+        var announcementData = new Promise((resolve, reject) => {
+            firestore.db.collection("announcement").doc("info").onSnapshot(doc => {
+                resolve(doc.data())
+            })
+        })
+
+
+        return Promise.all([userData, announcementData]).then((values) => {
+            var data = values[0];
 
             createdClasses = [];
             lunchData = ["", "", "", "", "", ""];
@@ -517,7 +533,7 @@ function Schedule() {
             localStorage.setItem('friendName', JSON.stringify(friendName));
 
 
-            var latestAnnouncementDate = values[1].data().time.toDate();
+            var latestAnnouncementDate = values[1].time.toDate();
 
             if ((lastReadAnnouncementDate === "" || latestAnnouncementDate > lastReadAnnouncementDate) && userCreationDate < latestAnnouncementDate) {
                 hasUnreadAnnouncements = true;
@@ -525,7 +541,7 @@ function Schedule() {
 
             localStorage.setItem('latestAnnouncementDate', latestAnnouncementDate);
 
-            var cacheClearDate = values[1].data().cacheClear.toDate();
+            var cacheClearDate = values[1].cacheClear.toDate();
 
             if ((lastCacheClear === "" || cacheClearDate > lastCacheClear) && userCreationDate < cacheClearDate) {
                 localStorage.setItem('lastCacheClear', new Date());

@@ -104,6 +104,10 @@ function Classes() {
             localStorage.setItem("createdClasses", JSON.stringify(createdClasses));
             history.push("/");
             window.location.reload();
+        }).catch(err => {
+            setReturning(false)
+            alert("Failed to save")
+            console.log(err)
         })
 
     }
