@@ -396,7 +396,7 @@ function Schedule() {
 
 
         window.addEventListener('online', () => setOnline(true));
-        window.addEventListener('offline', () => { setOnline(false); window.location.href = '/'; });
+        window.addEventListener('offline', () => { setOnline(false);  });
 
 
         var installPrompt = document.getElementById('installPrompt');
