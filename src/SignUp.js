@@ -114,6 +114,10 @@ function SignUp() {
         history.push("/signin")
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+    }
+
     return (
         <div className="App">
             <header className='App-header'>
@@ -122,11 +126,11 @@ function SignUp() {
                 <div className="classes.root">
                     <LockRoundedIcon fontSize="large" color="secondary" style={{ marginTop: 30 }} />
                     <Typography gutterBottom variant="h4">Sign Up</Typography>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                     <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError} autoFocus value={email} onChange={handleEmailChange}/>
                     <TextField id="pswd" variant="outlined" type="password" label="Password" fullWidth margin="normal" error={pswdError} value={pswd} onChange={handlePasswordChange} />
+                    <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signUp} style={{ marginTop: 20, marginBottom: 20 }} type="submit">Sign up</Button>
                     </form>
-                    <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signUp} style={{ marginTop: 20, marginBottom: 20 }}>Sign up</Button>
                     <Button color="secondary" style={{ textTransform: "none" }} onClick={toSignIn}>Already have an account? Sign in</Button>
                     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                         <Alert onClose={handleClose} severity="warning">

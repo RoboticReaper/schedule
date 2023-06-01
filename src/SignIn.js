@@ -101,6 +101,10 @@ function SignIn() {
             })
     }
 
+    const handleSubmit = (event) =>{
+        event.preventDefault();
+    }
+
     const openInNewTab = (url) => {
         if(navigator.userAgent.match(/(iPhone|iPad)/)){
             window.location.href = url;
@@ -123,11 +127,11 @@ function SignIn() {
                     <Typography gutterBottom variant="h6">This is a schedule management app for Lexington High School students. The schedule will <i>always</i> be up to date!</Typography>
                     <LockRoundedIcon fontSize="large" color="secondary" style={{ marginTop: 30 }} />
                     <Typography gutterBottom variant="h4">Sign In</Typography>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                     <TextField id="email" variant="outlined" type="email" label="Email" fullWidth margin="normal" error={emailError} autoFocus value={email} onChange={handleEmailChange}/>
                     <TextField id="pswd" variant="outlined" type="password" label="Password" fullWidth margin="normal" error={pswdError} value={pswd} onChange={handlePasswordChange}/>
+                    <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signIn} type="submit" style={{ marginTop: 20, marginBottom: 20 }}>Sign in</Button>
                     </form>
-                    <Button variant="contained" color="secondary" fullWidth margin="normal" onClick={signIn} style={{ marginTop: 20, marginBottom: 20 }}>Sign in</Button>
                     <Button color="secondary" style={{ textTransform: "none" }} onClick={toSignUp}>Don't have an account? Sign up</Button><br></br>
                     <ResetDialog />
                     <Button color="secondary" style={{ textTransform: "none", marginBottom: 150 }} onClick={() => {openInNewTab("mailto:liubaoren2006@gmail.com")}}>Contact me by Email</Button><br></br>
