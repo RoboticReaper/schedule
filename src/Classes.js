@@ -105,7 +105,7 @@ function Classes() {
             history.push("/");
             window.location.reload();
         }).catch(err => {
-            setReturning(false)
+            setReturning(false);
             alert("Failed to save");
             console.log(err);
         })
