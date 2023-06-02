@@ -106,7 +106,7 @@ function Classes() {
             window.location.reload();
         }).catch(err => {
             setReturning(false)
-            alert("Failed to save")
+            alert("Failed to save");
             console.log(err)
         })
 
