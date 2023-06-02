@@ -107,7 +107,7 @@ function Classes() {
         }).catch(err => {
             setReturning(false)
             alert("Failed to save");
-            console.log(err)
+            console.log(err);
         })
 
     }
