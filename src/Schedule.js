@@ -411,6 +411,8 @@ function Schedule() {
             installPrompt.style.display = 'none';
             localStorage.setItem("installed", "true");
         }
+
+        window.addEventListener("keydown", onKeyDown)
     }, [])
 
 
@@ -730,6 +732,19 @@ function Schedule() {
                 />
             </MuiPickersUtilsProvider>
         )
+    }
+
+    function onKeyDown(e) {
+        if(e.repeat) return;
+        
+        if(e.key === "ArrowRight"){
+            tomorrow();
+            forceUpdate();
+        }
+        if(e.key === "ArrowLeft"){
+            yesterday();
+            forceUpdate()
+        }
     }
 
     return (
