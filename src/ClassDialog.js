@@ -355,7 +355,8 @@ export default function ClassDialog({ addClass, currClass, currIndex, saveClass,
         }
 
         var thisClass = [name, room, chosenBlocks];
-        console.log(thisClass)
+        
+        
         if(!transparent){
             thisClass.push(color);
         }

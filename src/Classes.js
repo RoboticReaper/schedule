@@ -21,8 +21,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
+import InfoIcon from '@mui/icons-material/Info';
 import firebase from "firebase/app";
+import * as PDFJS from 'pdfjs-dist/build/pdf';
+import 'pdfjs-dist/build/pdf.worker.entry';
 import "firebase/auth";
+import demo from "./schedule pdf demo.png";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -95,6 +99,8 @@ function Classes() {
         handleClose(index);
     }
 
+    const [infoOpen, setInfoOpen] = React.useState(false);
+
 
     function goBack() {
         setReturning(true);
@@ -110,6 +116,106 @@ function Classes() {
             console.log(err);
         })
 
+    }
+
+    function handleUpload(){
+        // read uploaded pdf and auto create classes for user
+        if(document.getElementById("upload").value == ""){
+            return;
+        }
+        const doc = document.getElementById("upload").files[0];
+        //console.log(doc)
+        var fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(doc);
+        fileReader.onload = function () {
+            var typedarray = new Uint8Array(this.result);
+            PDFJS.GlobalWorkerOptions.workerSrc = 'pdf.worker.entry';
+            PDFJS.getDocument(typedarray).promise.then(function (pdf) {
+                pdf.getPage(1).then(function (page) {
+                    page.getTextContent().then(function (textContent) {
+                        const courses = textContent.items;
+                        //console.log(courses);
+                        // search through the array from end to beginning,
+                        // and find the y position of each class's credit (credit is always in decimal)
+                        // because all other information about the same class have the same y position as the class credit.
+
+                        // course names' x location
+                        var nameX = courses.find(element => element.str == "Description").transform[4];
+                        //console.log("Classes's x location: " + nameX);
+
+                        // course rooms' x location
+                        var roomX = courses.find(element => element.str == "Room").transform[4];
+                        //console.log("Rooms's x location: " + roomX);
+
+                        // block's x locations
+                        var blockX = courses.find(element => element.str == "Schedule").transform[4];
+                        //console.log("Block's x location: " + blockX);
+
+                        // credit's x location
+                        var creditX = courses.find(element => element.str == "Credit").transform[4];
+                        //console.log("Credit's x location: " + creditX);
+
+                        // term's x location
+                        var termX = courses.find(element => element.str == "Term").transform[4];
+                        //console.log("Term's x location: " + termX);
+
+                        var newClass = [];
+                        var newHr = "";
+
+                        for(var i = courses.length - 1; i >= 0; i--){
+                            if(courses[i].str === "Adv" && courses[i].transform[4] == blockX){
+                                newHr = courses.find(element => element.transform[5] == courses[i].transform[5] && element.transform[4] == roomX).str;
+                            }
+                            var creditValue = parseInt(courses[i].str)
+                            if(courses[i].str.includes(".") && creditValue != 0 && creditValue < 10){
+                                var creditY = courses[i].transform[5];
+                                var term = courses.find(element => element.transform[5] == creditY && element.transform[4] == termX).str;
+                                var className = courses.find(element => element.transform[5] == creditY && element.transform[4] == nameX).str;
+                                var roomName = courses.find(element => element.transform[5] == creditY && element.transform[4] == roomX).str;
+                                var blockName = courses.find(element => element.transform[5] == creditY && element.transform[4] == blockX).str;
+                                
+                                if(term == "S 2"){
+                                    continue;
+                                }
+                                //console.log(className + " is in " + roomName + " during block " + blockName + " and is worth " + creditValue + " credits" + " in " + term);
+
+                                // convert blocks to array format
+
+                                var blocks = [];
+
+                                if(blockName.length == 1){
+                                    blocks.push(blockName + "1");
+                                    blocks.push(blockName + "2");
+                                    blocks.push(blockName + "3");
+                                    blocks.push(blockName + "4");
+                                } else {
+                                    var lastFoundLetterIndex = 0;
+                                    for(var j = 1; j < blockName.length; j++){
+                                        if(blockName[j].match(/[A-Z]/)){
+                                            if(j - lastFoundLetterIndex == 1){
+                                                blocks.push(blockName[j - 1] + "1");
+                                                blocks.push(blockName[j - 1] + "2");
+                                                blocks.push(blockName[j - 1] + "3");
+                                                blocks.push(blockName[j - 1] + "4");
+                                            }
+
+                                            lastFoundLetterIndex = j;
+                                        } else {
+                                            blocks.push(blockName[lastFoundLetterIndex] + blockName[j]);
+                                        }
+                                    }
+                                }
+
+                                newClass.push([className, roomName, blocks])
+                                
+                            }
+                        }
+                        setHr(newHr);
+                        setClasses(newClass);
+                    })
+                })
+            })
+        }
     }
 
     function DisplayClasses() {
@@ -186,7 +292,29 @@ function Classes() {
 
         <Container maxWidth='sm'>
             <div className={classes.root}>
-                <div style={{ color: "gray" }}>Note: Advisory and I-blocks are already in the schedule, there is no need to add them here.</div>
+                <div style={{ color: "gray" }}>Note: Advisory and I-blocks are already in the schedule, there is no need to add them here.<br></br><br></br>
+                You can also upload the PDF of your schedule from Aspen to automatically add your classes.
+                <IconButton onClick={()=>{setInfoOpen(true)}} >
+                    <InfoIcon />
+                </IconButton> &nbsp;
+                <Dialog open={infoOpen} onClose={()=>{setInfoOpen(false)}} aria-labelledby="form-dialog-title">
+                    <DialogTitle>PDF Requirements</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            To add your schedule by uploading a PDF, you must first download the schedule PDF from Aspen.<br /><br />
+                            The file is usually titled "Student_Schedule_HS.pdf", and it looks like this:
+                        </DialogContentText>
+                        <img src={demo} style={{width:"100%"}}></img>
+                        <DialogContentText>After that, upload the file here. Only all-year and first semester classes will be automatically added.<br /><br />
+                            If there are any issues, please send me an email from the main page menu.<br />
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={()=>{setInfoOpen(false)}} color="primary">Close</Button>
+                    </DialogActions>
+                </Dialog>
+                <input id="upload" type="file" name="Upload PDF" accept="application/pdf" onChange={handleUpload}/>
+                </div>
                 <TextField
                     variant="outlined"
                     value={hr}

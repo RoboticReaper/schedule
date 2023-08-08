@@ -21,7 +21,7 @@ import './loader.js'
 import { IconButton } from '@material-ui/core';
 import firestore from './firestore.js';
 import firebase from "firebase/app";
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import "firebase/auth";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
@@ -63,6 +63,14 @@ var use12HourClock = false;
 var friendList = [];
 var friendName = [];
 var backgroundColor = localStorage.getItem("backgroundColor") === null ? "#ffffff" : localStorage.getItem("backgroundColor");
+console.log(window.location.pathname)
+
+var slowLoad = window.setTimeout( function() {
+    // later will be cancelled if everything finishes before 5s
+    if(window.location.pathname === "/"){
+        alert("Slow connection detected. Suggest turning off wifi and data to load offline version.");
+    }
+  }, 5000 );
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -349,8 +357,8 @@ function today() {
 var gotten = false;
 var userDismissed = false;
 
-
 function Schedule() {
+    
 
     const classes = useStyles();
     let history = useHistory();
@@ -627,6 +635,8 @@ function Schedule() {
         }
 
         gotten = true;
+        window.clearTimeout( slowLoad );
+        
         todayClass = filter(allClasses, now);
 
 
