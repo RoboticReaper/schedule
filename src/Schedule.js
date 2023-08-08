@@ -63,7 +63,6 @@ var use12HourClock = false;
 var friendList = [];
 var friendName = [];
 var backgroundColor = localStorage.getItem("backgroundColor") === null ? "#ffffff" : localStorage.getItem("backgroundColor");
-console.log(window.location.pathname)
 
 var slowLoad = window.setTimeout( function() {
     // later will be cancelled if everything finishes before 5s

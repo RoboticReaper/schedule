@@ -225,7 +225,7 @@ function Classes() {
                     <Grid container spacing={2} direction="column">
                         <Grid item align="left" >
                             <Box display="flex">
-                                <Typography gutterBottom variant="h6">
+                                <Typography gutterBottom variant="h6" style={{overflowWrap: "anywhere"}}>
                                     <b>{item[0]}</b>
                                 </Typography>
                                 <div>
