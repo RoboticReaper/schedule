@@ -23,8 +23,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import firebase from "firebase/app";
-import * as PDFJS from 'pdfjs-dist/legacy/build/pdf';
-import 'pdfjs-dist/legacy/build/pdf.worker.entry';
+import * as PDFJS from 'pdfjs-dist/build/pdf';
+import 'pdfjs-dist/build/pdf.worker.entry';
 import "firebase/auth";
 import demo from "./schedule pdf demo.png";
 
@@ -178,7 +178,7 @@ function Classes() {
                                 if(term == "S 2"){
                                     continue;
                                 }
-                                //console.log(className + " is in " + roomName + " during block " + blockName + " and is worth " + creditValue + " credits" + " in " + term);
+                                // console.log(className + " is in " + roomName + " during block " + blockName + " and is worth " + creditValue + " credits" + " in " + term);
 
                                 // convert blocks to array format
 
