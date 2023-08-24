@@ -60,6 +60,17 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 7, 24, 13, 30) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 7, 24, 13, 30)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>New Feature Update</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/24/2023 1:30PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        <ul>
+                            <li>Add classes by uploading PDF</li>
+                        </ul>
+                        <p>As everyone is receiving their schedule, I have made a new feature in "classes" page. You can now upload the schedule pdf from Aspen and it'll automatically add the classes, instead of having to manually do it.</p>
+                        Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 0, 23, 14, 0) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 0, 23, 14, 0)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>Quarter 3 Lunch Change</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>1/23/2023 2:00PM</div>

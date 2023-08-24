@@ -119,11 +119,10 @@ function Lunches() {
                 <div className={classes.root}>
                     <div className={classes.paper}>
                         <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor") }}>
-                            <span>Here's how to figure out what lunch you have:</span>
-                            <p><b>First lunch</b>: Classes in the ESL, Performing Arts, Visual Arts, Science, PE (excluding Health) and Special Education departments.</p>
-                            <p><b>Second lunch</b>: All remaining classes in <b>EVEN</b> classrooms</p>
-                            <p><b>Third lunch</b>: All remaining classes in <b>ODD</b> classrooms </p>
-                            <p>The lunch block is usually the 4th block of the day.</p>
+                            <span>Here's how to figure out what lunch you have for each day:</span>
+                            <p><b>First lunch</b>: If your 3rd block and 4th block <b>both have</b> $ sign</p>
+                            <p><b>Second lunch</b>: If your 3rd block <b>has</b> $ and 4th block <b>doesn't</b></p>
+                            <p><b>Third lunch</b>: If 4rd block and 4th block both <b>don't</b> have $ sign</p>
                         </Paper>
                     </div>
                     <Typography variant="h5" gutterBottom>Day 1{localStorage.getItem("todayDay") === "1" ? " (today)" : null}</Typography>

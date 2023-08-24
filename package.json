@@ -24,7 +24,7 @@
     "netlify-cli": "^3.39.4",
     "pdf-lib": "^1.17.1",
     "pdfjs": "^2.5.2",
-    "pdfjs-dist": "^2.5.207",
+    "pdfjs-dist": "^2.16.105",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-native-copilot": "^2.6.0",
@@ -36,8 +36,8 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start --openssl-legacy-provider",
-    "build": "react-scripts build --openssl-legacy-provider",
+    "start": "react-scripts --openssl-legacy-provider start ",
+    "build": "react-scripts --openssl-legacy-provider build ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

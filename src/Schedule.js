@@ -175,7 +175,7 @@ function filter(data, currDate) {
             }
             
             if (data.items[x].summary.includes("$")){
-                continue;
+                // remove the same block that doesn't have the $ sign
             }
 
             var date = data.items[x].start.dateTime.substring(0, 10);

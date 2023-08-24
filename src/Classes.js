@@ -23,8 +23,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import firebase from "firebase/app";
-import * as PDFJS from 'pdfjs-dist/build/pdf';
-import 'pdfjs-dist/build/pdf.worker.entry';
+import * as PDFJS from 'pdfjs-dist/legacy/build/pdf';
+import 'pdfjs-dist/legacy/build/pdf.worker.entry';
 import "firebase/auth";
 import demo from "./schedule pdf demo.png";
 
@@ -174,6 +174,7 @@ function Classes() {
                                 var roomName = courses.find(element => element.transform[5] == creditY && element.transform[4] == roomX).str;
                                 var blockName = courses.find(element => element.transform[5] == creditY && element.transform[4] == blockX).str;
                                 
+                                
                                 if(term == "S 2"){
                                     continue;
                                 }
@@ -182,6 +183,7 @@ function Classes() {
                                 // convert blocks to array format
 
                                 var blocks = [];
+                                var money = false;
 
                                 if(blockName.length == 1){
                                     blocks.push(blockName + "1");
@@ -191,17 +193,32 @@ function Classes() {
                                 } else {
                                     var lastFoundLetterIndex = 0;
                                     for(var j = 1; j < blockName.length; j++){
-                                        if(blockName[j].match(/[A-Z]/)){
+                                        if(blockName[j] === "$") {
+                                            money = true;
+                                        }
+                                        else if(blockName[j].match(/[A-Z]/)){
                                             if(j - lastFoundLetterIndex == 1){
+                                                if(!money){
                                                 blocks.push(blockName[j - 1] + "1");
                                                 blocks.push(blockName[j - 1] + "2");
                                                 blocks.push(blockName[j - 1] + "3");
                                                 blocks.push(blockName[j - 1] + "4");
+                                                } else {
+                                                    blocks.push(blockName[j - 1] + "$1");
+                                                blocks.push(blockName[j - 1] + "$2");
+                                                blocks.push(blockName[j - 1] + "$3");
+                                                blocks.push(blockName[j - 1] + "$4");
+                                                }
                                             }
 
                                             lastFoundLetterIndex = j;
                                         } else {
-                                            blocks.push(blockName[lastFoundLetterIndex] + blockName[j]);
+                                            if(money){
+                                                blocks.push(blockName[lastFoundLetterIndex] + "$" + blockName[j]);
+                                            }
+                                            else {
+                                                blocks.push(blockName[lastFoundLetterIndex] + blockName[j]);
+                                            }
                                         }
                                     }
                                 }
