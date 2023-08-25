@@ -122,7 +122,7 @@ function Lunches() {
                             <span>Here's how to figure out what lunch you have for each day:</span>
                             <p><b>First lunch</b>: If your 3rd block and 4th block <b>both have</b> $ sign</p>
                             <p><b>Second lunch</b>: If your 3rd block <b>has</b> $ and 4th block <b>doesn't</b></p>
-                            <p><b>Third lunch</b>: If 4rd block and 4th block both <b>don't</b> have $ sign</p>
+                            <p><b>Third lunch</b>: If 3rd block and 4th block both <b>don't</b> have $ sign</p>
                         </Paper>
                     </div>
                     <Typography variant="h5" gutterBottom>Day 1{localStorage.getItem("todayDay") === "1" ? " (today)" : null}</Typography>

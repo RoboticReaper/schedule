@@ -169,16 +169,35 @@ function Classes() {
                             var creditValue = parseInt(courses[i].str)
                             if(courses[i].str.includes(".") && creditValue != 0 && creditValue < 10){
                                 var creditY = courses[i].transform[5];
-                                var term = courses.find(element => element.transform[5] == creditY && element.transform[4] == termX).str;
-                                var className = courses.find(element => element.transform[5] == creditY && element.transform[4] == nameX).str;
-                                var roomName = courses.find(element => element.transform[5] == creditY && element.transform[4] == roomX).str;
-                                var blockName = courses.find(element => element.transform[5] == creditY && element.transform[4] == blockX).str;
-                                
+                                var term = courses.find(element => element.transform[5] == creditY && element.transform[4] == termX);
+                                if(term !== undefined){
+                                    term = term.str;
+                                } else {
+                                    continue;
+                                }
+                                var className = courses.find(element => element.transform[5] == creditY && element.transform[4] == nameX);
+                                if(className !== undefined){
+                                    className = className.str;
+                                } else {
+                                    continue;
+                                }
+                                var roomName = courses.find(element => element.transform[5] == creditY && element.transform[4] == roomX);
+                                if(roomName !== undefined){
+                                    roomName = roomName.str;
+                                } else {
+                                    continue;
+                                }
+                                var blockName = courses.find(element => element.transform[5] == creditY && element.transform[4] == blockX);
+                                if(blockName !== undefined){
+                                    blockName = blockName.str;
+                                } else {
+                                    continue;
+                                }
                                 
                                 if(term == "S 2"){
                                     continue;
                                 }
-                                // console.log(className + " is in " + roomName + " during block " + blockName + " and is worth " + creditValue + " credits" + " in " + term);
+                                //console.log(className + " is in " + roomName + " during block " + blockName + " and is worth " + creditValue + " credits" + " in " + term);
 
                                 // convert blocks to array format
 
@@ -190,7 +209,13 @@ function Classes() {
                                     blocks.push(blockName + "2");
                                     blocks.push(blockName + "3");
                                     blocks.push(blockName + "4");
-                                } else {
+                                } else if (blockName.length == 2 && blockName.includes("$")) {
+                                    blocks.push(blockName + "1");
+                                    blocks.push(blockName + "2");
+                                    blocks.push(blockName + "3");
+                                    blocks.push(blockName + "4");
+                                }
+                                else {
                                     var lastFoundLetterIndex = 0;
                                     for(var j = 1; j < blockName.length; j++){
                                         if(blockName[j] === "$") {
@@ -310,7 +335,7 @@ function Classes() {
         <Container maxWidth='sm'>
             <div className={classes.root}>
                 <div style={{ color: "gray" }}>Note: Advisory and I-blocks are already in the schedule, there is no need to add them here.<br></br><br></br>
-                You can also upload the PDF of your schedule from Aspen to automatically add your classes.
+                You can also upload the PDF of your schedule from Aspen to automatically add your classes.<div style={{color:"red"}}>Only all-year and first semester classes with credits will be added.</div>
                 <IconButton onClick={()=>{setInfoOpen(true)}} >
                     <InfoIcon />
                 </IconButton> &nbsp;
@@ -322,7 +347,7 @@ function Classes() {
                             The file is usually titled "Student_Schedule_HS.pdf", and it looks like this:
                         </DialogContentText>
                         <img src={demo} style={{width:"100%"}}></img>
-                        <DialogContentText>After that, upload the file here. Only all-year and first semester classes will be automatically added.<br /><br />
+                        <DialogContentText>After that, upload the file here. Only all-year and first semester classes with credits will be automatically added.<br /><br />
                             If there are any issues, please send me an email from the main page menu.<br />
                         </DialogContentText>
                     </DialogContent>

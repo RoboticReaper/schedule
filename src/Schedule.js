@@ -174,9 +174,6 @@ function filter(data, currDate) {
                 continue;
             }
             
-            if (data.items[x].summary.includes("$")){
-                // remove the same block that doesn't have the $ sign
-            }
 
             var date = data.items[x].start.dateTime.substring(0, 10);
 
@@ -200,12 +197,31 @@ function filter(data, currDate) {
     try {
         cls = dates[formatDate(currDate)].slice().sort(custom_sort); // sort today's classes by chronological order
 
+        // search for $ blocks in today's class
+        // remove $ block if there's no class on it
+        // remove the class before it if $ block has a class title
+        var newCls = []
+        for(var i = 0; i < cls.length; i++){
+            if(cls[i].summary.includes("$")){
+                if(cls[i].summary.length === 3){
+                    continue;
+                }
+                if(cls[i].summary.length > 3){
+                    newCls.pop()
+                }
+                
+            } 
+            newCls.push(cls[i])
+        }
+        cls = newCls;
+
         // detect if today is half day
         // by looking if the last class is lunch
 
         if (cls[cls.length - 1].summary.includes("Lunch")) {
             if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00" || cls[cls.length - 1].end.dateTime.substring(11, 16) === "11:30") {
                 halfDay = true;
+
                 cls.pop();
                 if (lunchData[todayDay - 1] === "") {
                     cls.pop();
@@ -590,7 +606,19 @@ function Schedule() {
     const forceUpdate = useForceUpdate();
 
     function updateClass() {
-
+        // e.g. If a class has block G$1, also add G1 in it.
+        for(var i = 0; i < createdClasses.length; i++){
+            var newBlocks = []
+            
+            for(var j = 0; j < createdClasses[i][2].length; j++){
+                if(createdClasses[i][2][j].includes("$")){
+                    newBlocks.push(createdClasses[i][2][j].replace("$", ''))
+                }
+                newBlocks.push(createdClasses[i][2][j])
+            }
+            
+            createdClasses[i][2] = newBlocks;
+        }
 
         createdClasses.map((thisClass) => {
             allClasses.items.map((today) => {

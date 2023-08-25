@@ -60,6 +60,15 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 7, 24, 22, 40) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 7, 24, 22, 40)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>Bug fixes</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/24/2023 10:40PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        <p>Hey guys, sorry for the bugs that affected displaying some of the classes. Now they should be fixed by refreshing the main page twice. </p>
+                        <p>Also, if you used auto upload class feature, remember to double check just to make sure that everything is properly added. </p>
+                        Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 7, 24, 13, 30) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 7, 24, 13, 30)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>New Feature Update</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/24/2023 1:30PM</div>
