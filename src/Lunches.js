@@ -121,7 +121,7 @@ function Lunches() {
                         <Paper className={classes.paper} elevation={3} variant="outlined" style={{ backgroundColor: localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor") }}>
                             <span>Here's how to figure out what lunch you have for each day:</span>
                             <p><b>First lunch</b>: If your 3rd block and 4th block <b>both have</b> $ sign</p>
-                            <p><b>Second lunch</b>: If your 3rd block <b>has</b> $ and 4th block <b>doesn't</b></p>
+                            <p><b>Second lunch</b>: If your 3rd block <b>doesn't</b> have $ and 4th block <b>has</b></p>
                             <p><b>Third lunch</b>: If 3rd block and 4th block both <b>don't</b> have $ sign</p>
                         </Paper>
                     </div>
