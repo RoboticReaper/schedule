@@ -235,25 +235,31 @@ function filter(data, currDate) {
 
         }
         // only auto calculate if the user haven't specified today's lunch and enabled auto calculate
-        if(autoCalculateLunch && lunch === ""){
-            if(thirdBlockName.includes("$")){
-                lunch = "1"
-            }
-            else {
-                if(fourthBlockName.includes("$")){
-                    lunch = "2"
-                } else {
+        var hasOneFree = thirdBlockName.includes("Free") || fourthBlockName.includes("Free")
+        if(thirdBlockName.includes("$")){
+            lunch = "1"
+        }
+        else {
+            if(fourthBlockName.includes("$")){
+                lunch = "2"
+            } else {
+                // if they're both free, then don't do anything
+                
+                if(!hasOneFree){
                     lunch = "3"
                 }
             }
+        }
+        if(autoCalculateLunch && lunchData[todayDay-1] === "" && !hasOneFree){
             lunchData[todayDay - 1] = lunch;
             firestore.db.collection("users").doc(uid).update({ lunches: JSON.stringify(lunchData) }).then(()=>{
                 localStorage.setItem('lunches', JSON.stringify(lunchData));
                 alert("Lunch is calculated to be " + lunch + ". Reloading to show changes.")
                 window.location.reload();
             })
-
         }
+
+        
         
         
 
