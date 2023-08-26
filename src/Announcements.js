@@ -60,6 +60,15 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 7, 25, 20, 12) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 7, 25, 20, 12)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>Auto Calculate Lunch</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/25/2023 8:12PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        <p>It seems like this is really needed, so I added this feature. </p>
+                        <p>Now this app will auto calculate your lunch for the day that you're looking at. It's turned on by default but you can change it in settings. It will only calculate if you haven't put any lunch that day, </p>
+                        Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 7, 24, 22, 40) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 7, 24, 22, 40)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>Bug fixes</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/24/2023 10:40PM</div>

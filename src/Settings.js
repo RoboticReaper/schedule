@@ -35,15 +35,20 @@ function Settings() {
     const history = useHistory();
     const [use12HourClock, setUse12HourClock] = useState(localStorage.getItem("use12HourClock") === "true");
     const [returning, setReturning] = useState(false);
+    const [autoCalculateLunch, setAutoCalculateLunch] = useState(localStorage.getItem("autoCalculateLunch") === "true");
     const [backgroundColor, setBackgroundColor] = useState(localStorage.getItem("backgroundColor") === null || localStorage.getItem("backgroundColor") === "" ? "#ffffff" : localStorage.getItem("backgroundColor"));
 
     const handle12HourClockChange = (event) => {
         setUse12HourClock(event.target.checked);
     }
 
+    function handleAutoCalculateLunchChange(event) {
+        setAutoCalculateLunch(event.target.checked);
+    }
+
     function goBack() {
         setReturning(true);
-        firestore.db.collection("users").doc(localStorage.getItem('uid')).set({use12HourClock: use12HourClock, backgroundColor: backgroundColor}, {merge: true}).then(() => {
+        firestore.db.collection("users").doc(localStorage.getItem('uid')).set({use12HourClock: use12HourClock, backgroundColor: backgroundColor, autoCalculateLunch: autoCalculateLunch}, {merge: true}).then(() => {
             history.push("/")
             window.location.reload();
         })
@@ -81,6 +86,10 @@ function Settings() {
                     <Grid container direction="row" alignItems="center">
                         <Grid item align="left" xs={10}>Use 12-hour time format</Grid>
                         <Grid item align="right" xs={2}><Switch checked={use12HourClock} onChange={handle12HourClockChange}></Switch></Grid>
+                    </Grid>
+                    <Grid container direction="row" alignItems="center">
+                        <Grid item align="left" xs={10}>Auto Calculate Lunch</Grid>
+                        <Grid item align="right" xs={2}><Switch checked={autoCalculateLunch} onChange={handleAutoCalculateLunchChange}></Switch></Grid>
                     </Grid>
                     <Grid container direction="row" alignItems="center">
                         <Grid item align="left" xs={10}>App Background Color</Grid>

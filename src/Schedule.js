@@ -54,6 +54,7 @@ var todayClass = [];
 var todayDay;
 var lunchData;
 var hr;
+var autoCalculateLunch = true;
 var lastReadAnnouncementDate = "";
 var lastCacheClear = localStorage.getItem("lastCacheClear") ? new Date(localStorage.getItem("lastCacheClear")) : "";
 var userCreationDate = "";
@@ -213,6 +214,49 @@ function filter(data, currDate) {
             } 
             newCls.push(cls[i])
         }
+
+        // auto calculate lunch
+        var currentBlockIndex = 0;
+        var thirdBlockName = ""
+        var fourthBlockName = ""
+        var lunch = lunchData[todayDay - 1];
+        for(var i = 0; i < newCls.length; i++){
+            // only count blocks that don't have lunch
+            if(newCls[i].summary.includes("Lunch")){
+                continue;
+            }
+            currentBlockIndex += 1;
+            if(currentBlockIndex === 3){
+                thirdBlockName = newCls[i].summary;
+            }
+            if(currentBlockIndex === 4){
+                fourthBlockName = newCls[i].summary;
+            }
+
+        }
+        // only auto calculate if the user haven't specified today's lunch and enabled auto calculate
+        if(autoCalculateLunch && lunch === ""){
+            if(thirdBlockName.includes("$")){
+                lunch = "1"
+            }
+            else {
+                if(fourthBlockName.includes("$")){
+                    lunch = "2"
+                } else {
+                    lunch = "3"
+                }
+            }
+            lunchData[todayDay - 1] = lunch;
+            firestore.db.collection("users").doc(uid).update({ lunches: JSON.stringify(lunchData) }).then(()=>{
+                localStorage.setItem('lunches', JSON.stringify(lunchData));
+                alert("Lunch is calculated to be " + lunch + ". Reloading to show changes.")
+                window.location.reload();
+            })
+
+        }
+        
+        
+
         cls = newCls;
 
         // detect if today is half day
@@ -541,6 +585,9 @@ function Schedule() {
                 if (data.use12HourClock !== undefined) {
                     use12HourClock = data.use12HourClock;
                 }
+                if(data.autoCalculateLunch !== undefined){
+                    autoCalculateLunch = data.autoCalculateLunch;
+                }
                 if (data.backgroundColor !== undefined) {
                     backgroundColor = data.backgroundColor;
                 } else {
@@ -563,6 +610,7 @@ function Schedule() {
             localStorage.setItem('backgroundColor', backgroundColor);
             localStorage.setItem('friendList', JSON.stringify(friendList));
             localStorage.setItem('friendName', JSON.stringify(friendName));
+            localStorage.setItem('autoCalculateLunch', autoCalculateLunch);
 
 
             var latestAnnouncementDate = values[1].time.toDate();
@@ -903,9 +951,7 @@ function Schedule() {
                             </ListItemButton>
                             <Collapse in={showHalfDayLunchRule} unmountOnExit>
                                 <div style={{ backgroundColor: "lightgrey", padding: 5 }}>
-                                    If your lunch block {todayClass !== undefined ? <b>{todayClass[todayClass.length - 1].summary} </b> : null}is in World Language or Math Buildings, go to first lunch <b>11:00-11:30AM</b>.
-                                    <br /><br />
-                                    If it's in the Main Building or Science Building, go to second lunch <b>11:30-12:00PM</b>.
+                                    I haven't heard anything about half day lunch rules, so please email me if you know anything about it.
                                 </div>
                             </Collapse>
                         </>) : "."}</Paper> : null}
