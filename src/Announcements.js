@@ -65,7 +65,7 @@ function Announcements() {
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/25/2023 8:12PM</div>
                     <div style={{ marginTop: 10 }}>
                         <p>It seems like this is really needed, so I added this feature. </p>
-                        <p>Now this app will auto calculate your lunch for the day that you're looking at. It's turned on by default but you can change it in settings. It will only calculate if you haven't put any lunch that day, </p>
+                        <p>Now this app will auto calculate your lunch for the day that you're looking at. It's turned on by default but you can change it in settings. It will only calculate <b>if you haven't put any lunch in that day</b> </p>
                         Best,<br />Baoren
                     </div>
                 </Paper>
