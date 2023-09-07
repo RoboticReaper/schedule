@@ -60,6 +60,16 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 8, 6, 23, 59) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 8, 6, 23, 59)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>Issue With Chromebooks</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/6/2023 11:59PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        <p>Hi everone,<br /><br />
+                        School has just blocked LHS Schedule on Chromebooks, so  it can't be accessed. <br /><br />Right now <b>only personal devices work</b>. I'm working with the tech department to see how I can make them unblock it.</p>
+
+                        Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 7, 25, 20, 12) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 7, 25, 20, 12)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>Auto Calculate Lunch</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/25/2023 8:12PM</div>
