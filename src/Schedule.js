@@ -235,7 +235,9 @@ function filter(data, currDate) {
 
         }
         // only auto calculate if the user haven't specified today's lunch and enabled auto calculate
-        var hasOneFree = thirdBlockName.includes("Free") || fourthBlockName.includes("Free")
+        var thirdFree = thirdBlockName.includes("Free");
+        var fourthFree = fourthBlockName.includes("Free");
+        var hasOneFree = thirdFree || fourthFree;
         if(thirdBlockName.includes("$")){
             lunch = "1"
         }
@@ -243,8 +245,18 @@ function filter(data, currDate) {
             if(fourthBlockName.includes("$")){
                 lunch = "2"
             } else {
-                // if they're both free, then don't do anything
-                
+                if(fourthFree && !thirdFree && autoCalculateLunch && lunchData[todayDay-1] === ""){
+                    // if only fourth is free
+                    // search through classes and remove lunch 1
+                    for(var i = 0; i < newCls.length; i++){
+                        if(newCls[i].summary.includes("Lunch 1")){
+                            newCls.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+                // if both not free
                 if(!hasOneFree){
                     lunch = "3"
                 }
