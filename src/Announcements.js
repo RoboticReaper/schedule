@@ -60,6 +60,14 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 8, 12, 23, 38) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 8, 12, 23, 38)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>Website Unblocked</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/12/2023 11:38PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        <p>The school has unblocked this website and it's usable on Chromebooks now. Thanks for bearing with me.</p>
+                        Best,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 8, 6, 23, 59) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 8, 6, 23, 59)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>Issue With Chromebooks</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/6/2023 11:59PM</div>
