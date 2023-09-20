@@ -198,6 +198,25 @@ function filter(data, currDate) {
     try {
         cls = dates[formatDate(currDate)].slice().sort(custom_sort); // sort today's classes by chronological order
 
+        // detect if today is half day
+        // by looking if the last class is lunch
+
+        if (cls[cls.length - 1].summary.includes("Lunch")) {
+            if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00" || cls[cls.length - 1].end.dateTime.substring(11, 16) === "11:30") {
+                halfDay = true;
+
+                cls.pop();
+                if (lunchData[todayDay - 1] === "") {
+                    cls.pop();
+                }
+            }
+
+        } else if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00") {
+            halfDay = true;
+        } else {
+            halfDay = false;
+        }
+        
         // search for $ blocks in today's class
         // remove $ block if there's no class on it
         // remove the class before it if $ block has a class title
@@ -272,29 +291,8 @@ function filter(data, currDate) {
         }
 
         
-        
-        
 
         cls = newCls;
-
-        // detect if today is half day
-        // by looking if the last class is lunch
-
-        if (cls[cls.length - 1].summary.includes("Lunch")) {
-            if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00" || cls[cls.length - 1].end.dateTime.substring(11, 16) === "11:30") {
-                halfDay = true;
-
-                cls.pop();
-                if (lunchData[todayDay - 1] === "") {
-                    cls.pop();
-                }
-            }
-
-        } else if (cls[cls.length - 1].end.dateTime.substring(11, 16) === "12:00") {
-            halfDay = true;
-        } else {
-            halfDay = false;
-        }
 
         // decide whether to convert 24 hour clock to 12 hour clock
         if (use12HourClock) {
@@ -969,6 +967,8 @@ function Schedule() {
                             </ListItemButton>
                             <Collapse in={showHalfDayLunchRule} unmountOnExit>
                                 <div style={{ backgroundColor: "lightgrey", padding: 5 }}>
+                                    Lunch 1 is <b>11:00-11:30</b><br />
+                                    Lunch 2 is <b>11:30-12:00</b><br />
                                     I haven't heard anything about half day lunch rules, so please email me if you know anything about it.
                                 </div>
                             </Collapse>
