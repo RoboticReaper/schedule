@@ -967,9 +967,9 @@ function Schedule() {
                             </ListItemButton>
                             <Collapse in={showHalfDayLunchRule} unmountOnExit>
                                 <div style={{ backgroundColor: "lightgrey", padding: 5 }}>
-                                    Lunch 1 is <b>11:00-11:30</b><br />
-                                    Lunch 2 is <b>11:30-12:00</b><br />
-                                    I haven't heard anything about half day lunch rules, so please email me if you know anything about it.
+                                    If your lunch block {todayClass !== undefined ? <b>{todayClass[todayClass.length - 1].summary} </b> : null}is in World Language or Math Buildings, go to first lunch <b>11:00-11:30AM</b>.
+                                    <br /><br />
+                                    If it's in the Main Building or Science Building, go to second lunch <b>11:30-12:00PM</b>.
                                 </div>
                             </Collapse>
                         </>) : "."}</Paper> : null}
