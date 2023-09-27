@@ -196,7 +196,38 @@ function filter(data, currDate) {
 
     var cls = undefined;
     try {
-        cls = dates[formatDate(currDate)].slice().sort(custom_sort); // sort today's classes by chronological order
+        cls = dates[formatDate(currDate)].slice()
+        cls.push({
+            "kind": "calendar#event",
+            "etag": "\"3370242352524000\"",
+            "id": "i3lrjf442v223ehp8j9kav2j2g",
+            "status": "confirmed",
+            "htmlLink": "https://www.google.com/calendar/event?eid=aTNscmpmNDQydjIyM2VocDhqOWthdjJqMmcgbGV4aW5ndG9ubWEub3JnX3F1ZDQ1Y3ZpdGZ0dmdjMzE3dHNkMnZxY3RnQGc&ctz=America/New_York",
+            "created": "2023-05-26T17:12:56.000Z",
+            "updated": "2023-05-26T17:12:56.262Z",
+            "summary": "H4",
+            "creator": {
+             "email": "abarchuk@lexingtonma.org",
+             "displayName": "Andriy Barchuk"
+            },
+            "organizer": {
+             "email": "lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com",
+             "displayName": "LHS Block Schedule",
+             "self": true
+            },
+            "start": {
+             "dateTime": "2023-09-27T11:40:00-04:00",
+             "timeZone": "America/New_York"
+            },
+            "end": {
+             "dateTime": "2023-09-27T12:40:00-04:00",
+             "timeZone": "America/New_York"
+            },
+            "iCalUID": "i3lrjf442v223ehp8j9kav2j2g@google.com",
+            "sequence": 0,
+            "eventType": "default"
+           })
+        cls = cls.sort(custom_sort); // sort today's classes by chronological order
 
         // detect if today is half day
         // by looking if the last class is lunch
