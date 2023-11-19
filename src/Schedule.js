@@ -535,10 +535,12 @@ function Schedule() {
         window.addEventListener("keydown", onKeyDown)
     }, [])
 
-    useEffect(()=>{
-        now = new Date();
-        forceUpdate()
-    }, [new Date().getDate()])
+    // This might cause a bug that changes date title without changing schedule shown.
+
+    // useEffect(()=>{
+    //     now = new Date();
+    //     forceUpdate()
+    // }, [new Date().getDate()])
 
 
     window.addEventListener('beforeinstallprompt', (e) => {
