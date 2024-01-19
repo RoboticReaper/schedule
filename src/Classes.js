@@ -194,7 +194,7 @@ function Classes() {
                                     continue;
                                 }
                                 
-                                if(term == "S 2"){
+                                if(term == "S 1"){
                                     continue;
                                 }
                                 //console.log(className + " is in " + roomName + " during block " + blockName + " and is worth " + creditValue + " credits" + " in " + term);
@@ -335,7 +335,7 @@ function Classes() {
         <Container maxWidth='sm'>
             <div className={classes.root}>
                 <div style={{ color: "gray" }}>Note: Advisory and I-blocks are already in the schedule, there is no need to add them here.<br></br><br></br>
-                You can also upload the PDF of your schedule from Aspen to automatically add your classes.<div style={{color:"red"}}>Only all-year and first semester classes with credits will be added.</div>
+                You can also upload the PDF of your schedule from Aspen to automatically add your classes.<div style={{color:"red"}}>Only all-year and second semester classes with credits will be added.</div>
                 <IconButton onClick={()=>{setInfoOpen(true)}} >
                     <InfoIcon />
                 </IconButton> &nbsp;
