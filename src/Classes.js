@@ -347,7 +347,7 @@ function Classes() {
                             The file is usually titled "Student_Schedule_HS.pdf", and it looks like this:
                         </DialogContentText>
                         <img src={demo} style={{width:"100%"}}></img>
-                        <DialogContentText>After that, upload the file here. Only all-year and first semester classes with credits will be automatically added.<br /><br />
+                        <DialogContentText>After that, upload the file here. Only all-year and second semester classes with credits will be automatically added.<br /><br />
                             If there are any issues, please send me an email from the main page menu.<br />
                         </DialogContentText>
                     </DialogContent>
