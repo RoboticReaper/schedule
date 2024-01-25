@@ -399,7 +399,7 @@ function FriendSchedule() {
         if(document.referrer !== window.location.href){
             window.location.reload();
         }
-        var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1500&sanitizeHtml=true&timeMin=2023-11-01T00%3A00%3A00-04%3A00&timeMax=2024-04-29T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs")
+        var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1500&sanitizeHtml=true&timeMin=2024-01-01T00%3A00%3A00-04%3A00&timeMax=2024-07-10T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs")
         var firestoreFetch = getClassesFromFirestore()
 
 
