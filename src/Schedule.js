@@ -509,6 +509,35 @@ function Schedule() {
                     "iCalUID": "i39plomohf33atjdfoc5gs481c@google.com",
                     "sequence": 0,
                     "eventType": "default"
+                   }, {
+                    "kind": "calendar#event",
+                    "etag": "\"3370242419076000\"",
+                    "id": "i39plomohf33atjdfoc5gs481c",
+                    "status": "confirmed",
+                    "htmlLink": "https://www.google.com/calendar/event?eid=aTM5cGxvbW9oZjMzYXRqZGZvYzVnczQ4MWMgbGV4aW5ndG9ubWEub3JnX3F1ZDQ1Y3ZpdGZ0dmdjMzE3dHNkMnZxY3RnQGc&ctz=America/New_York",
+                    "created": "2023-05-26T17:13:29.000Z",
+                    "updated": "2023-05-26T17:13:29.538Z",
+                    "summary": "B4",
+                    "creator": {
+                     "email": "abarchuk@lexingtonma.org",
+                     "displayName": "Andriy Barchuk"
+                    },
+                    "organizer": {
+                     "email": "lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com",
+                     "displayName": "LHS Block Schedule",
+                     "self": true
+                    },
+                    "start": {
+                     "dateTime": "2024-03-27T08:30:00-04:00",
+                     "timeZone": "America/New_York"
+                    },
+                    "end": {
+                     "dateTime": "2024-03-27T09:30:00-04:00",
+                     "timeZone": "America/New_York"
+                    },
+                    "iCalUID": "i39plomohf33atjdfoc5gs481c@google.com",
+                    "sequence": 0,
+                    "eventType": "default"
                    })
 
                 console.log(allClasses)
