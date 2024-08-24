@@ -60,6 +60,18 @@ function Announcements() {
             </header>
 
             <Container maxWidth='md' style={{ paddingBottom: 100 }}>
+                <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2024, 7, 24, 23, 30) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2024, 7, 24, 23, 30)) ? { backgroundColor: "#fdf7e2" } : {}}>
+                    <h2>LHS Schedule will keep running</h2>
+                    <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>8/23/2024 11:30PM</div>
+                    <div style={{ marginTop: 10 }}>
+                        <p>Hi everyone,<br /><br />
+                        Thank you so much for using my schedule app! It means so much to me that I was able to make real impacts with my project.<br /><br />
+                        As I've graduated from high school and heading to college, this means I'll be paying less attention to fixes and any changes to schedules from the school, so please email me if there are any issues.
+
+                        </p>
+                        Thank you guys so much,<br />Baoren
+                    </div>
+                </Paper>
                 <Paper className={classes.paper} elevation={3} variant="outlined" style={((new Date(2023, 8, 12, 23, 38) > lastReadAnnouncementDate || localStorage.getItem('lastReadAnnouncementDate') === "") && userCreationDate < new Date(2023, 8, 12, 23, 38)) ? { backgroundColor: "#fdf7e2" } : {}}>
                     <h2>Website Unblocked</h2>
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/12/2023 11:38PM</div>
@@ -73,7 +85,7 @@ function Announcements() {
                     <div style={{ width: "100%", backgroundColor: "#f0f9ff", padding: 5 }}>9/6/2023 11:59PM</div>
                     <div style={{ marginTop: 10 }}>
                         <p>Hi everone,<br /><br />
-                        School has just blocked LHS Schedule on Chromebooks, so  it can't be accessed. <br /><br />Right now <b>only personal devices work</b>. I'm working with the tech department to see how I can make them unblock it.</p>
+                            School has just blocked LHS Schedule on Chromebooks, so  it can't be accessed. <br /><br />Right now <b>only personal devices work</b>. I'm working with the tech department to see how I can make them unblock it.</p>
 
                         Best,<br />Baoren
                     </div>
