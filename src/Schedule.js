@@ -472,8 +472,16 @@ function Schedule() {
     })
 
     useEffect(() => {
-        var calendarFetch = fetch("https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=1500&sanitizeHtml=true&timeMin=2024-07-01T00%3A00%3A00-04%3A00&timeMax=2024-12-31T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs")
+        // min date is half year from today and max date is half year from now
+        var minDate = new Date();
+        var maxDate = new Date();
+        minDate.setMonth(minDate.getMonth() - 6);
+        maxDate.setMonth(maxDate.getMonth() + 6);
 
+        var formattedMin = minDate.toISOString().substring(0, 10);
+        var formattedMax = maxDate.toISOString().substring(0, 10);
+
+        var calendarFetch = fetch(`https://clients6.google.com/calendar/v3/calendars/lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com/events?calendarId=lexingtonma.org_qud45cvitftvgc317tsd2vqctg%40group.calendar.google.com&singleEvents=true&timeZone=America%2FNew_York&maxAttendees=1&maxResults=2000&sanitizeHtml=true&timeMin=${formattedMin}T00%3A00%3A00-04%3A00&timeMax=${formattedMax}T00%3A00%3A00-04%3A00&key=AIzaSyBNlYH01_9Hc5S1J9vuFmu2nUqBZJNAXxs`)
         var firestoreFetch = getClassesFromFirestore()
 
         Promise.all([calendarFetch, firestoreFetch]).then(response => {
