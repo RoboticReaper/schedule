@@ -65,12 +65,12 @@ var friendList = [];
 var friendName = [];
 var backgroundColor = localStorage.getItem("backgroundColor") === null ? "#ffffff" : localStorage.getItem("backgroundColor");
 
-var slowLoad = window.setTimeout( function() {
+var slowLoad = window.setTimeout(function () {
     // later will be cancelled if everything finishes before 5s
-    if(window.location.pathname === "/"){
+    if (window.location.pathname === "/") {
         alert("Slow connection detected. Suggest turning off wifi and data to load offline version.");
     }
-  }, 5000 );
+}, 5000);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -177,7 +177,7 @@ function filter(data, currDate) {
             if (data.items[x].summary.includes("Summer Work")) {
                 continue;
             }
-            
+
 
             var date = data.items[x].start.dateTime.substring(0, 10);
 
@@ -219,21 +219,21 @@ function filter(data, currDate) {
         } else {
             halfDay = false;
         }
-        
+
         // search for $ blocks in today's class
         // remove $ block if there's no class on it
         // remove the class before it if $ block has a class title
         var newCls = []
-        for(var i = 0; i < cls.length; i++){
-            if(cls[i].summary.includes("$")){
-                if(cls[i].summary.length === 3){
+        for (var i = 0; i < cls.length; i++) {
+            if (cls[i].summary.includes("$")) {
+                if (cls[i].summary.length === 3) {
                     continue;
                 }
-                if(cls[i].summary.length > 3){
+                if (cls[i].summary.length > 3) {
                     newCls.pop()
                 }
-                
-            } 
+
+            }
             newCls.push(cls[i])
         }
 
@@ -242,16 +242,16 @@ function filter(data, currDate) {
         var thirdBlockName = ""
         var fourthBlockName = ""
         var lunch = lunchData[todayDay - 1];
-        for(var i = 0; i < newCls.length; i++){
+        for (var i = 0; i < newCls.length; i++) {
             // only count blocks that don't have lunch
-            if(newCls[i].summary.includes("Lunch")){
+            if (newCls[i].summary.includes("Lunch")) {
                 continue;
             }
             currentBlockIndex += 1;
-            if(currentBlockIndex === 3){
+            if (currentBlockIndex === 3) {
                 thirdBlockName = newCls[i].summary;
             }
-            if(currentBlockIndex === 4){
+            if (currentBlockIndex === 4) {
                 fourthBlockName = newCls[i].summary;
             }
 
@@ -260,18 +260,18 @@ function filter(data, currDate) {
         var thirdFree = thirdBlockName.includes("Free");
         var fourthFree = fourthBlockName.includes("Free");
         var hasOneFree = thirdFree || fourthFree;
-        if(thirdBlockName.includes("$")){
+        if (thirdBlockName.includes("$")) {
             lunch = "1"
         }
         else {
-            if(fourthBlockName.includes("$")){
+            if (fourthBlockName.includes("$")) {
                 lunch = "2"
             } else {
-                if(fourthFree && !thirdFree && autoCalculateLunch && lunchData[todayDay-1] === ""){
+                if (fourthFree && !thirdFree && autoCalculateLunch && lunchData[todayDay - 1] === "") {
                     // if only fourth is free
                     // search through classes and remove lunch 1
-                    for(var i = 0; i < newCls.length; i++){
-                        if(newCls[i].summary.includes("Lunch 1")){
+                    for (var i = 0; i < newCls.length; i++) {
+                        if (newCls[i].summary.includes("Lunch 1")) {
                             newCls.splice(i, 1);
                             break;
                         }
@@ -279,21 +279,21 @@ function filter(data, currDate) {
                 }
 
                 // if both not free
-                if(!hasOneFree){
+                if (!hasOneFree) {
                     lunch = "3"
                 }
             }
         }
-        if(autoCalculateLunch && lunchData[todayDay-1] === "" && !hasOneFree){
+        if (autoCalculateLunch && lunchData[todayDay - 1] === "" && !hasOneFree) {
             lunchData[todayDay - 1] = lunch;
-            firestore.db.collection("users").doc(uid).update({ lunches: JSON.stringify(lunchData) }).then(()=>{
+            firestore.db.collection("users").doc(uid).update({ lunches: JSON.stringify(lunchData) }).then(() => {
                 localStorage.setItem('lunches', JSON.stringify(lunchData));
                 alert("Lunch is calculated to be " + lunch + ". Reloading to show changes.")
                 window.location.reload();
             })
         }
 
-        
+
 
         cls = newCls;
 
@@ -436,7 +436,7 @@ var gotten = false;
 var userDismissed = false;
 
 function Schedule() {
-    
+
 
     const classes = useStyles();
     let history = useHistory();
@@ -489,64 +489,158 @@ function Schedule() {
                 allClasses = data;
                 // temporary missing block fix
                 allClasses.items.push({
-                    "kind": "calendar#event",
-                    "etag": "\"3370242419076000\"",
-                    "id": "i39plomohf33atjdfoc5gs481c",
-                    "status": "confirmed",
-                    "htmlLink": "https://www.google.com/calendar/event?eid=aTM5cGxvbW9oZjMzYXRqZGZvYzVnczQ4MWMgbGV4aW5ndG9ubWEub3JnX3F1ZDQ1Y3ZpdGZ0dmdjMzE3dHNkMnZxY3RnQGc&ctz=America/New_York",
-                    "created": "2023-05-26T17:13:29.000Z",
-                    "updated": "2023-05-26T17:13:29.538Z",
-                    "summary": "F4",
-                    "creator": {
-                     "email": "abarchuk@lexingtonma.org",
-                     "displayName": "Andriy Barchuk"
-                    },
-                    "organizer": {
-                     "email": "lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com",
-                     "displayName": "LHS Block Schedule",
-                     "self": true
-                    },
+                    "summary": "A4",
                     "start": {
-                     "dateTime": "2024-03-18T09:40:00-04:00",
-                     "timeZone": "America/New_York"
+                        "dateTime": "2025-03-25T09:35:00-04:00",
+                        "timeZone": "America/New_York"
                     },
                     "end": {
-                     "dateTime": "2024-03-18T10:45:00-04:00",
-                     "timeZone": "America/New_York"
-                    },
-                    "iCalUID": "i39plomohf33atjdfoc5gs481c@google.com",
-                    "sequence": 0,
-                    "eventType": "default"
-                   }, {
-                    "kind": "calendar#event",
-                    "etag": "\"3370242419076000\"",
-                    "id": "i39plomohf33atjdfoc5gs481c",
-                    "status": "confirmed",
-                    "htmlLink": "https://www.google.com/calendar/event?eid=aTM5cGxvbW9oZjMzYXRqZGZvYzVnczQ4MWMgbGV4aW5ndG9ubWEub3JnX3F1ZDQ1Y3ZpdGZ0dmdjMzE3dHNkMnZxY3RnQGc&ctz=America/New_York",
-                    "created": "2023-05-26T17:13:29.000Z",
-                    "updated": "2023-05-26T17:13:29.538Z",
-                    "summary": "B4",
-                    "creator": {
-                     "email": "abarchuk@lexingtonma.org",
-                     "displayName": "Andriy Barchuk"
-                    },
-                    "organizer": {
-                     "email": "lexingtonma.org_qud45cvitftvgc317tsd2vqctg@group.calendar.google.com",
-                     "displayName": "LHS Block Schedule",
-                     "self": true
-                    },
+                        "dateTime": "2025-03-25T10:35:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "C4",
                     "start": {
-                     "dateTime": "2024-03-27T08:30:00-04:00",
-                     "timeZone": "America/New_York"
+                        "dateTime": "2025-03-25T14:10:00-04:00",
+                        "timeZone": "America/New_York"
                     },
                     "end": {
-                     "dateTime": "2024-03-27T09:30:00-04:00",
-                     "timeZone": "America/New_York"
+                        "dateTime": "2025-03-25T15:10:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "Day 6",
+                    "start": {
+                        "date": "2025-03-25"
                     },
-                    "iCalUID": "i39plomohf33atjdfoc5gs481c@google.com",
-                    "sequence": 0,
-                    "eventType": "default"
-                   })
+                    "end": {
+                        "date": "2025-03-26"
+                    }
+                },{
+                    "summary": "B1",
+                    "start": {
+                        "dateTime": "2025-03-26T09:35:00-04:00",
+                        "timeZone": "America/New_York"
+                    },
+                    "end": {
+                        "dateTime": "2025-03-26T10:35:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "F1",
+                    "start": {
+                        "dateTime": "2025-03-26T14:15:00-04:00",
+                        "timeZone": "America/New_York"
+                    },
+                    "end": {
+                        "dateTime": "2025-03-26T15:10:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "Day 1",
+                    "start": {
+                        "date": "2025-03-26"
+                    },
+                    "end": {
+                        "date": "2025-03-27"
+                    }
+                },
+                {
+                    "summary": "A2",
+                    "start": {
+                        "dateTime": "2025-05-20T09:35:00-04:00",
+                        "timeZone": "America/New_York"
+                    },
+                    "end": {
+                        "dateTime": "2025-05-20T10:35:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "C2",
+                    "start": {
+                        "dateTime": "2025-05-20T14:10:00-04:00",
+                        "timeZone": "America/New_York"
+                    },
+                    "end": {
+                        "dateTime": "2025-05-20T15:10:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "Day 3",
+                    "start": {
+                        "date": "2025-05-20"
+                    },
+                    "end": {
+                        "date": "2025-05-21"
+                    }
+                },
+                {
+                    "summary": "B3",
+                    "start": {
+                        "dateTime": "2025-05-21T09:35:00-04:00",
+                        "timeZone": "America/New_York"
+                    },
+                    "end": {
+                        "dateTime": "2025-05-21T10:35:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "E3",
+                    "start": {
+                        "dateTime": "2025-05-21T13:15:00-04:00",
+                        "timeZone": "America/New_York"
+                    },
+                    "end": {
+                        "dateTime": "2025-05-21T14:10:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "Day 4",
+                    "start": {
+                        "date": "2025-05-21"
+                    },
+                    "end": {
+                        "date": "2025-05-21"
+                    }
+                }, {
+                    "summary": "Day 1",
+                    "start": {
+                        "date": "2025-06-04"
+                    },
+                    "end": {
+                        "date": "2025-06-05"
+                    }
+                },
+                {
+                    "summary": "D2",
+                    "start": {
+                        "dateTime": "2025-06-05T14:05:00-04:00",
+                        "timeZone": "America/New_York"
+                    },
+                    "end": {
+                        "dateTime": "2025-06-05T15:10:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "E2",
+                    "start": {
+                        "dateTime": "2025-06-05T08:30:00-04:00",
+                        "timeZone": "America/New_York"
+                    },
+                    "end": {
+                        "dateTime": "2025-06-05T09:35:00-04:00",
+                        "timeZone": "America/New_York"
+                    }
+                }, {
+                    "summary": "Day 2",
+                    "start": {
+                        "date": "2025-06-05"
+                    },
+                    "end": {
+                        "date": "2025-06-05"
+                    }
+                },
+                )
 
                 console.log(allClasses)
                 updateClass();
@@ -556,7 +650,7 @@ function Schedule() {
 
 
         window.addEventListener('online', () => setOnline(true));
-        window.addEventListener('offline', () => { setOnline(false);  });
+        window.addEventListener('offline', () => { setOnline(false); });
 
 
         var installPrompt = document.getElementById('installPrompt');
@@ -676,7 +770,7 @@ function Schedule() {
                 if (data.use12HourClock !== undefined) {
                     use12HourClock = data.use12HourClock;
                 }
-                if(data.autoCalculateLunch !== undefined){
+                if (data.autoCalculateLunch !== undefined) {
                     autoCalculateLunch = data.autoCalculateLunch;
                 }
                 if (data.backgroundColor !== undefined) {
@@ -746,16 +840,16 @@ function Schedule() {
 
     function updateClass() {
         // e.g. If a class has block G$1, also add G1 in it.
-        for(var i = 0; i < createdClasses.length; i++){
+        for (var i = 0; i < createdClasses.length; i++) {
             var newBlocks = []
-            
-            for(var j = 0; j < createdClasses[i][2].length; j++){
-                if(createdClasses[i][2][j].includes("$")){
+
+            for (var j = 0; j < createdClasses[i][2].length; j++) {
+                if (createdClasses[i][2][j].includes("$")) {
                     newBlocks.push(createdClasses[i][2][j].replace("$", ''))
                 }
                 newBlocks.push(createdClasses[i][2][j])
             }
-            
+
             createdClasses[i][2] = newBlocks;
         }
 
@@ -801,8 +895,8 @@ function Schedule() {
         }
 
         gotten = true;
-        window.clearTimeout( slowLoad );
-        
+        window.clearTimeout(slowLoad);
+
         todayClass = filter(allClasses, now);
 
 
@@ -918,13 +1012,13 @@ function Schedule() {
     }
 
     function onKeyDown(e) {
-        if(e.repeat) return;
-        
-        if(e.key === "ArrowRight"){
+        if (e.repeat) return;
+
+        if (e.key === "ArrowRight") {
             tomorrow();
             forceUpdate();
         }
-        if(e.key === "ArrowLeft"){
+        if (e.key === "ArrowLeft") {
             yesterday();
             forceUpdate()
         }
